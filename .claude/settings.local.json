@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir client *)",
+      "Bash(dir server *)",
+      "Bash(dir docs *)"
+    ]
+  }
+}
