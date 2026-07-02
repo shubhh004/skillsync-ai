@@ -4,6 +4,7 @@ import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import ForgotPassword from '../pages/ForgotPassword';
 import Dashboard from '../pages/Dashboard';
+import DsaPage from '../features/dsa/DsaPage';
 import NotFound from '../pages/NotFound';
 
 export default function AppRoutes() {
@@ -14,6 +15,7 @@ export default function AppRoutes() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dsa" element={<DsaPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
