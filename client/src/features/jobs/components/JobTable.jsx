@@ -1,9 +1,12 @@
 import Card from '../../../components/ui/Card';
 
 const statusStyle = {
-  Applied:   'bg-brand-50   text-brand-700',
+  Applied:   'bg-brand-50    text-brand-700',
+  OA:        'bg-brand-100   text-brand-800',
   Interview: 'bg-warning-100 text-warning-700',
+  HR:        'bg-warning-50  text-warning-600',
   Offer:     'bg-success-100 text-success-700',
+  Accepted:  'bg-success-100 text-success-800',
   Rejected:  'bg-danger-100  text-danger-700',
 };
 
@@ -20,14 +23,14 @@ const avatarColor = (name) => {
 const formatDate = (dateStr) =>
   new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 
-export default function JobTable({ jobs }) {
+export default function JobTable({ jobs, onEdit, onDelete }) {
   return (
     <Card padding={false}>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[760px] text-sm">
+        <table className="w-full min-w-[800px] text-sm">
           <thead>
             <tr className="border-b border-neutral-200 bg-neutral-50">
-              {['Company', 'Role', 'Status', 'Location', 'Applied Date', 'Next Round', 'Actions'].map((h) => (
+              {['Company', 'Role', 'Status', 'Location', 'Applied Date', 'Job Type', 'Actions'].map((h) => (
                 <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">
                   {h}
                 </th>
@@ -36,29 +39,41 @@ export default function JobTable({ jobs }) {
           </thead>
           <tbody className="divide-y divide-neutral-100">
             {jobs.map((job) => (
-              <tr key={job.id} className="hover:bg-neutral-50 transition-colors">
+              <tr key={job._id} className="hover:bg-neutral-50 transition-colors">
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${avatarColor(job.company)}`}>
                       {job.company[0]}
                     </div>
-                    <span className="font-medium text-neutral-900">{job.company}</span>
+                    {job.applicationLink ? (
+                      <a
+                        href={job.applicationLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-medium text-neutral-900 hover:text-brand-600 transition-colors"
+                      >
+                        {job.company}
+                      </a>
+                    ) : (
+                      <span className="font-medium text-neutral-900">{job.company}</span>
+                    )}
                   </div>
                 </td>
                 <td className="px-4 py-3.5 text-neutral-700">{job.role}</td>
                 <td className="px-4 py-3.5">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusStyle[job.status]}`}>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusStyle[job.status] || 'bg-neutral-100 text-neutral-600'}`}>
                     {job.status}
                   </span>
                 </td>
-                <td className="px-4 py-3.5 text-neutral-500 text-xs">{job.location}</td>
+                <td className="px-4 py-3.5 text-neutral-500 text-xs">{job.location || '—'}</td>
                 <td className="px-4 py-3.5 text-neutral-500 text-xs">{formatDate(job.appliedDate)}</td>
-                <td className="px-4 py-3.5 text-neutral-500 text-xs">{job.nextRound}</td>
+                <td className="px-4 py-3.5 text-neutral-500 text-xs">{job.jobType || '—'}</td>
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-1">
                     <button
                       type="button"
                       aria-label="Edit"
+                      onClick={() => onEdit(job)}
                       className="p-1.5 rounded-md text-neutral-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -68,6 +83,7 @@ export default function JobTable({ jobs }) {
                     <button
                       type="button"
                       aria-label="Delete"
+                      onClick={() => onDelete(job)}
                       className="p-1.5 rounded-md text-neutral-400 hover:text-danger-600 hover:bg-danger-50 transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

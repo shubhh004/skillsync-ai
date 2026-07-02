@@ -8,7 +8,7 @@ const selectClass = [
   'transition-colors duration-150',
 ].join(' ');
 
-const STATUSES = ['Applied', 'Interview', 'Offer', 'Rejected'];
+const STATUSES = ['Applied', 'OA', 'Interview', 'HR', 'Offer', 'Rejected', 'Accepted'];
 
 export default function JobFilterBar({ search, status, company, companies, onChange, onClear, hasActiveFilters }) {
   return (

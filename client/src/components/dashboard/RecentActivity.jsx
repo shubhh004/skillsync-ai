@@ -1,44 +1,67 @@
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import Card from '../ui/Card';
 
-const activities = [
-  { type: 'dsa',       text: 'Solved "Two Sum" — Easy · Array',               time: '2 hours ago'  },
-  { type: 'resume',    text: 'Updated Professional Summary on Resume',          time: '5 hours ago'  },
-  { type: 'job',       text: 'Applied to Google SWE Internship',                time: 'Yesterday'    },
-  { type: 'interview', text: 'Completed DSA Mock Interview — Score 82%',        time: '2 days ago'   },
-  { type: 'dsa',       text: 'Solved "LRU Cache" — Hard · Design',              time: '3 days ago'   },
-];
-
-const typeConfig = {
-  dsa:       { label: 'DSA',       dot: 'bg-brand-500'   },
-  resume:    { label: 'Resume',    dot: 'bg-success-500' },
-  job:       { label: 'Job',       dot: 'bg-warning-500' },
-  interview: { label: 'Interview', dot: 'bg-danger-500'  },
+const statusDot = {
+  Solved:    'bg-success-500',
+  Attempted: 'bg-warning-500',
+  Todo:      'bg-neutral-400',
 };
 
-export default function RecentActivity() {
+function timeAgo(dateStr) {
+  const diff  = Date.now() - new Date(dateStr).getTime();
+  const mins  = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days  = Math.floor(diff / 86400000);
+  if (mins  <  1) return 'Just now';
+  if (mins  < 60) return `${mins}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days  ===1) return 'Yesterday';
+  return `${days}d ago`;
+}
+
+export default function RecentActivity({ problems = [] }) {
+  const recent = useMemo(() =>
+    [...problems]
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+      .slice(0, 5),
+    [problems]
+  );
+
   return (
     <Card padding={false}>
-      <div className="px-6 py-4 border-b border-neutral-100">
+      <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-neutral-900">Recent Activity</h3>
+        <Link to="/dsa" className="text-xs text-brand-600 hover:underline">View all</Link>
       </div>
 
-      <ul className="divide-y divide-neutral-100">
-        {activities.map(({ type, text, time }, i) => {
-          const { label, dot } = typeConfig[type];
-          return (
-            <li key={i} className="flex items-start gap-4 px-6 py-4">
-              <span className={`mt-2 flex-shrink-0 w-2 h-2 rounded-full ${dot}`} />
+      {recent.length === 0 ? (
+        <div className="px-6 py-10 text-center">
+          <p className="text-sm text-neutral-500">No activity yet.</p>
+          <Link to="/dsa" className="mt-2 inline-block text-sm text-brand-600 hover:underline">
+            Add your first problem →
+          </Link>
+        </div>
+      ) : (
+        <ul className="divide-y divide-neutral-100">
+          {recent.map((p) => (
+            <li key={p._id} className="flex items-start gap-4 px-6 py-4">
+              <span className={`mt-2 flex-shrink-0 w-2 h-2 rounded-full ${statusDot[p.status] || 'bg-neutral-400'}`} />
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-neutral-800 leading-snug">{text}</p>
-                <p className="text-xs text-neutral-400 mt-0.5">{time}</p>
+                <p className="text-sm text-neutral-800 leading-snug">
+                  {p.status}{' '}
+                  <span className="font-medium">"{p.title}"</span>
+                  {' '}— {p.difficulty} · {p.topic}
+                </p>
+                <p className="text-xs text-neutral-400 mt-0.5">{timeAgo(p.updatedAt)}</p>
               </div>
               <span className="flex-shrink-0 text-xs font-medium text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">
-                {label}
+                DSA
               </span>
             </li>
-          );
-        })}
-      </ul>
+          ))}
+        </ul>
+      )}
     </Card>
   );
 }

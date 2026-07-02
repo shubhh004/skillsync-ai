@@ -1,7 +1,7 @@
 import Button from '../../../components/ui/Button';
 import Card from '../../../components/ui/Card';
 
-export default function DsaEmptyState({ hasFilters, onClear }) {
+export default function DsaEmptyState({ hasFilters, onClear, onAdd }) {
   return (
     <Card className="py-16">
       <div className="text-center">
@@ -15,14 +15,14 @@ export default function DsaEmptyState({ hasFilters, onClear }) {
         </h3>
         <p className="mt-1.5 text-sm text-neutral-500">
           {hasFilters
-            ? 'Try adjusting your search or filters to find what you\'re looking for.'
+            ? "Try adjusting your search or filters to find what you're looking for."
             : 'Start tracking your DSA practice by adding your first problem.'}
         </p>
         <div className="mt-6">
           {hasFilters ? (
             <Button variant="outline" onClick={onClear}>Clear Filters</Button>
           ) : (
-            <Button>Add First Problem</Button>
+            <Button onClick={onAdd}>Add First Problem</Button>
           )}
         </div>
       </div>

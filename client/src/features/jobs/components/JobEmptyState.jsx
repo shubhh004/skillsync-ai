@@ -1,7 +1,7 @@
 import Button from '../../../components/ui/Button';
 import Card from '../../../components/ui/Card';
 
-export default function JobEmptyState({ hasFilters, onClear }) {
+export default function JobEmptyState({ hasFilters, onClear, onAdd }) {
   return (
     <Card className="py-14">
       <div className="text-center">
@@ -22,7 +22,7 @@ export default function JobEmptyState({ hasFilters, onClear }) {
           {hasFilters ? (
             <Button variant="outline" onClick={onClear}>Clear Filters</Button>
           ) : (
-            <Button>Add First Application</Button>
+            <Button onClick={onAdd}>Add First Application</Button>
           )}
         </div>
       </div>
