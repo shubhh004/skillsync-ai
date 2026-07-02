@@ -1,15 +1,36 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../layouts/AuthLayout';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Label from '../components/ui/Label';
+import { login } from '../services/authService';
+import { useUser } from '../context/UserContext';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { refreshUser } = useUser();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await login(form.email, form.password);
+      await refreshUser();
+      navigate('/dashboard', { replace: true });
+    } catch (err) {
+      setError(err.response?.data?.error || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -17,7 +38,7 @@ export default function Login() {
       title="Welcome back"
       subtitle="Log in to continue your placement prep"
     >
-      <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div>
           <Label htmlFor="email" required>Email</Label>
           <Input
@@ -50,8 +71,12 @@ export default function Login() {
           </div>
         </div>
 
-        <Button type="submit" fullWidth>
-          Log In
+        {error && (
+          <p className="text-sm text-danger-700 bg-danger-100 px-3 py-2 rounded-md">{error}</p>
+        )}
+
+        <Button type="submit" fullWidth disabled={loading}>
+          {loading ? 'Logging in…' : 'Log In'}
         </Button>
       </form>
 

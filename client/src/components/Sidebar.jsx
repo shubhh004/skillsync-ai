@@ -1,4 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
+import UserAvatar from './ui/UserAvatar';
 
 const navItems = [
   {
@@ -59,6 +61,7 @@ const navItems = [
 
 export default function Sidebar({ open, onClose }) {
   const { pathname } = useLocation();
+  const { user } = useUser();
 
   return (
     <aside
@@ -91,7 +94,7 @@ export default function Sidebar({ open, onClose }) {
               to={path}
               onClick={onClose}
               className={[
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-100',
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150',
                 active
                   ? 'bg-brand-50 text-brand-700'
                   : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
@@ -106,17 +109,26 @@ export default function Sidebar({ open, onClose }) {
         })}
       </nav>
 
-      {/* User section */}
-      <div className="px-4 py-4 border-t border-neutral-200 flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-            P
+      {/* User card */}
+      <div className="px-3 py-3 border-t border-neutral-200 flex-shrink-0">
+        <Link
+          to="/profile"
+          onClick={onClose}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-100 transition-colors duration-150 group"
+        >
+          <UserAvatar src={user?.avatar} name={user?.name} size="md" />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-neutral-900 truncate group-hover:text-brand-700 transition-colors duration-150">
+              {user?.name || '—'}
+            </p>
+            <p className="text-xs text-neutral-500 truncate">
+              {user?.email || '—'}
+            </p>
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-neutral-900 truncate">Priya Sharma</p>
-            <p className="text-xs text-neutral-500 truncate">NIT Trichy</p>
-          </div>
-        </div>
+          <svg className="w-4 h-4 text-neutral-300 flex-shrink-0 group-hover:text-brand-400 transition-colors duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
       </div>
     </aside>
   );

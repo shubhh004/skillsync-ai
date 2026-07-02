@@ -1,20 +1,36 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../layouts/AuthLayout';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Label from '../components/ui/Label';
+import { register } from '../services/authService';
+import { useUser } from '../context/UserContext';
 
 export default function Signup() {
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    college: '',
-    password: '',
-  });
+  const navigate = useNavigate();
+  const { refreshUser } = useUser();
+  const [form, setForm] = useState({ name: '', email: '', college: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await register(form.name, form.email, form.password);
+      await refreshUser();
+      navigate('/dashboard', { replace: true });
+    } catch (err) {
+      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -22,7 +38,7 @@ export default function Signup() {
       title="Create your account"
       subtitle="Start your placement prep today — it's free"
     >
-      <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div>
           <Label htmlFor="name" required>Full name</Label>
           <Input
@@ -69,8 +85,12 @@ export default function Signup() {
           />
         </div>
 
-        <Button type="submit" fullWidth>
-          Create Account
+        {error && (
+          <p className="text-sm text-danger-700 bg-danger-100 px-3 py-2 rounded-md">{error}</p>
+        )}
+
+        <Button type="submit" fullWidth disabled={loading}>
+          {loading ? 'Creating account…' : 'Create Account'}
         </Button>
       </form>
 

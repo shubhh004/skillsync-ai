@@ -1,13 +1,26 @@
 import { Link } from 'react-router-dom';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
+import { useUser } from '../../context/UserContext';
+
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good Morning';
+  if (hour < 17) return 'Good Afternoon';
+  return 'Good Evening';
+}
 
 export default function WelcomeCard() {
+  const { user } = useUser();
+  const firstName = user?.name?.split(' ')[0] || 'there';
+
   return (
     <Card>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div>
-          <h2 className="text-xl font-bold text-neutral-900">Welcome back, Priya!</h2>
+          <h2 className="text-xl font-bold text-neutral-900">
+            👋 {getGreeting()}, {firstName}!
+          </h2>
           <p className="mt-1 text-sm text-neutral-500">
             You're making great progress. Keep the momentum going.
           </p>
