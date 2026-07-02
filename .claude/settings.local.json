@@ -8,7 +8,8 @@
       "PowerShell(Get-ChildItem -Recurse \"C:\\\\Users\\\\chaur\\\\OneDrive\\\\Desktop\\\\SkillSync-AI\\\\client\\\\src\\\\features\\\\dsa\" | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\chaur\\\\OneDrive\\\\Desktop\\\\SkillSync-AI\\\\client\\\\src\\\\\",\"\"\\) })",
       "PowerShell(Get-ChildItem -Recurse \"C:\\\\Users\\\\chaur\\\\OneDrive\\\\Desktop\\\\SkillSync-AI\\\\client\\\\src\" | Where-Object { $_.FullName -notmatch \"node_modules\" } | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\chaur\\\\OneDrive\\\\Desktop\\\\SkillSync-AI\\\\client\\\\src\\\\\",\"\"\\) } | Where-Object { $_ -match \"\\(features|layouts|components|routes\\)\" })",
       "Bash(Remove-Item \"C:\\\\Users\\\\chaur\\\\OneDrive\\\\Desktop\\\\SkillSync-AI\\\\client\\\\src\\\\features\\\\jobs\\\\.gitkeep\" -ErrorAction SilentlyContinue)",
-      "Bash(Write-Host \"done\")"
+      "Bash(Write-Host \"done\")",
+      "PowerShell(New-Item *)"
     ]
   }
 }
