@@ -5,6 +5,8 @@ import Signup from '../pages/Signup';
 import ForgotPassword from '../pages/ForgotPassword';
 import Dashboard from '../pages/Dashboard';
 import DsaPage from '../features/dsa/DsaPage';
+import ResumePage from '../features/resume/ResumePage';
+import JobsPage from '../features/jobs/JobsPage';
 import NotFound from '../pages/NotFound';
 
 export default function AppRoutes() {
@@ -16,6 +18,8 @@ export default function AppRoutes() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/dsa" element={<DsaPage />} />
+      <Route path="/resume" element={<ResumePage />} />
+      <Route path="/jobs" element={<JobsPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
