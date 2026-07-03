@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes thinkingPulse {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30%           { transform: translateY(-5px); opacity: 1; }
+}
+
+.animate-fade-slide-up  { animation: fadeSlideUp 0.22s ease-out both; }
+.animate-pop-in         { animation: popIn 0.18s ease-out both; }
+.animate-thinking       { animation: thinkingPulse 1.2s ease-in-out infinite; }
+
 @layer base {
   *, *::before, *::after {
     box-sizing: border-box;

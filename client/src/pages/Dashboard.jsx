@@ -7,6 +7,7 @@ import DsaStatsCard from '../components/dashboard/DsaStatsCard';
 import QuickActions from '../components/dashboard/QuickActions';
 import Card from '../components/ui/Card';
 import { getDashboard } from '../services/dashboardService';
+import { getLatestRoadmap } from '../features/career/roadmapService';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function timeAgo(dateStr) {
@@ -118,6 +119,82 @@ function PlacementReadiness({ data, score }) {
             <p className="text-xs text-neutral-400 mt-0.5">{label}</p>
           </Link>
         ))}
+      </div>
+    </Card>
+  );
+}
+
+// ─── Roadmap Progress Widget ──────────────────────────────────────────────────
+function RoadmapProgressWidget() {
+  const [roadmap,  setRoadmap]  = useState(null);
+  const [loading,  setLoading]  = useState(true);
+
+  useEffect(() => {
+    getLatestRoadmap()
+      .then(setRoadmap)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <div className="animate-pulse h-24 bg-neutral-100 rounded-xl" />;
+  }
+
+  if (!roadmap) {
+    return (
+      <Card>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-neutral-700">Placement Roadmap</h3>
+            <p className="text-xs text-neutral-400 mt-0.5">No roadmap generated yet</p>
+          </div>
+          <Link
+            to="/career"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-brand-600 bg-brand-50 hover:bg-brand-100 transition-colors"
+          >
+            Generate →
+          </Link>
+        </div>
+      </Card>
+    );
+  }
+
+  const pct = roadmap.checklistTotal > 0
+    ? Math.round((roadmap.checklistDone / roadmap.checklistTotal) * 100)
+    : 0;
+  const scoreColor = roadmap.readinessScore >= 70 ? 'text-success-700'
+    : roadmap.readinessScore >= 40 ? 'text-warning-700' : 'text-danger-700';
+
+  return (
+    <Card>
+      <div className="flex items-start justify-between gap-4 mb-3">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-neutral-700">Placement Roadmap</h3>
+          <p className="text-xs text-neutral-500 mt-0.5 truncate">
+            {roadmap.targetRole} at {roadmap.targetCompany}
+          </p>
+        </div>
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <span className={`text-lg font-bold ${scoreColor}`}>{roadmap.readinessScore}%</span>
+          <Link
+            to="/career"
+            className="text-xs text-brand-600 hover:underline font-medium"
+          >
+            View →
+          </Link>
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        <div className="flex justify-between text-xs text-neutral-500">
+          <span>Tasks completed</span>
+          <span>{roadmap.checklistDone}/{roadmap.checklistTotal} ({pct}%)</span>
+        </div>
+        <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-brand-500 transition-all duration-500"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
       </div>
     </Card>
   );
@@ -546,6 +623,7 @@ export default function Dashboard() {
           <>
             {/* Placement Readiness */}
             <PlacementReadiness data={data} score={readiness} />
+            <RoadmapProgressWidget />
 
             {/* 4 Summary Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">

@@ -12,6 +12,7 @@ import InterviewSession from '../features/interview/InterviewSession';
 import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
+import CareerCoachPage from '../features/career/CareerCoachPage';
 
 export default function AppRoutes() {
   return (
@@ -27,7 +28,8 @@ export default function AppRoutes() {
       <Route path="/interview"         element={<ProtectedRoute><InterviewPage /></ProtectedRoute>} />
       <Route path="/interview/session" element={<ProtectedRoute><InterviewSession /></ProtectedRoute>} />
       <Route path="/profile"    element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-<Route path="*" element={<NotFound />} />
+      <Route path="/career"     element={<ProtectedRoute><CareerCoachPage /></ProtectedRoute>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

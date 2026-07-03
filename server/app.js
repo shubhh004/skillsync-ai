@@ -10,6 +10,7 @@ import jobsRouter from './routes/jobs.js';
 import resumeRouter from './routes/resume.js';
 import interviewRouter from './routes/interview.js';
 import dashboardRouter from './routes/dashboard.js';
+import careerRouter    from './routes/career.js';
 import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/jobs', jobsRouter);
 app.use('/resume', resumeRouter);
 app.use('/interview', interviewRouter);
 app.use('/dashboard', dashboardRouter);
+app.use('/career',    careerRouter);
 
 app.use(errorHandler);
 
