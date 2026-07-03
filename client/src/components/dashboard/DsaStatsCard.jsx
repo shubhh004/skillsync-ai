@@ -7,19 +7,39 @@ const DIFF = [
   { label: 'Hard',   bar: 'bg-danger-500',  text: 'text-danger-700'  },
 ];
 
-export default function DsaStatsCard({ problems }) {
+export default function DsaStatsCard({ problems, dsaStats }) {
   const { diff, progress } = useMemo(() => {
-    const total     = problems.length;
-    const solved    = problems.filter((p) => p.status === 'Solved').length;
-    const attempted = problems.filter((p) => p.status === 'Attempted').length;
-    const todo      = total - solved - attempted;
-    const pct       = (n) => (total ? Math.round((n / total) * 100) : 0);
+    // Path A: pre-aggregated stats from dashboard API
+    if (dsaStats) {
+      const { total, solved, attempted, todo, easy, easySolved, medium, mediumSolved, hard, hardSolved } = dsaStats;
+      const pct = (n) => (total ? Math.round((n / total) * 100) : 0);
+      return {
+        diff: [
+          { label: 'Easy',   bar: 'bg-success-500', text: 'text-success-700', total: easy,   solved: easySolved,   pct: easy   ? Math.round((easySolved   / easy)   * 100) : 0 },
+          { label: 'Medium', bar: 'bg-warning-500', text: 'text-warning-700', total: medium, solved: mediumSolved, pct: medium ? Math.round((mediumSolved / medium) * 100) : 0 },
+          { label: 'Hard',   bar: 'bg-danger-500',  text: 'text-danger-700',  total: hard,   solved: hardSolved,   pct: hard   ? Math.round((hardSolved   / hard)   * 100) : 0 },
+        ],
+        progress: [
+          { label: 'Solved',    pct: pct(solved),    bar: 'bg-success-500', text: 'text-success-700' },
+          { label: 'Attempted', pct: pct(attempted), bar: 'bg-warning-500', text: 'text-warning-700' },
+          { label: 'Todo',      pct: pct(todo),      bar: 'bg-neutral-300', text: 'text-neutral-500' },
+        ],
+      };
+    }
+
+    // Path B: raw problems array
+    const list     = problems || [];
+    const total    = list.length;
+    const solved   = list.filter((p) => p.status === 'Solved').length;
+    const attempted = list.filter((p) => p.status === 'Attempted').length;
+    const todo     = total - solved - attempted;
+    const pct      = (n) => (total ? Math.round((n / total) * 100) : 0);
 
     return {
       diff: DIFF.map(({ label, bar, text }) => {
-        const group   = problems.filter((p) => p.difficulty === label);
-        const grpSolved = group.filter((p) => p.status === 'Solved').length;
-        const grpPct  = group.length ? Math.round((grpSolved / group.length) * 100) : 0;
+        const group      = list.filter((p) => p.difficulty === label);
+        const grpSolved  = group.filter((p) => p.status === 'Solved').length;
+        const grpPct     = group.length ? Math.round((grpSolved / group.length) * 100) : 0;
         return { label, bar, text, total: group.length, solved: grpSolved, pct: grpPct };
       }),
       progress: [
@@ -28,9 +48,10 @@ export default function DsaStatsCard({ problems }) {
         { label: 'Todo',      pct: pct(todo),      bar: 'bg-neutral-300', text: 'text-neutral-500' },
       ],
     };
-  }, [problems]);
+  }, [problems, dsaStats]);
 
-  if (!problems.length) return null;
+  const isEmpty = dsaStats ? dsaStats.total === 0 : !problems?.length;
+  if (isEmpty) return null;
 
   return (
     <Card>

@@ -26,19 +26,19 @@ function PreviewSection({ title, children, style }) {
 
 export default function ResumePreview({ data, template }) {
   const s = templateStyles[template] ?? templateStyles[1];
-  const { personal, education, skills, experience, projects, certifications } = data;
+  const { personal, education, skills, experience, projects, certifications, achievements } = data;
 
   return (
     <div className="bg-white p-8 min-h-full font-sans text-sm text-neutral-800 leading-relaxed">
       {/* Header */}
       <div className="mb-2">
-        <h1 className={s.name}>{personal.name || 'Your Name'}</h1>
+        <h1 className={s.name}>{personal.fullName || 'Your Name'}</h1>
         <p className={`text-xs mt-1 ${s.contact}`}>
           {[personal.email, personal.phone, personal.location].filter(Boolean).join(' · ')}
         </p>
-        {(personal.linkedin || personal.github) && (
+        {(personal.linkedin || personal.github || personal.portfolio) && (
           <p className={`text-xs mt-0.5 ${s.link}`}>
-            {[personal.linkedin, personal.github].filter(Boolean).join(' · ')}
+            {[personal.linkedin, personal.github, personal.portfolio].filter(Boolean).join(' · ')}
           </p>
         )}
       </div>
@@ -113,20 +113,9 @@ export default function ResumePreview({ data, template }) {
       )}
 
       {/* Skills */}
-      {Object.values(skills).some(Boolean) && (
+      {skills.length > 0 && (
         <PreviewSection title="Skills" style={s}>
-          <div className="space-y-1">
-            {[
-              { label: 'Languages',            value: skills.languages  },
-              { label: 'Frameworks',           value: skills.frameworks },
-              { label: 'Tools & Platforms',    value: skills.tools      },
-              { label: 'Concepts',             value: skills.concepts   },
-            ].filter(({ value }) => value).map(({ label, value }) => (
-              <p key={label} className="text-xs text-neutral-700">
-                <span className="font-semibold">{label}: </span>{value}
-              </p>
-            ))}
-          </div>
+          <p className="text-xs text-neutral-700">{skills.join(', ')}</p>
         </PreviewSection>
       )}
 
@@ -141,6 +130,22 @@ export default function ResumePreview({ data, template }) {
                   {c.issuer && <p className={`text-xs ${s.accent}`}>{c.issuer}</p>}
                 </div>
                 {c.year && <p className="text-xs text-neutral-500 flex-shrink-0">{c.year}</p>}
+              </div>
+            ))}
+          </div>
+        </PreviewSection>
+      )}
+
+      {/* Achievements */}
+      {achievements.length > 0 && (
+        <PreviewSection title="Achievements" style={s}>
+          <div className="space-y-1">
+            {achievements.map((a) => (
+              <div key={a.id}>
+                <p className="text-xs font-semibold text-neutral-900">{a.title}</p>
+                {a.description && (
+                  <p className="text-xs text-neutral-600 mt-0.5">{a.description}</p>
+                )}
               </div>
             ))}
           </div>

@@ -1,8 +1,15 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
+import { isAuthenticated } from '../services/authService';
 
 export default function NotFound() {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(isAuthenticated() ? '/dashboard' : '/login');
+  };
+
   return (
     <div className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">
       <Container>
@@ -13,9 +20,7 @@ export default function NotFound() {
             The page you're looking for doesn't exist or has been moved.
           </p>
           <div className="mt-8">
-            <Link to="/">
-              <Button>Back to Home</Button>
-            </Link>
+            <Button onClick={handleBack}>Back to Home</Button>
           </div>
         </div>
       </Container>

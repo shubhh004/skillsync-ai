@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Card from '../ui/Card';
 
 const icons = {
@@ -23,9 +24,9 @@ const icons = {
   ),
 };
 
-export default function StatCard({ label, value, delta, positive = true, icon = 'code' }) {
-  return (
-    <Card>
+export default function StatCard({ label, value, delta, positive = true, icon = 'code', to }) {
+  const inner = (
+    <Card className={to ? 'cursor-pointer hover:-translate-y-0.5 transition-transform duration-200' : ''}>
       <div className="flex items-start justify-between">
         <div className="p-2 rounded-lg bg-brand-50 text-brand-600">
           {icons[icon]}
@@ -33,9 +34,7 @@ export default function StatCard({ label, value, delta, positive = true, icon = 
         <span
           className={[
             'inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full',
-            positive
-              ? 'bg-success-100 text-success-700'
-              : 'bg-danger-100 text-danger-700',
+            positive ? 'bg-success-100 text-success-700' : 'bg-danger-100 text-danger-700',
           ].join(' ')}
         >
           {positive ? '↑' : '↓'} {delta}
@@ -47,4 +46,7 @@ export default function StatCard({ label, value, delta, positive = true, icon = 
       </div>
     </Card>
   );
+
+  if (to) return <Link to={to} className="block">{inner}</Link>;
+  return inner;
 }

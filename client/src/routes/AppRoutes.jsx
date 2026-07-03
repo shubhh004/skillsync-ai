@@ -7,6 +7,8 @@ import Dashboard from '../pages/Dashboard';
 import DsaPage from '../features/dsa/DsaPage';
 import ResumePage from '../features/resume/ResumePage';
 import JobsPage from '../features/jobs/JobsPage';
+import InterviewPage from '../features/interview/InterviewPage';
+import InterviewSession from '../features/interview/InterviewSession';
 import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -21,9 +23,11 @@ export default function AppRoutes() {
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/dsa"       element={<ProtectedRoute><DsaPage /></ProtectedRoute>} />
       <Route path="/resume"    element={<ProtectedRoute><ResumePage /></ProtectedRoute>} />
-      <Route path="/jobs"      element={<ProtectedRoute><JobsPage /></ProtectedRoute>} />
-      <Route path="/profile"   element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-      <Route path="*" element={<NotFound />} />
+      <Route path="/jobs"       element={<ProtectedRoute><JobsPage /></ProtectedRoute>} />
+      <Route path="/interview"         element={<ProtectedRoute><InterviewPage /></ProtectedRoute>} />
+      <Route path="/interview/session" element={<ProtectedRoute><InterviewSession /></ProtectedRoute>} />
+      <Route path="/profile"    element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+<Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

@@ -1,30 +1,56 @@
+import { useState } from 'react';
 import Input from '../../../../components/ui/Input';
-import Label from '../../../../components/ui/Label';
-
-const fields = [
-  { key: 'languages',  label: 'Languages',           placeholder: 'Java, Python, JavaScript, C++' },
-  { key: 'frameworks', label: 'Frameworks & Libraries', placeholder: 'React, Node.js, Express.js' },
-  { key: 'tools',      label: 'Tools & Platforms',    placeholder: 'Git, Docker, MongoDB, PostgreSQL' },
-  { key: 'concepts',   label: 'Concepts',             placeholder: 'Data Structures, Algorithms, OOP' },
-];
+import Button from '../../../../components/ui/Button';
 
 export default function SkillsSection({ data, onChange }) {
-  const handle = (key) => (e) => onChange({ ...data, [key]: e.target.value });
+  const [input, setInput] = useState('');
+
+  const addSkill = () => {
+    const trimmed = input.trim();
+    if (!trimmed || data.includes(trimmed)) return;
+    onChange([...data, trimmed]);
+    setInput('');
+  };
+
+  const removeSkill = (skill) => onChange(data.filter((s) => s !== skill));
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); addSkill(); }
+  };
 
   return (
     <div className="space-y-4">
-      <p className="text-xs text-neutral-500">Enter skills as comma-separated values.</p>
-      {fields.map(({ key, label, placeholder }) => (
-        <div key={key}>
-          <Label htmlFor={`skill-${key}`}>{label}</Label>
-          <Input
-            id={`skill-${key}`}
-            placeholder={placeholder}
-            value={data[key]}
-            onChange={handle(key)}
-          />
+      <div className="flex gap-2">
+        <Input
+          placeholder="Type a skill and press Enter or Add"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+        <Button variant="outline" size="sm" onClick={addSkill} className="flex-shrink-0">
+          Add
+        </Button>
+      </div>
+      {data.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {data.map((skill) => (
+            <span
+              key={skill}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-700 border border-brand-200"
+            >
+              {skill}
+              <button
+                type="button"
+                onClick={() => removeSkill(skill)}
+                className="text-brand-400 hover:text-brand-700 transition-colors leading-none"
+                aria-label={`Remove ${skill}`}
+              >
+                ×
+              </button>
+            </span>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }

@@ -1,8 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import Button from '../../components/ui/Button';
-import Card from '../../components/ui/Card';
-import SectionNav from './components/SectionNav';
 import TemplateSelector from './components/TemplateSelector';
 import AtsScoreCard from './components/AtsScoreCard';
 import ResumePreview from './components/ResumePreview';
@@ -12,28 +10,110 @@ import SkillsSection from './components/sections/SkillsSection';
 import ExperienceSection from './components/sections/ExperienceSection';
 import ProjectsSection from './components/sections/ProjectsSection';
 import CertificationsSection from './components/sections/CertificationsSection';
-import mockResumeData from './mockResumeData';
+import AchievementsSection from './components/sections/AchievementsSection';
+import { getResume, updateResume } from '../../services/resumeService';
 
-const sectionComponents = {
-  personal:       PersonalInfoSection,
-  education:      EducationSection,
-  skills:         SkillsSection,
-  experience:     ExperienceSection,
-  projects:       ProjectsSection,
-  certifications: CertificationsSection,
+const EMPTY_RESUME = {
+  personal: {
+    fullName: '', email: '', phone: '', college: '', degree: '',
+    graduationYear: '', location: '', linkedin: '', github: '', portfolio: '', summary: '',
+  },
+  skills: [],
+  education: [],
+  experience: [],
+  projects: [],
+  certifications: [],
+  achievements: [],
 };
 
-export default function ResumePage() {
-  const [resumeData,    setResumeData]    = useState(mockResumeData);
-  const [activeSection, setActiveSection] = useState('personal');
-  const [activeTemplate, setActiveTemplate] = useState(1);
-  const [activeView,    setActiveView]    = useState('editor');
+function addIds(arr) {
+  return (arr || []).map((item, i) => (item.id ? item : { ...item, id: Date.now() + i }));
+}
 
-  const handleSectionChange = (sectionData) => {
-    setResumeData((prev) => ({ ...prev, [activeSection]: sectionData }));
+function normalizeResume(raw) {
+  return {
+    personal: { ...EMPTY_RESUME.personal, ...(raw.personal || {}) },
+    skills: raw.skills || [],
+    education: addIds(raw.education),
+    experience: addIds(raw.experience),
+    projects: addIds(raw.projects),
+    certifications: addIds(raw.certifications),
+    achievements: addIds(raw.achievements),
+  };
+}
+
+function Toast({ message, type }) {
+  return (
+    <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white ${type === 'error' ? 'bg-danger-600' : 'bg-success-600'}`}>
+      {message}
+    </div>
+  );
+}
+
+function ChevronIcon({ open }) {
+  return (
+    <svg
+      className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  );
+}
+
+const SECTIONS = [
+  { key: 'personal',       label: 'Personal Information', Component: PersonalInfoSection },
+  { key: 'skills',         label: 'Skills',               Component: SkillsSection },
+  { key: 'education',      label: 'Education',            Component: EducationSection },
+  { key: 'experience',     label: 'Experience',           Component: ExperienceSection },
+  { key: 'projects',       label: 'Projects',             Component: ProjectsSection },
+  { key: 'certifications', label: 'Certifications',       Component: CertificationsSection },
+  { key: 'achievements',   label: 'Achievements',         Component: AchievementsSection },
+];
+
+export default function ResumePage() {
+  const [resumeData,     setResumeData]     = useState(EMPTY_RESUME);
+  const [loading,        setLoading]        = useState(true);
+  const [saving,         setSaving]         = useState(false);
+  const [openSections,   setOpenSections]   = useState(['personal']);
+  const [activeTemplate, setActiveTemplate] = useState(1);
+  const [activeView,     setActiveView]     = useState('editor');
+  const [toast,          setToast]          = useState(null);
+
+  const showToast = useCallback((message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  }, []);
+
+  useEffect(() => {
+    getResume()
+      .then((raw) => setResumeData(normalizeResume(raw)))
+      .catch(() => showToast('Failed to load resume.', 'error'))
+      .finally(() => setLoading(false));
+  }, [showToast]);
+
+  const toggleSection = (key) => {
+    setOpenSections((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
   };
 
-  const ActiveSection = sectionComponents[activeSection];
+  const handleSectionChange = (key) => (sectionData) => {
+    setResumeData((prev) => ({ ...prev, [key]: sectionData }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const saved = await updateResume(resumeData);
+      setResumeData(normalizeResume(saved));
+      showToast('Resume saved successfully.');
+    } catch {
+      showToast('Failed to save resume.', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <DashboardLayout title="Resume Builder">
@@ -43,13 +123,18 @@ export default function ResumePage() {
           <div>
             <h2 className="text-xl font-bold text-neutral-900">Resume Builder</h2>
             <p className="mt-0.5 text-sm text-neutral-500">
-              Edit your resume and see a live preview. Download when ready.
+              Fill in your details and save your resume.
             </p>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Button variant="outline" size="sm">Save Resume</Button>
-            <Button size="sm">Download PDF</Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSave}
+            disabled={saving || loading}
+            className="flex-shrink-0"
+          >
+            {saving ? 'Saving...' : 'Save Resume'}
+          </Button>
         </div>
 
         {/* Mobile view toggle */}
@@ -61,7 +146,9 @@ export default function ResumePage() {
               onClick={() => setActiveView(v)}
               className={[
                 'flex-1 py-2 text-sm font-medium capitalize transition-colors',
-                activeView === v ? 'bg-brand-600 text-white' : 'bg-white text-neutral-600 hover:bg-neutral-50',
+                activeView === v
+                  ? 'bg-brand-600 text-white'
+                  : 'bg-white text-neutral-600 hover:bg-neutral-50',
               ].join(' ')}
             >
               {v}
@@ -72,14 +159,39 @@ export default function ResumePage() {
         {/* Main two-column layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* LEFT — Editor */}
-          <div className={`w-full lg:w-2/5 space-y-4 ${activeView === 'preview' ? 'hidden lg:block' : ''}`}>
-            <SectionNav activeSection={activeSection} onSelect={setActiveSection} />
-            <Card>
-              <ActiveSection
-                data={resumeData[activeSection]}
-                onChange={handleSectionChange}
-              />
-            </Card>
+          <div className={`w-full lg:w-2/5 space-y-3 ${activeView === 'preview' ? 'hidden lg:block' : ''}`}>
+            {loading ? (
+              <div className="flex justify-center py-16">
+                <div className="w-8 h-8 rounded-full border-2 border-neutral-200 border-t-brand-600 animate-spin" />
+              </div>
+            ) : (
+              SECTIONS.map(({ key, label, Component }) => {
+                const isOpen = openSections.includes(key);
+                return (
+                  <div
+                    key={key}
+                    className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => toggleSection(key)}
+                      className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-neutral-50 transition-colors"
+                    >
+                      <span className="text-sm font-semibold text-neutral-800">{label}</span>
+                      <ChevronIcon open={isOpen} />
+                    </button>
+                    {isOpen && (
+                      <div className="px-5 pb-5 border-t border-neutral-100 pt-4">
+                        <Component
+                          data={resumeData[key]}
+                          onChange={handleSectionChange(key)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
 
           {/* RIGHT — Preview */}
@@ -88,13 +200,17 @@ export default function ResumePage() {
               <TemplateSelector activeTemplate={activeTemplate} onSelect={setActiveTemplate} />
               <AtsScoreCard />
             </div>
-
-            <div className="rounded-xl border border-neutral-200 overflow-hidden shadow-sm" style={{ maxHeight: 'calc(100vh - 22rem)', overflowY: 'auto' }}>
+            <div
+              className="rounded-xl border border-neutral-200 overflow-hidden shadow-sm"
+              style={{ maxHeight: 'calc(100vh - 22rem)', overflowY: 'auto' }}
+            >
               <ResumePreview data={resumeData} template={activeTemplate} />
             </div>
           </div>
         </div>
       </div>
+
+      {toast && <Toast message={toast.message} type={toast.type} />}
     </DashboardLayout>
   );
 }

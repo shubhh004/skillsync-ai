@@ -9,12 +9,12 @@ export default function PersonalInfoSection({ data, onChange }) {
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="pi-name" required>Full Name</Label>
-        <Input id="pi-name" placeholder="Priya Sharma" value={data.name} onChange={handle('name')} />
+        <Label htmlFor="pi-name">Full Name</Label>
+        <Input id="pi-name" placeholder="Priya Sharma" value={data.fullName} onChange={handle('fullName')} />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="pi-email" required>Email</Label>
+          <Label htmlFor="pi-email">Email</Label>
           <Input id="pi-email" type="email" placeholder="you@college.edu" value={data.email} onChange={handle('email')} />
         </div>
         <div>
@@ -24,17 +24,37 @@ export default function PersonalInfoSection({ data, onChange }) {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
+          <Label htmlFor="pi-college">College</Label>
+          <Input id="pi-college" placeholder="NIT Trichy" value={data.college} onChange={handle('college')} />
+        </div>
+        <div>
+          <Label htmlFor="pi-degree">Degree</Label>
+          <Input id="pi-degree" placeholder="B.Tech Computer Science" value={data.degree} onChange={handle('degree')} />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="pi-grad">Graduation Year</Label>
+          <Input id="pi-grad" placeholder="2025" value={data.graduationYear} onChange={handle('graduationYear')} />
+        </div>
+        <div>
           <Label htmlFor="pi-location">Location</Label>
           <Input id="pi-location" placeholder="City, State" value={data.location} onChange={handle('location')} />
         </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="pi-linkedin">LinkedIn</Label>
           <Input id="pi-linkedin" placeholder="linkedin.com/in/yourname" value={data.linkedin} onChange={handle('linkedin')} />
         </div>
+        <div>
+          <Label htmlFor="pi-github">GitHub</Label>
+          <Input id="pi-github" placeholder="github.com/yourname" value={data.github} onChange={handle('github')} />
+        </div>
       </div>
       <div>
-        <Label htmlFor="pi-github">GitHub</Label>
-        <Input id="pi-github" placeholder="github.com/yourname" value={data.github} onChange={handle('github')} />
+        <Label htmlFor="pi-portfolio">Portfolio</Label>
+        <Input id="pi-portfolio" placeholder="yourportfolio.com" value={data.portfolio} onChange={handle('portfolio')} />
       </div>
       <div>
         <Label htmlFor="pi-summary">Professional Summary</Label>
