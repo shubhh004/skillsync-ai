@@ -5,7 +5,6 @@ import WelcomeCard from '../components/dashboard/WelcomeCard';
 import StatCard from '../components/dashboard/StatCard';
 import DsaStatsCard from '../components/dashboard/DsaStatsCard';
 import QuickActions from '../components/dashboard/QuickActions';
-import Card from '../components/ui/Card';
 import { getDashboard } from '../services/dashboardService';
 import { getLatestRoadmap } from '../features/career/roadmapService';
 
@@ -35,31 +34,26 @@ function computeReadiness(data) {
 }
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
-function Skeleton({ className = '' }) {
-  return <div className={`animate-pulse bg-neutral-100 rounded-xl ${className}`} />;
-}
-
 function DashboardSkeleton() {
   return (
-    <div className="space-y-6">
-      <Skeleton className="h-8 w-64" />
-      <Skeleton className="h-24" />
-      <Skeleton className="h-20" />
+    <div className="space-y-5 animate-fade-in">
+      <div className="skeleton-shimmer h-8 w-52" />
+      <div className="skeleton-shimmer h-28 rounded-2xl" />
+      <div className="skeleton-shimmer h-24 rounded-2xl" />
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-        {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-32" />)}
+        {[1, 2, 3, 4].map((i) => <div key={i} className="skeleton-shimmer h-32 rounded-2xl" />)}
       </div>
-      <Skeleton className="h-28" />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Skeleton className="h-44" />
-        <Skeleton className="h-44" />
+      <div className="skeleton-shimmer h-32 rounded-2xl" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="skeleton-shimmer h-52 rounded-2xl" />
+        <div className="skeleton-shimmer h-52 rounded-2xl" />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Skeleton className="h-48" />
-        <Skeleton className="h-48" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="skeleton-shimmer h-44 rounded-2xl" />
+        <div className="skeleton-shimmer h-44 rounded-2xl" />
       </div>
-      <Skeleton className="h-20" />
-      <Skeleton className="h-64" />
-      <Skeleton className="h-48" />
+      <div className="skeleton-shimmer h-20 rounded-2xl" />
+      <div className="skeleton-shimmer h-64 rounded-2xl" />
     </div>
   );
 }
@@ -71,21 +65,19 @@ function DashboardHeader({ readiness }) {
   });
 
   const chip =
-    readiness === null    ? null
-    : readiness >= 70     ? { label: '🟢 On Track',   cls: 'bg-success-100 text-success-700' }
-    : readiness >= 40     ? { label: '🟡 Improving',  cls: 'bg-warning-100 text-warning-700' }
-    :                       { label: '🔴 Needs Focus', cls: 'bg-danger-100  text-danger-700'  };
+    readiness === null ? null
+    : readiness >= 70  ? { label: 'On Track',   cls: 'badge-success badge-dot' }
+    : readiness >= 40  ? { label: 'Improving',  cls: 'badge-warning badge-dot' }
+    :                    { label: 'Needs Focus', cls: 'badge-danger  badge-dot' };
 
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
-        <h2 className="text-xl font-bold text-neutral-900">Dashboard</h2>
+        <h2 className="text-2xl font-bold text-neutral-900 tracking-tight">Dashboard</h2>
         <p className="text-xs text-neutral-400 mt-0.5">{today}</p>
       </div>
       {chip && (
-        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold flex-shrink-0 ${chip.cls}`}>
-          {chip.label}
-        </span>
+        <span className={`${chip.cls} flex-shrink-0`}>{chip.label}</span>
       )}
     </div>
   );
@@ -93,41 +85,55 @@ function DashboardHeader({ readiness }) {
 
 // ─── Placement Readiness ──────────────────────────────────────────────────────
 function PlacementReadiness({ data, score }) {
-  const barColor  = score >= 70 ? 'bg-success-500' : score >= 40 ? 'bg-warning-500' : 'bg-danger-500';
-  const textColor = score >= 70 ? 'text-success-700' : score >= 40 ? 'text-warning-700' : 'text-danger-700';
+  const barClass  = score >= 70 ? 'bg-success-500' : score >= 40 ? 'bg-warning-500' : 'bg-danger-500';
+  const textClass = score >= 70 ? 'text-success-700' : score >= 40 ? 'text-warning-700' : 'text-danger-700';
 
   const pillars = [
-    { label: 'DSA',        pct: Math.round(Math.min(data.dsa.solved / 50, 1) * 100),             link: '/dsa'       },
-    { label: 'Resume',     pct: data.resumeCompletion,                                             link: '/resume'    },
-    { label: 'Jobs',       pct: Math.round(Math.min(data.jobs.total / 10, 1) * 100),              link: '/jobs'      },
-    { label: 'Interviews', pct: data.interviews.total > 0 ? data.interviews.avgScore : 0,         link: '/interview' },
+    { label: 'DSA',        pct: Math.round(Math.min(data.dsa.solved / 50, 1) * 100),            link: '/dsa'       },
+    { label: 'Resume',     pct: data.resumeCompletion,                                            link: '/resume'    },
+    { label: 'Jobs',       pct: Math.round(Math.min(data.jobs.total / 10, 1) * 100),             link: '/jobs'      },
+    { label: 'Interviews', pct: data.interviews.total > 0 ? data.interviews.avgScore : 0,        link: '/interview' },
   ];
 
   return (
-    <Card>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-neutral-700">Placement Readiness</h3>
-        <span className={`text-2xl font-bold ${textColor}`}>{score}%</span>
+    <div className="card-brand p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-sm font-semibold text-neutral-800">Placement Readiness</h3>
+          <p className="text-xs text-neutral-500 mt-0.5">DSA · Resume · Jobs · Interviews</p>
+        </div>
+        <span className={`text-3xl font-bold ${textClass} tracking-tight tabular-nums`}>{score}%</span>
       </div>
-      <div className="h-2 rounded-full bg-neutral-100 overflow-hidden mb-4">
-        <div className={`h-full rounded-full ${barColor} transition-all duration-500`} style={{ width: `${score}%` }} />
+
+      {/* Main bar */}
+      <div className="h-2.5 rounded-full bg-neutral-200 overflow-hidden mb-5">
+        <div
+          className={`h-full rounded-full ${barClass} transition-all duration-700 ease-smooth`}
+          style={{ width: `${score}%` }}
+        />
       </div>
-      <div className="grid grid-cols-4 gap-3">
+
+      {/* Pillar breakdown */}
+      <div className="grid grid-cols-4 gap-2">
         {pillars.map(({ label, pct, link }) => (
-          <Link key={label} to={link} className="group text-center">
-            <p className="text-sm font-semibold text-neutral-800 group-hover:text-brand-400 transition-colors">{pct}%</p>
-            <p className="text-xs text-neutral-400 mt-0.5">{label}</p>
+          <Link
+            key={label}
+            to={link}
+            className="group text-center p-2.5 rounded-xl hover:bg-white/10 transition-all duration-200"
+          >
+            <p className="text-sm font-bold text-neutral-800 group-hover:text-brand-400 transition-colors tabular-nums">{pct}%</p>
+            <p className="text-[11px] text-neutral-500 mt-0.5">{label}</p>
           </Link>
         ))}
       </div>
-    </Card>
+    </div>
   );
 }
 
 // ─── Roadmap Progress Widget ──────────────────────────────────────────────────
 function RoadmapProgressWidget() {
-  const [roadmap,  setRoadmap]  = useState(null);
-  const [loading,  setLoading]  = useState(true);
+  const [roadmap, setRoadmap] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getLatestRoadmap()
@@ -137,25 +143,23 @@ function RoadmapProgressWidget() {
   }, []);
 
   if (loading) {
-    return <div className="animate-pulse h-24 bg-neutral-100 rounded-xl" />;
+    return <div className="skeleton-shimmer h-24 rounded-2xl" />;
   }
 
   if (!roadmap) {
     return (
-      <Card>
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-semibold text-neutral-700">Placement Roadmap</h3>
-            <p className="text-xs text-neutral-400 mt-0.5">No roadmap generated yet</p>
-          </div>
-          <Link
-            to="/career"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-brand-400 bg-brand-50 hover:bg-brand-100 transition-colors"
-          >
-            Generate →
-          </Link>
+      <div className="card p-5 flex items-center justify-between gap-4">
+        <div>
+          <h3 className="text-sm font-semibold text-neutral-800">Placement Roadmap</h3>
+          <p className="text-xs text-neutral-500 mt-0.5">No roadmap generated yet</p>
         </div>
-      </Card>
+        <Link
+          to="/career"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full gradient-brand-subtle border border-brand-200/20 text-brand-400 hover:shadow-glow-sm transition-all duration-200 flex-shrink-0"
+        >
+          Generate →
+        </Link>
+      </div>
     );
   }
 
@@ -166,20 +170,17 @@ function RoadmapProgressWidget() {
     : roadmap.readinessScore >= 40 ? 'text-warning-700' : 'text-danger-700';
 
   return (
-    <Card>
+    <div className="card p-5">
       <div className="flex items-start justify-between gap-4 mb-3">
         <div className="min-w-0">
-          <h3 className="text-sm font-semibold text-neutral-700">Placement Roadmap</h3>
+          <h3 className="text-sm font-semibold text-neutral-800">Placement Roadmap</h3>
           <p className="text-xs text-neutral-500 mt-0.5 truncate">
             {roadmap.targetRole} at {roadmap.targetCompany}
           </p>
         </div>
         <div className="flex items-center gap-3 flex-shrink-0">
-          <span className={`text-lg font-bold ${scoreColor}`}>{roadmap.readinessScore}%</span>
-          <Link
-            to="/career"
-            className="text-xs text-brand-400 hover:underline font-medium"
-          >
+          <span className={`text-xl font-bold tabular-nums ${scoreColor}`}>{roadmap.readinessScore}%</span>
+          <Link to="/career" className="text-xs font-semibold text-brand-400 hover:text-brand-500 transition-colors">
             View →
           </Link>
         </div>
@@ -187,16 +188,16 @@ function RoadmapProgressWidget() {
       <div className="space-y-1.5">
         <div className="flex justify-between text-xs text-neutral-500">
           <span>Tasks completed</span>
-          <span>{roadmap.checklistDone}/{roadmap.checklistTotal} ({pct}%)</span>
+          <span className="tabular-nums font-medium">{roadmap.checklistDone}/{roadmap.checklistTotal} ({pct}%)</span>
         </div>
-        <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
+        <div className="h-1.5 rounded-full bg-neutral-200 overflow-hidden">
           <div
-            className="h-full rounded-full bg-brand-500 transition-all duration-500"
+            className="h-full rounded-full bg-brand-500 transition-all duration-500 ease-smooth"
             style={{ width: `${pct}%` }}
           />
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -212,15 +213,15 @@ function GoalRow({ label, current, target, barKey, suffix = '' }) {
   const done = current >= target;
   return (
     <div>
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-xs font-medium text-neutral-600">{label}</span>
-        <span className={`text-xs font-semibold ${done ? 'text-success-700' : 'text-neutral-500'}`}>
-          {current}/{target}{suffix}
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-xs font-medium text-neutral-500">{label}</span>
+        <span className={`text-xs font-semibold tabular-nums ${done ? 'text-success-700' : 'text-neutral-500'}`}>
+          {current}/{target}{suffix}{done ? ' ✓' : ''}
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-neutral-100 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-neutral-200 overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all duration-500 ${done ? 'bg-success-500' : GOAL_BAR[barKey]}`}
+          className={`h-full rounded-full transition-all duration-500 ease-smooth ${done ? 'bg-success-500' : GOAL_BAR[barKey]}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -231,76 +232,79 @@ function GoalRow({ label, current, target, barKey, suffix = '' }) {
 function WeeklyGoalsCard({ weekly }) {
   const resumeDone = weekly.resumeUpdated;
   return (
-    <Card padding={false}>
-      <div className="px-5 py-4 border-b border-neutral-200">
-        <h3 className="text-sm font-semibold text-neutral-900">Weekly Goals</h3>
-        <p className="text-xs text-neutral-400 mt-0.5">Resets every 7 days</p>
+    <div className="card overflow-hidden">
+      <div className="card-header">
+        <div>
+          <h3 className="text-sm font-semibold text-neutral-800">Weekly Goals</h3>
+          <p className="text-xs text-neutral-400 mt-0.5">Resets every 7 days</p>
+        </div>
       </div>
-      <div className="px-5 py-4 space-y-4">
+      <div className="card-body space-y-4">
         <GoalRow label="DSA Problems"     current={weekly.dsaProblems}    target={5} barKey="dsa"       suffix=" this week" />
         <GoalRow label="Job Applications" current={weekly.jobsApplied}    target={5} barKey="jobs"      suffix=" this week" />
         <GoalRow label="Mock Interviews"  current={weekly.interviewsDone} target={2} barKey="interview" suffix=" this week" />
         <div>
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-neutral-600">Resume Update</span>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs font-medium text-neutral-500">Resume Update</span>
             <span className={`text-xs font-semibold ${resumeDone ? 'text-success-700' : 'text-neutral-400'}`}>
               {resumeDone ? 'Done ✓' : 'Pending'}
             </span>
           </div>
-          <div className="h-1.5 rounded-full bg-neutral-100 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-neutral-200 overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${resumeDone ? 'bg-success-500' : 'bg-neutral-200'}`}
+              className={`h-full rounded-full transition-all duration-500 ease-smooth ${resumeDone ? 'bg-success-500' : 'bg-neutral-300'}`}
               style={{ width: resumeDone ? '100%' : '0%' }}
             />
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
 // ─── Upcoming ─────────────────────────────────────────────────────────────────
-const DIFF_BADGE = {
-  Easy:   'bg-success-100 text-success-700',
-  Medium: 'bg-warning-100 text-warning-700',
-  Hard:   'bg-danger-100  text-danger-700',
+const DIFF_BADGE_CLASS = {
+  Easy:   'badge-success',
+  Medium: 'badge-warning',
+  Hard:   'badge-danger',
 };
 
 function UpcomingCard({ upcoming }) {
   return (
-    <Card padding={false}>
-      <div className="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-neutral-900">Upcoming</h3>
-        <Link to="/interview" className="text-xs text-brand-400 hover:underline">View all</Link>
+    <div className="card overflow-hidden">
+      <div className="card-header">
+        <h3 className="text-sm font-semibold text-neutral-800">Upcoming Interviews</h3>
+        <Link to="/interview" className="text-xs font-semibold text-brand-400 hover:text-brand-500 transition-colors">
+          View all →
+        </Link>
       </div>
+
       {upcoming.length === 0 ? (
-        <div className="px-5 py-8 text-center space-y-2">
-          <p className="text-sm text-neutral-400">No upcoming interviews.</p>
-          <Link
-            to="/interview"
-            className="inline-flex items-center gap-1 text-sm text-brand-400 hover:underline font-medium"
-          >
+        <div className="px-5 py-10 text-center space-y-2">
+          <p className="text-sm text-neutral-500">No upcoming interviews.</p>
+          <Link to="/interview" className="text-sm text-brand-400 hover:underline font-medium">
             Schedule one →
           </Link>
         </div>
       ) : (
-        <ul className="divide-y divide-neutral-200">
-          {upcoming.map((iv) => (
-            <li key={iv._id} className="flex items-start gap-3 px-5 py-3.5">
-              <div className="mt-0.5 w-7 h-7 rounded-full bg-brand-50 flex items-center justify-center flex-shrink-0">
+        <ul>
+          {upcoming.map((iv, i) => (
+            <li
+              key={iv._id}
+              className={`flex items-start gap-3 px-5 py-4 hover:bg-white/5 transition-colors duration-150 ${i < upcoming.length - 1 ? 'border-b border-neutral-200' : ''}`}
+            >
+              <div className="mt-0.5 w-8 h-8 rounded-xl gradient-brand-subtle border border-brand-200/20 flex items-center justify-center flex-shrink-0">
                 <svg className="w-3.5 h-3.5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-neutral-900 truncate">{iv.role || 'Mock Interview'}</p>
-                {iv.company && <p className="text-xs text-neutral-400 truncate">{iv.company}</p>}
+                <p className="text-sm font-semibold text-neutral-800 truncate">{iv.role || 'Mock Interview'}</p>
+                {iv.company && <p className="text-xs text-neutral-500 truncate">{iv.company}</p>}
               </div>
-              <div className="flex flex-col items-end gap-1 flex-shrink-0">
+              <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                 {iv.difficulty && (
-                  <span className={`inline-flex px-1.5 py-0.5 rounded text-xs font-medium ${DIFF_BADGE[iv.difficulty] || 'bg-neutral-100 text-neutral-600'}`}>
-                    {iv.difficulty}
-                  </span>
+                  <span className={DIFF_BADGE_CLASS[iv.difficulty] ?? 'badge-neutral'}>{iv.difficulty}</span>
                 )}
                 <span className="text-xs text-neutral-400">{formatDate(iv.createdAt)}</span>
               </div>
@@ -308,20 +312,20 @@ function UpcomingCard({ upcoming }) {
           ))}
         </ul>
       )}
-    </Card>
+    </div>
   );
 }
 
 // ─── Job Summary ──────────────────────────────────────────────────────────────
 const JOB_STATUS_ORDER = ['Applied', 'OA', 'Interview', 'HR', 'Offer', 'Accepted', 'Rejected'];
-const JOB_STATUS_COLOR = {
-  Applied:   'bg-brand-50    text-brand-400',
-  OA:        'bg-neutral-100 text-neutral-600',
-  Interview: 'bg-warning-100 text-warning-700',
-  HR:        'bg-warning-100 text-warning-700',
-  Offer:     'bg-success-100 text-success-700',
-  Accepted:  'bg-success-100 text-success-700',
-  Rejected:  'bg-danger-100  text-danger-700',
+const JOB_STATUS_BADGE = {
+  Applied:   'badge-brand',
+  OA:        'badge-neutral',
+  Interview: 'badge-warning',
+  HR:        'badge-warning',
+  Offer:     'badge-success',
+  Accepted:  'badge-success',
+  Rejected:  'badge-danger',
 };
 
 function JobSummaryCard({ jobs }) {
@@ -330,111 +334,113 @@ function JobSummaryCard({ jobs }) {
   const entries  = JOB_STATUS_ORDER.filter((s) => byStatus[s] > 0).map((s) => ({ status: s, count: byStatus[s] }));
 
   return (
-    <Card
-      padding={false}
-      className="cursor-pointer hover:-translate-y-0.5 transition-transform duration-200"
+    <div
+      className="card overflow-hidden cursor-pointer hover:-translate-y-0.5 transition-all duration-200"
+      role="button"
+      tabIndex={0}
       onClick={() => navigate('/jobs')}
+      onKeyDown={(e) => e.key === 'Enter' && navigate('/jobs')}
     >
-      <div className="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-neutral-900">Job Applications</h3>
+      <div className="card-header">
+        <h3 className="text-sm font-semibold text-neutral-800">Job Applications</h3>
         <Link
           to="/jobs"
-          className="text-xs text-brand-400 hover:underline"
+          className="text-xs font-semibold text-brand-400 hover:text-brand-500 transition-colors"
           onClick={(e) => e.stopPropagation()}
         >
-          View all
+          View all →
         </Link>
       </div>
+
       {jobs.total === 0 ? (
-        <div className="px-5 py-8 text-center space-y-2">
-          <p className="text-sm text-neutral-400">No jobs tracked yet.</p>
+        <div className="px-5 py-10 text-center space-y-2">
+          <p className="text-sm text-neutral-500">No jobs tracked yet.</p>
           <Link
             to="/jobs"
-            className="inline-flex items-center gap-1 text-sm text-brand-400 hover:underline font-medium"
+            className="text-sm text-brand-400 hover:underline font-medium"
             onClick={(e) => e.stopPropagation()}
           >
             Track your first application →
           </Link>
         </div>
       ) : (
-        <div className="px-5 py-4 space-y-3">
+        <div className="card-body space-y-3">
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-neutral-900">{jobs.total}</span>
+            <span className="text-3xl font-bold text-neutral-900 tracking-tight tabular-nums">{jobs.total}</span>
             <span className="text-sm text-neutral-400">total</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {entries.map(({ status, count }) => (
-              <span
-                key={status}
-                className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${JOB_STATUS_COLOR[status] || 'bg-neutral-100 text-neutral-600'}`}
-              >
-                {status} <span className="font-bold">{count}</span>
+              <span key={status} className={JOB_STATUS_BADGE[status] ?? 'badge-neutral'}>
+                {status} <span className="font-bold tabular-nums">{count}</span>
               </span>
             ))}
           </div>
         </div>
       )}
-    </Card>
+    </div>
   );
 }
 
 // ─── Interview Summary ────────────────────────────────────────────────────────
 function InterviewSummaryCard({ interviews }) {
-  const navigate    = useNavigate();
-  const scoreColor  =
-    interviews.avgScore >= 70 ? 'text-success-700' :
-    interviews.avgScore >= 40 ? 'text-warning-700' : 'text-neutral-500';
+  const navigate   = useNavigate();
+  const scoreClass = interviews.avgScore >= 70 ? 'text-success-700'
+    : interviews.avgScore >= 40 ? 'text-warning-700' : 'text-neutral-500';
 
   return (
-    <Card
-      padding={false}
-      className="cursor-pointer hover:-translate-y-0.5 transition-transform duration-200"
+    <div
+      className="card overflow-hidden cursor-pointer hover:-translate-y-0.5 transition-all duration-200"
+      role="button"
+      tabIndex={0}
       onClick={() => navigate('/interview')}
+      onKeyDown={(e) => e.key === 'Enter' && navigate('/interview')}
     >
-      <div className="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-neutral-900">AI Interviews</h3>
+      <div className="card-header">
+        <h3 className="text-sm font-semibold text-neutral-800">AI Interviews</h3>
         <Link
           to="/interview"
-          className="text-xs text-brand-400 hover:underline"
+          className="text-xs font-semibold text-brand-400 hover:text-brand-500 transition-colors"
           onClick={(e) => e.stopPropagation()}
         >
-          View all
+          View all →
         </Link>
       </div>
+
       {interviews.total === 0 ? (
-        <div className="px-5 py-8 text-center space-y-2">
-          <p className="text-sm text-neutral-400">No interviews completed yet.</p>
+        <div className="px-5 py-10 text-center space-y-2">
+          <p className="text-sm text-neutral-500">No interviews completed yet.</p>
           <Link
             to="/interview"
-            className="inline-flex items-center gap-1 text-sm text-brand-400 hover:underline font-medium"
+            className="text-sm text-brand-400 hover:underline font-medium"
             onClick={(e) => e.stopPropagation()}
           >
             Start your first interview →
           </Link>
         </div>
       ) : (
-        <div className="px-5 py-4 space-y-3">
+        <div className="card-body space-y-3">
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-neutral-900">{interviews.total}</span>
+            <span className="text-3xl font-bold text-neutral-900 tracking-tight tabular-nums">{interviews.total}</span>
             <span className="text-sm text-neutral-400">total</span>
           </div>
           <div className="grid grid-cols-3 gap-3 pt-1">
             <div className="text-center">
-              <p className="text-base font-bold text-neutral-800">{interviews.completed}</p>
-              <p className="text-xs text-neutral-400">Completed</p>
+              <p className="text-base font-bold text-neutral-800 tabular-nums">{interviews.completed}</p>
+              <p className="text-xs text-neutral-500">Completed</p>
             </div>
             <div className="text-center border-x border-neutral-200">
-              <p className={`text-base font-bold ${scoreColor}`}>{interviews.avgScore}</p>
-              <p className="text-xs text-neutral-400">Avg Score</p>
+              <p className={`text-base font-bold tabular-nums ${scoreClass}`}>{interviews.avgScore}</p>
+              <p className="text-xs text-neutral-500">Avg Score</p>
             </div>
             <div className="text-center">
-              <p className="text-base font-bold text-neutral-800">{interviews.highScore}</p>
-              <p className="text-xs text-neutral-400">Best Score</p>
+              <p className="text-base font-bold text-neutral-800 tabular-nums">{interviews.highScore}</p>
+              <p className="text-xs text-neutral-500">Best Score</p>
             </div>
           </div>
         </div>
       )}
-    </Card>
+    </div>
   );
 }
 
@@ -455,28 +461,25 @@ function AchievementBadges({ data }) {
   if (!earned.length) return null;
 
   return (
-    <Card>
-      <h3 className="text-sm font-semibold text-neutral-900 mb-3">Achievements</h3>
+    <div className="card p-5">
+      <h3 className="text-sm font-semibold text-neutral-800 mb-3">Achievements</h3>
       <div className="flex flex-wrap gap-2">
         {earned.map(({ id, icon, label }) => (
-          <span
-            key={id}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand-50 text-brand-400 border border-brand-100"
-          >
+          <span key={id} className="badge-brand">
             {icon} {label}
           </span>
         ))}
       </div>
-    </Card>
+    </div>
   );
 }
 
 // ─── Recent Activity ──────────────────────────────────────────────────────────
-const ACTIVITY_STYLE = {
-  dsa:       { icon: 'text-brand-400   bg-brand-50',    label: 'DSA'       },
-  job:       { icon: 'text-warning-700 bg-warning-100', label: 'Job'       },
-  interview: { icon: 'text-success-700 bg-success-100', label: 'Interview' },
-  resume:    { icon: 'text-neutral-600 bg-neutral-100', label: 'Resume'    },
+const ACTIVITY_CONFIG = {
+  dsa:       { iconBg: 'gradient-brand-subtle border-brand-200/20',  iconClass: 'text-brand-400',   label: 'DSA',       badgeClass: 'badge-brand'   },
+  job:       { iconBg: 'bg-warning-100/40 border-warning-500/20',    iconClass: 'text-warning-700', label: 'Job',       badgeClass: 'badge-warning' },
+  interview: { iconBg: 'bg-success-100/40 border-success-500/20',    iconClass: 'text-success-700', label: 'Interview', badgeClass: 'badge-success' },
+  resume:    { iconBg: 'bg-neutral-100/60 border-neutral-300/30',    iconClass: 'text-neutral-500', label: 'Resume',    badgeClass: 'badge-neutral' },
 };
 
 const ACTIVITY_SVG = {
@@ -504,59 +507,85 @@ const ACTIVITY_SVG = {
 
 function RecentActivityCard({ items }) {
   return (
-    <Card padding={false}>
-      <div className="px-5 py-4 border-b border-neutral-200">
-        <h3 className="text-sm font-semibold text-neutral-900">Recent Activity</h3>
+    <div className="card overflow-hidden">
+      <div className="card-header">
+        <h3 className="text-sm font-semibold text-neutral-800">Recent Activity</h3>
       </div>
+
       {items.length === 0 ? (
-        <div className="px-5 py-10 text-center">
-          <p className="text-sm text-neutral-400">No activity yet. Start by adding a DSA problem or logging a job.</p>
+        <div className="px-5 py-12 text-center">
+          <p className="text-sm text-neutral-500">
+            No activity yet. Start by adding a DSA problem or logging a job.
+          </p>
         </div>
       ) : (
-        <ul className="divide-y divide-neutral-200">
+        <ul>
           {items.map((item, i) => {
-            const style = ACTIVITY_STYLE[item.type] || ACTIVITY_STYLE.dsa;
+            const cfg = ACTIVITY_CONFIG[item.type] ?? ACTIVITY_CONFIG.dsa;
             return (
-              <li key={i} className="flex items-start gap-3 px-5 py-3.5">
-                <div className={`mt-0.5 w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${style.icon}`}>
-                  {ACTIVITY_SVG[item.type]}
+              <li
+                key={i}
+                className={`flex items-start gap-3 px-5 py-4 hover:bg-white/5 transition-colors duration-150 ${i < items.length - 1 ? 'border-b border-neutral-200' : ''}`}
+              >
+                <div className={`mt-0.5 w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 border ${cfg.iconBg}`}>
+                  <span className={cfg.iconClass}>{ACTIVITY_SVG[item.type]}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-neutral-900 truncate">{item.title}</p>
-                  <p className="text-xs text-neutral-400 truncate mt-0.5">{item.subtitle}</p>
+                  <p className="text-sm font-semibold text-neutral-800 truncate">{item.title}</p>
+                  <p className="text-xs text-neutral-500 truncate mt-0.5">{item.subtitle}</p>
                 </div>
-                <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                   <span className="text-xs text-neutral-400">{timeAgo(item.timestamp)}</span>
-                  <span className="text-xs font-medium text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">
-                    {style.label}
-                  </span>
+                  <span className={cfg.badgeClass}>{cfg.label}</span>
                 </div>
               </li>
             );
           })}
         </ul>
       )}
-    </Card>
+    </div>
   );
 }
 
 // ─── Empty State ──────────────────────────────────────────────────────────────
 function DashboardEmpty() {
   return (
-    <Card>
-      <div className="py-12 text-center space-y-4">
-        <p className="text-5xl">🚀</p>
-        <div className="space-y-1">
-          <h3 className="text-base font-semibold text-neutral-800">You're all set up!</h3>
-          <p className="text-sm text-neutral-400">Start building your placement profile.</p>
+    <div className="card-brand p-10">
+      <div className="text-center space-y-5">
+        {/* Icon */}
+        <div className="inline-flex w-20 h-20 rounded-3xl gradient-brand items-center justify-center shadow-glow mx-auto">
+          <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
         </div>
-        <div className="flex flex-wrap justify-center gap-3 pt-2">
-          <Link to="/dsa"    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-50 text-brand-700 text-sm font-medium hover:bg-brand-100 transition-colors">💻 Add DSA Problem</Link>
-          <Link to="/resume" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-success-100 text-success-700 text-sm font-medium hover:bg-success-100/80 transition-colors">📄 Update Resume</Link>
-          <Link to="/jobs"   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-warning-100 text-warning-700 text-sm font-medium hover:bg-warning-100/80 transition-colors">💼 Log a Job</Link>
+
+        <div>
+          <h3 className="text-lg font-bold text-neutral-900 tracking-tight">You're all set up!</h3>
+          <p className="text-sm text-neutral-500 mt-1">Start building your placement profile.</p>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link
+            to="/dsa"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold gradient-brand-subtle border border-brand-200/20 text-brand-400 hover:shadow-glow-sm transition-all duration-200"
+          >
+            💻 Add DSA Problem
+          </Link>
+          <Link
+            to="/resume"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold bg-success-100/40 border border-success-500/20 text-success-700 hover:shadow-md transition-all duration-200"
+          >
+            📄 Update Resume
+          </Link>
+          <Link
+            to="/jobs"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold bg-warning-100/40 border border-warning-500/20 text-warning-700 hover:shadow-md transition-all duration-200"
+          >
+            💼 Log a Job
+          </Link>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -573,12 +602,11 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Computed before early returns — safe when data is null
   const readiness = useMemo(() => (data ? computeReadiness(data) : 0), [data]);
 
   if (loading) {
     return (
-      <DashboardLayout title="Dashboard">
+      <DashboardLayout>
         <DashboardSkeleton />
       </DashboardLayout>
     );
@@ -586,15 +614,15 @@ export default function Dashboard() {
 
   if (error || !data) {
     return (
-      <DashboardLayout title="Dashboard">
-        <div className="space-y-6">
+      <DashboardLayout>
+        <div className="space-y-5 animate-fade-in">
           <DashboardHeader readiness={null} />
           <WelcomeCard />
-          <Card>
-            <p className="text-center text-sm text-neutral-500 py-6">
+          <div className="card p-6 text-center">
+            <p className="text-sm text-neutral-500">
               Failed to load dashboard data. Please refresh the page.
             </p>
-          </Card>
+          </div>
         </div>
       </DashboardLayout>
     );
@@ -605,13 +633,13 @@ export default function Dashboard() {
   const solvedPct  = dsa.total ? Math.round((dsa.solved / dsa.total) * 100) : 0;
 
   return (
-    <DashboardLayout title="Dashboard">
-      <div className="space-y-6">
+    <DashboardLayout>
+      <div className="space-y-5 animate-fade-in">
 
-        {/* Page Header */}
+        {/* Header */}
         <DashboardHeader readiness={hasAnyData ? readiness : null} />
 
-        {/* Hero */}
+        {/* Welcome hero */}
         <WelcomeCard
           readiness={hasAnyData ? readiness : null}
           data={hasAnyData ? data : null}
@@ -621,11 +649,11 @@ export default function Dashboard() {
           <DashboardEmpty />
         ) : (
           <>
-            {/* Placement Readiness */}
+            {/* Placement readiness + Roadmap */}
             <PlacementReadiness data={data} score={readiness} />
             <RoadmapProgressWidget />
 
-            {/* 4 Summary Stat Cards */}
+            {/* 4 stat cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
               <StatCard
                 label="DSA Solved"
@@ -661,28 +689,28 @@ export default function Dashboard() {
               />
             </div>
 
-            {/* DSA Breakdown */}
+            {/* DSA breakdown */}
             <DsaStatsCard dsaStats={dsa} />
 
-            {/* Weekly Goals + Upcoming */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Weekly goals + Upcoming */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <WeeklyGoalsCard weekly={weekly} />
               <UpcomingCard    upcoming={upcoming} />
             </div>
 
-            {/* Job & Interview Summary */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Job + Interview summaries */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <JobSummaryCard       jobs={jobs} />
               <InterviewSummaryCard interviews={interviews} />
             </div>
 
-            {/* Achievement Badges */}
+            {/* Achievements */}
             <AchievementBadges data={data} />
 
-            {/* Recent Activity */}
+            {/* Recent activity */}
             <RecentActivityCard items={recentActivity} />
 
-            {/* Quick Actions */}
+            {/* Quick actions */}
             <QuickActions />
           </>
         )}

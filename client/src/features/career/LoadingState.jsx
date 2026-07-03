@@ -1,25 +1,23 @@
-// Typing indicator — "AI is thinking..." with staggered dots
+// Typing indicator — beautiful AI thinking animation
 export function TypingIndicator() {
   return (
     <div className="flex gap-3 flex-row animate-fade-slide-up">
-      {/* AI avatar */}
-      <div
-        className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
-        style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }}
-      >
-        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-        </svg>
+      <div className="relative flex-shrink-0">
+        <div className="w-9 h-9 rounded-full gradient-brand flex items-center justify-center shadow-glow-sm">
+          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+          </svg>
+        </div>
+        <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success-500 border-2 border-neutral-50" />
       </div>
 
-      {/* Bubble */}
-      <div className="bg-neutral-0 border border-neutral-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm flex items-center gap-3">
-        <span className="text-xs text-neutral-500 font-medium">AI is thinking</span>
-        <div className="flex items-center gap-1">
+      <div className="card rounded-3xl rounded-tl-sm px-5 py-3.5 shadow-card-hover flex items-center gap-4">
+        <span className="text-xs text-neutral-500 font-medium tracking-wide">Thinking</span>
+        <div className="flex items-center gap-1.5">
           {[0, 150, 300].map((delay) => (
             <span
               key={delay}
-              className="block w-1.5 h-1.5 rounded-full bg-brand-400 animate-thinking"
+              className="block w-2 h-2 rounded-full bg-brand-400 animate-thinking"
               style={{ animationDelay: `${delay}ms` }}
             />
           ))}
@@ -32,29 +30,33 @@ export function TypingIndicator() {
 // Skeleton for initial sidebar load
 export function SidebarSkeleton() {
   return (
-    <div className="p-3 space-y-2 animate-pulse">
-      {[92, 78, 88, 65, 82].map((w, i) => (
-        <div key={i} className="h-[72px] rounded-xl bg-neutral-200" style={{ width: `${w}%` }} />
+    <div className="px-3 pb-3 pt-1 space-y-1.5">
+      {[90, 75, 85, 60, 80].map((w, i) => (
+        <div
+          key={i}
+          className="h-14 rounded-xl skeleton-shimmer"
+          style={{ width: `${w}%` }}
+        />
       ))}
     </div>
   );
 }
 
-// Skeleton rows while loading a chat's messages — matches the live max-w-[760px] container
+// Skeleton rows while loading a chat's messages
 export function ChatSkeleton() {
   return (
-    <div className="max-w-[760px] mx-auto px-6 py-8">
-      <div className="space-y-6 animate-pulse">
+    <div className="max-w-[840px] mx-auto px-6 py-8">
+      <div className="space-y-6">
         {[
-          { side: 'right', w: '58%' },
-          { side: 'left',  w: '72%' },
-          { side: 'left',  w: '52%' },
-          { side: 'right', w: '38%' },
-          { side: 'left',  w: '68%' },
-        ].map(({ side, w }, i) => (
-          <div key={i} className={`flex ${side === 'right' ? 'flex-row-reverse' : 'flex-row'} gap-3`}>
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200" />
-            <div className="h-12 rounded-2xl bg-neutral-200" style={{ width: w }} />
+          { side: 'right', w: '58%', h: 'h-12' },
+          { side: 'left',  w: '72%', h: 'h-20' },
+          { side: 'left',  w: '52%', h: 'h-14' },
+          { side: 'right', w: '40%', h: 'h-10' },
+          { side: 'left',  w: '68%', h: 'h-24' },
+        ].map(({ side, w, h }, i) => (
+          <div key={i} className={`flex ${side === 'right' ? 'flex-row-reverse' : 'flex-row'} gap-3 items-end`}>
+            <div className="flex-shrink-0 w-9 h-9 rounded-full skeleton-shimmer" />
+            <div className={`${h} rounded-3xl skeleton-shimmer`} style={{ width: w }} />
           </div>
         ))}
       </div>

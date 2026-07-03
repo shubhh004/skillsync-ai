@@ -1,14 +1,33 @@
-export default function Card({ children, className = '', padding = true, onClick }) {
+const variantClasses = {
+  default:     'card',
+  interactive: 'card-interactive',
+  elevated:    'card-elevated',
+  glass:       'glass-card',
+  subtle:      'card-subtle',
+  brand:       'card-brand',
+};
+
+export default function Card({
+  children,
+  className = '',
+  padding = true,
+  variant = 'default',
+  onClick,
+}) {
+  const base = variantClasses[variant] ?? variantClasses.default;
+
   return (
     <div
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
       onClick={onClick}
+      onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick(e) : undefined}
       className={[
-        'bg-neutral-0 rounded-xl border border-neutral-200 shadow-sm',
-        'transition-shadow duration-200',
-        onClick ? 'hover:shadow-md cursor-pointer' : 'hover:shadow-md',
+        base,
         padding ? 'p-6' : '',
+        onClick ? 'cursor-pointer hover:-translate-y-0.5 transition-all duration-200' : '',
         className,
-      ].join(' ')}
+      ].filter(Boolean).join(' ')}
     >
       {children}
     </div>

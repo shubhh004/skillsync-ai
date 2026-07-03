@@ -2,29 +2,164 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Custom animations ──────────────────────────────────────────────────────── */
-@keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@keyframes thinkingPulse {
-  0%, 60%, 100% { transform: translateY(0);   opacity: 0.4; }
-  30%           { transform: translateY(-5px); opacity: 1;   }
-}
-@keyframes shimmer {
-  from { background-position: -200% 0; }
-  to   { background-position:  200% 0; }
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SKILLSYNC AI — GLOBAL DESIGN SYSTEM
+   Sprint 12: Premium UI Overhaul
+
+   Layers:
+   1. CSS Custom Properties (semantic tokens)
+   2. Base resets + global styles
+   3. Scrollbar system
+   4. Component classes (.glass, .gradient-*, .card-*, .badge-*, .text-*)
+   5. Utility classes (glow, focus-ring, truncate variants)
+   6. Resume Preview isolation (always last — highest specificity)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+
+/* ── 1. SEMANTIC DESIGN TOKENS ──────────────────────────────────────────────── */
+/* CSS custom properties map to Tailwind color tokens.                           */
+/* Shared single source of truth for JS (getComputedStyle) and non-Tailwind CSS. */
+@layer base {
+  :root {
+    /* ── Surface stack (dark-first; deeper = higher elevation) ── */
+    --ds-bg-base:     #09090B;   /* neutral-50  — page background        */
+    --ds-bg-surface:  #111827;   /* neutral-100 — sidebar, navbar, panel  */
+    --ds-bg-elevated: #18181B;   /* neutral-0   — card, input background  */
+    --ds-bg-overlay:  #1C1C1F;   /* between elevated and surface          */
+    --ds-bg-sunken:   #060608;   /* deeper than base — code blocks, etc.  */
+
+    /* ── Border ── */
+    --ds-border-subtle:  #27272A;   /* neutral-200 — default divider         */
+    --ds-border-default: #3F3F46;   /* neutral-300 — visible border          */
+    --ds-border-strong:  #52525B;   /* neutral-400-ish — high-contrast ring  */
+
+    /* ── Text ── */
+    --ds-text-disabled:   #52525B;   /* very muted                            */
+    --ds-text-muted:      #71717A;   /* neutral-400 — icons, timestamps       */
+    --ds-text-secondary:  #A1A1AA;   /* neutral-500 — supporting text         */
+    --ds-text-tertiary:   #D4D4D8;   /* neutral-600 — softer body             */
+    --ds-text-primary:    #E4E4E7;   /* neutral-700 — default body text       */
+    --ds-text-emphasis:   #F1F1F3;   /* neutral-800 — strong body             */
+    --ds-text-heading:    #F4F4F5;   /* neutral-900 — headings                */
+    --ds-text-max:        #FAFAFA;   /* neutral-950 — highest contrast        */
+
+    /* ── Brand ── */
+    --ds-brand:           #6366f1;   /* brand-500 — primary action            */
+    --ds-brand-hover:     #4f46e5;   /* brand-700 — hover / pressed           */
+    --ds-brand-text:      #818cf8;   /* brand-400 — text on dark surfaces     */
+    --ds-brand-subtle:    #1e1b4b;   /* brand-50  — active nav bg, tint       */
+    --ds-brand-border:    rgba(99, 102, 241, 0.25);   /* ring / card border   */
+
+    /* ── Semantic status ── */
+    --ds-success:         #22c55e;
+    --ds-success-text:    #4ade80;
+    --ds-success-bg:      #14532d;
+    --ds-warning:         #f59e0b;
+    --ds-warning-text:    #fbbf24;
+    --ds-warning-bg:      #713f12;
+    --ds-danger:          #ef4444;
+    --ds-danger-text:     #f87171;
+    --ds-danger-bg:       #7f1d1d;
+
+    /* ── Glass / frosted ── */
+    --ds-glass-bg:        rgba(255, 255, 255, 0.04);
+    --ds-glass-bg-hover:  rgba(255, 255, 255, 0.07);
+    --ds-glass-border:    rgba(255, 255, 255, 0.08);
+    --ds-glass-blur:      20px;
+    --ds-glass-saturate:  180%;
+
+    /* ── Gradient stops ── */
+    --ds-grad-brand-from: #6366f1;
+    --ds-grad-brand-to:   #4f46e5;
+    --ds-grad-warm-from:  #fbbf24;
+    --ds-grad-warm-mid:   #f59e0b;
+    --ds-grad-warm-to:    #ef4444;
+
+    /* ── Shadows ── */
+    --ds-shadow-sm:       0 1px 2px 0 rgb(0 0 0 / 0.5);
+    --ds-shadow-md:       0 4px 6px -1px rgb(0 0 0 / 0.6), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+    --ds-shadow-lg:       0 10px 15px -3px rgb(0 0 0 / 0.7), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    --ds-shadow-glow:     0 0 24px rgb(99 102 241 / 0.35);
+    --ds-shadow-glow-sm:  0 0 12px rgb(99 102 241 / 0.25);
+    --ds-shadow-glow-lg:  0 0 48px rgb(99 102 241 / 0.45);
+    --ds-shadow-glass:    0 8px 32px rgb(0 0 0 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.05);
+    --ds-shadow-elevated: 0 0 0 1px rgb(255 255 255 / 0.05), 0 4px 24px rgb(0 0 0 / 0.5);
+    --ds-shadow-popover:  0 0 0 1px rgb(0 0 0 / 0.4), 0 16px 48px rgb(0 0 0 / 0.6);
+
+    /* ── Radii (mirrors tailwind.config) ── */
+    --ds-radius-sm:   0.25rem;
+    --ds-radius-md:   0.5rem;
+    --ds-radius-lg:   0.75rem;
+    --ds-radius-xl:   1rem;
+    --ds-radius-2xl:  1.5rem;
+    --ds-radius-3xl:  2rem;
+    --ds-radius-full: 9999px;
+
+    /* ── Motion ── */
+    --ds-ease-default:     cubic-bezier(0.4, 0, 0.2, 1);
+    --ds-ease-spring:      cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --ds-ease-out-quart:   cubic-bezier(0.25, 1, 0.5, 1);
+    --ds-ease-out-back:    cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ds-duration-fast:    100ms;
+    --ds-duration-base:    150ms;
+    --ds-duration-slow:    300ms;
+    --ds-duration-slower:  500ms;
+  }
 }
 
-.animate-fade-slide-up { animation: fadeSlideUp 0.22s ease-out both; }
-.animate-pop-in        { animation: popIn 0.18s ease-out both; }
-.animate-thinking      { animation: thinkingPulse 1.2s ease-in-out infinite; }
 
-/* ── Base layer ─────────────────────────────────────────────────────────────── */
+/* ── 2. KEYFRAME DEFINITIONS ────────────────────────────────────────────────── */
+/* Defined directly in CSS so component classes can reference them by name.      */
+/* Tailwind config also defines these for the animate-* utility classes.         */
+@layer base {
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes fade-slide-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-slide-down {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-slide-right {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fade-slide-left {
+    from { opacity: 0; transform: translateX(10px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes thinking-pulse {
+    0%, 60%, 100% { transform: translateY(0);    opacity: 0.4; }
+    30%           { transform: translateY(-5px); opacity: 1;   }
+  }
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to   { background-position:  200% 0; }
+  }
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 12px rgb(99 102 241 / 0.2); }
+    50%      { box-shadow: 0 0 32px rgb(99 102 241 / 0.5); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+  }
+}
+
+
+/* ── BASE RESETS + GLOBAL STYLES ───────────────────────────────────────────── */
 @layer base {
   *, *::before, *::after {
     box-sizing: border-box;
@@ -34,6 +169,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';   /* Inter alternates */
   }
 
   body {
@@ -41,23 +177,597 @@
     margin: 0;
   }
 
-  /* Dark scrollbars to match the theme */
-  ::-webkit-scrollbar       { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #09090B; }
-  ::-webkit-scrollbar-thumb { background: #3F3F46; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #71717A; }
-
   /* Text selection */
   ::selection {
-    background: rgb(99 102 241 / 0.3);
+    background: rgb(99 102 241 / 0.28);
     color: #F4F4F5;
+  }
+
+  /* Reset focus outline — each component uses focus-ring utility instead */
+  :focus-visible {
+    outline: 2px solid var(--ds-brand);
+    outline-offset: 2px;
+    border-radius: var(--ds-radius-md);
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Image defaults */
+  img, video {
+    max-width: 100%;
+    display: block;
+  }
+
+  /* Remove default button styles */
+  button {
+    cursor: pointer;
+  }
+
+  /* Mono font for code elements */
+  code, kbd, samp, pre {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.875em;
   }
 }
 
-/* ── Resume Preview — hard isolation from app theme ─────────────────────────── */
-/* The .resume-preview class ensures the document renders as white paper        */
-/* regardless of the app's dark theme. All child colors are set via inline      */
-/* styles in ResumePreview.jsx; this class is the safety base layer.            */
+
+/* ── 3. SCROLLBAR SYSTEM ────────────────────────────────────────────────────── */
+@layer base {
+  /* ── Dark (default app) ── */
+  ::-webkit-scrollbar         { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-corner  { background: transparent; }
+  ::-webkit-scrollbar-track   { background: var(--ds-bg-base); }
+  ::-webkit-scrollbar-thumb   {
+    background: #3F3F46;
+    border-radius: var(--ds-radius-full);
+    border: 2px solid var(--ds-bg-base);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #71717A; }
+
+  /* Firefox */
+  * { scrollbar-width: thin; scrollbar-color: #3F3F46 transparent; }
+}
+
+/* ── Scrollbar variant classes ── */
+@layer components {
+  /* 4 px thin variant */
+  .scrollbar-thin::-webkit-scrollbar       { width: 4px; height: 4px; }
+  .scrollbar-thin                          { scrollbar-width: thin; }
+
+  /* Completely hidden */
+  .scrollbar-hidden                        { scrollbar-width: none; }
+  .scrollbar-hidden::-webkit-scrollbar     { display: none; }
+
+  /* Light surface (resume preview, modals) */
+  .scrollbar-light::-webkit-scrollbar-track   { background: #F3F4F6; }
+  .scrollbar-light::-webkit-scrollbar-thumb   {
+    background: #D1D5DB;
+    border-radius: var(--ds-radius-full);
+    border: 2px solid #F3F4F6;
+  }
+  .scrollbar-light::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+  .scrollbar-light { scrollbar-color: #D1D5DB #F3F4F6; }
+}
+
+
+/* ── 4. GLASS UTILITIES ─────────────────────────────────────────────────────── */
+@layer components {
+  /* Lightest glass — subtle frost for nav / bars */
+  .glass {
+    background: var(--ds-glass-bg);
+    backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--ds-glass-blur)) saturate(var(--ds-glass-saturate));
+    border: 1px solid var(--ds-glass-border);
+  }
+
+  /* Medium glass — floating panels, dropdowns */
+  .glass-surface {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--ds-shadow-glass);
+  }
+
+  /* Heavy glass — modals, sheets, overlays */
+  .glass-heavy {
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--ds-shadow-glass);
+  }
+
+  /* Brand-tinted glass — active elements */
+  .glass-brand {
+    background: rgba(99, 102, 241, 0.08);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+
+  /* Card-weight glass — sits on elevated surfaces */
+  .glass-card {
+    background: rgba(24, 24, 27, 0.8);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: var(--ds-shadow-glass);
+    border-radius: var(--ds-radius-xl);
+  }
+}
+
+
+/* ── 5. GRADIENT UTILITIES ──────────────────────────────────────────────────── */
+@layer components {
+  /* ── Background gradients ── */
+  .gradient-brand {
+    background: linear-gradient(135deg, var(--ds-grad-brand-from) 0%, var(--ds-grad-brand-to) 100%);
+  }
+
+  .gradient-brand-subtle {
+    background: linear-gradient(135deg,
+      rgba(99, 102, 241, 0.15) 0%,
+      rgba(79, 70, 229, 0.07) 100%
+    );
+  }
+
+  .gradient-brand-border {
+    background: linear-gradient(135deg,
+      rgba(99, 102, 241, 0.5) 0%,
+      rgba(79, 70, 229, 0.3) 100%
+    );
+  }
+
+  .gradient-surface {
+    background: linear-gradient(180deg, #111827 0%, #09090B 100%);
+  }
+
+  .gradient-card {
+    background: linear-gradient(145deg, #18181B 0%, #111827 100%);
+  }
+
+  /* Ambient mesh for hero / landing sections */
+  .gradient-mesh {
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(99, 102, 241, 0.15) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 90%, rgba(79, 70, 229, 0.10) 0%, transparent 55%),
+      radial-gradient(ellipse at 60% 40%, rgba(129, 140, 248, 0.06) 0%, transparent 45%),
+      #09090B;
+  }
+
+  /* ── Text gradients ── */
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 60%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-warm {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #ef4444 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-cool {
+    background: linear-gradient(135deg, #818cf8 0%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-neutral {
+    background: linear-gradient(135deg, #F4F4F5 0%, #A1A1AA 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+
+/* ── 6. TYPOGRAPHY SYSTEM ───────────────────────────────────────────────────── */
+@layer components {
+  /* Display — hero / marketing */
+  .text-display {
+    @apply font-display font-bold text-neutral-950;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  /* Page-level headings */
+  .text-h1 { @apply text-4xl font-bold   text-neutral-900; letter-spacing: -0.025em; line-height: 1.1; }
+  .text-h2 { @apply text-3xl font-bold   text-neutral-900; letter-spacing: -0.02em;  line-height: 1.2; }
+  .text-h3 { @apply text-2xl font-semibold text-neutral-900; letter-spacing: -0.015em; }
+  .text-h4 { @apply text-xl  font-semibold text-neutral-800; }
+  .text-h5 { @apply text-lg  font-semibold text-neutral-800; }
+  .text-h6 { @apply text-base font-semibold text-neutral-700; }
+
+  /* Label — uppercase, caps, micro headers */
+  .text-label {
+    @apply text-xs font-semibold text-neutral-500 uppercase tracking-wider;
+  }
+
+  .text-label-sm {
+    @apply text-[10px] font-semibold text-neutral-500 uppercase tracking-widest;
+  }
+
+  /* Body copy */
+  .text-body-lg  { @apply text-base  text-neutral-700 leading-relaxed; }
+  .text-body     { @apply text-sm    text-neutral-700 leading-relaxed; }
+  .text-body-sm  { @apply text-xs    text-neutral-600 leading-relaxed; }
+
+  /* Captions */
+  .text-caption  { @apply text-xs  text-neutral-500 leading-normal; }
+  .text-caption-sm { @apply text-[10px] text-neutral-400 leading-normal; }
+
+  /* Inline code */
+  .text-code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    @apply text-xs text-brand-400 bg-neutral-100 px-1.5 py-0.5 rounded;
+  }
+
+  /* Monospace block */
+  .text-mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    @apply text-sm text-neutral-700;
+  }
+
+  /* Numeric / data — tabular */
+  .text-numeric {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    @apply text-sm text-neutral-800 font-medium;
+  }
+}
+
+
+/* ── 7. CARD SYSTEM ─────────────────────────────────────────────────────────── */
+@layer components {
+  /* Base card — default dark surface */
+  .card {
+    @apply bg-neutral-0 rounded-xl border border-neutral-200 shadow-sm;
+  }
+
+  /* Card with hover lift */
+  .card-interactive {
+    @apply bg-neutral-0 rounded-xl border border-neutral-200 shadow-sm;
+    @apply transition-all duration-200;
+    @apply hover:-translate-y-0.5 hover:shadow-md hover:border-neutral-300;
+  }
+
+  /* Elevated card — prominent, floats above surface */
+  .card-elevated {
+    @apply bg-neutral-0 rounded-xl;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: var(--ds-shadow-elevated);
+  }
+
+  /* Subtle card — sits flush, low contrast */
+  .card-subtle {
+    @apply bg-neutral-100 rounded-xl border border-neutral-200;
+  }
+
+  /* Brand-accent card — for featured / highlighted items */
+  .card-brand {
+    @apply bg-neutral-0 rounded-xl;
+    border: 1px solid var(--ds-brand-border);
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.12), var(--ds-shadow-md);
+  }
+
+  /* Card section header */
+  .card-header {
+    @apply px-5 py-4 border-b border-neutral-200 flex items-center justify-between flex-shrink-0;
+  }
+
+  /* Card content padding */
+  .card-body {
+    @apply px-5 py-4;
+  }
+}
+
+
+/* ── 8. BADGE SYSTEM ────────────────────────────────────────────────────────── */
+@layer components {
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-brand   { @apply badge bg-brand-50 text-brand-400; border: 1px solid rgba(99, 102, 241, 0.2); }
+  .badge-success { @apply badge bg-success-100 text-success-700; }
+  .badge-warning { @apply badge bg-warning-100 text-warning-700; }
+  .badge-danger  { @apply badge bg-danger-100  text-danger-700;  }
+  .badge-neutral { @apply badge bg-neutral-100 text-neutral-600; }
+
+  /* Dot indicator variants */
+  .badge-dot::before {
+    content: '';
+    @apply w-1.5 h-1.5 rounded-full inline-block mr-1;
+  }
+  .badge-dot.badge-success::before { @apply bg-success-500; }
+  .badge-dot.badge-warning::before { @apply bg-warning-500; }
+  .badge-dot.badge-danger::before  { @apply bg-danger-500;  }
+  .badge-dot.badge-brand::before   { @apply bg-brand-500;   }
+}
+
+
+/* ── 9. INPUT SYSTEM ────────────────────────────────────────────────────────── */
+@layer components {
+  /* Base input — extends the Input.jsx component styles */
+  .input-base {
+    @apply w-full h-10 px-3 rounded-lg text-sm;
+    @apply bg-neutral-100 border border-neutral-300;
+    @apply placeholder:text-neutral-400 text-neutral-800;
+    @apply transition-colors duration-150;
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500;
+    @apply disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .input-error {
+    @apply border-danger-500 focus:ring-danger-500/40 focus:border-danger-500;
+  }
+
+  /* Textarea */
+  .textarea-base {
+    @apply input-base h-auto py-2.5 resize-none leading-relaxed;
+    min-height: 5rem;
+  }
+
+  /* Search input */
+  .input-search {
+    @apply input-base pl-9;
+  }
+}
+
+
+/* ── 10. FOCUS RING SYSTEM ──────────────────────────────────────────────────── */
+@layer components {
+  /* Standard focus ring — used on interactive elements */
+  .focus-ring {
+    @apply focus-visible:outline-none;
+    @apply focus-visible:ring-2;
+    @apply focus-visible:ring-brand-500;
+    @apply focus-visible:ring-offset-2;
+    @apply focus-visible:ring-offset-neutral-50;
+  }
+
+  /* Inset ring — for elements that can't afford offset */
+  .focus-ring-inset {
+    @apply focus-visible:outline-none;
+    @apply focus-visible:ring-2;
+    @apply focus-visible:ring-brand-500;
+    @apply focus-visible:ring-inset;
+  }
+
+  /* Surface-aware ring — use on cards/panels */
+  .focus-ring-surface {
+    @apply focus-visible:outline-none;
+    @apply focus-visible:ring-2;
+    @apply focus-visible:ring-brand-500;
+    @apply focus-visible:ring-offset-2;
+    @apply focus-visible:ring-offset-neutral-0;
+  }
+
+  /* Danger ring — destructive actions */
+  .focus-ring-danger {
+    @apply focus-visible:outline-none;
+    @apply focus-visible:ring-2;
+    @apply focus-visible:ring-danger-500;
+    @apply focus-visible:ring-offset-2;
+    @apply focus-visible:ring-offset-neutral-50;
+  }
+}
+
+
+/* ── 11. LOADING / SKELETON SYSTEM ─────────────────────────────────────────── */
+@layer components {
+  /* Pulse skeleton */
+  .skeleton {
+    @apply bg-neutral-100 rounded-xl animate-pulse;
+  }
+
+  /* Shimmer skeleton — more premium feel */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      #27272A 0%,
+      #3F3F46 45%,
+      #3F3F46 55%,
+      #27272A 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+    border-radius: var(--ds-radius-xl);
+  }
+
+  /* Skeleton text line */
+  .skeleton-text {
+    @apply h-4 bg-neutral-100 rounded-md animate-pulse;
+  }
+
+  .skeleton-text-sm {
+    @apply h-3 bg-neutral-100 rounded animate-pulse;
+  }
+}
+
+
+/* ── 12. DIVIDER SYSTEM ─────────────────────────────────────────────────────── */
+@layer components {
+  .divider        { @apply border-t border-neutral-200; }
+  .divider-strong { @apply border-t border-neutral-300; }
+  .divider-subtle { @apply border-t border-neutral-200/60; }
+
+  /* Vertical */
+  .divider-v        { @apply border-l border-neutral-200; }
+  .divider-v-strong { @apply border-l border-neutral-300; }
+}
+
+
+/* ── 13. TRANSITION UTILITIES ───────────────────────────────────────────────── */
+@layer utilities {
+  /* Preset transitions — use these instead of raw Tailwind duration/ease combos */
+  .transition-fast    { transition: all var(--ds-duration-fast)   var(--ds-ease-default); }
+  .transition-base    { transition: all var(--ds-duration-base)   var(--ds-ease-default); }
+  .transition-smooth  { transition: all var(--ds-duration-slow)   var(--ds-ease-default); }
+  .transition-spring  { transition: all var(--ds-duration-slow)   var(--ds-ease-spring);  }
+  .transition-colors-fast { transition: color var(--ds-duration-fast) var(--ds-ease-default),
+                                        background-color var(--ds-duration-fast) var(--ds-ease-default),
+                                        border-color var(--ds-duration-fast) var(--ds-ease-default); }
+}
+
+
+/* ── 14. GLOW UTILITIES ─────────────────────────────────────────────────────── */
+@layer utilities {
+  .glow-brand-sm { box-shadow: var(--ds-shadow-glow-sm); }
+  .glow-brand    { box-shadow: var(--ds-shadow-glow);    }
+  .glow-brand-lg { box-shadow: var(--ds-shadow-glow-lg); }
+
+  .glow-success  { box-shadow: 0 0 20px rgb(34 197 94 / 0.3); }
+  .glow-warning  { box-shadow: 0 0 20px rgb(245 158 11 / 0.3); }
+  .glow-danger   { box-shadow: 0 0 20px rgb(239 68 68 / 0.3);  }
+
+  /* Brand inner ring — for active / selected states */
+  .ring-brand-glow {
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 0 20px rgba(99, 102, 241, 0.15);
+  }
+}
+
+
+/* ── 15. TEXT CLIP UTILITY ──────────────────────────────────────────────────── */
+@layer utilities {
+  /* Enable gradient text (pair with .text-gradient-* classes) */
+  .text-clip {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Multi-line clamp — safe alternatives to line-clamp-* */
+  .clamp-1 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+  .clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .clamp-3 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+  .clamp-4 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; }
+}
+
+
+/* ── 16. INTERACTION UTILITIES ──────────────────────────────────────────────── */
+@layer utilities {
+  /* Micro-interaction: card lift */
+  .hover-lift {
+    @apply transition-all duration-200;
+  }
+  .hover-lift:hover {
+    @apply -translate-y-0.5 shadow-md;
+  }
+
+  /* Press feedback */
+  .active-press:active {
+    transform: scale(0.97);
+    transition-duration: 75ms;
+  }
+
+  /* Subtle background reveal on hover */
+  .hover-surface:hover {
+    background: var(--ds-glass-bg-hover);
+  }
+}
+
+
+/* ── 17. LAYOUT UTILITIES ───────────────────────────────────────────────────── */
+@layer utilities {
+  /* Panel layout helpers */
+  .panel-fill    { @apply flex flex-col flex-1 min-h-0; }
+  .panel-scroll  { @apply flex-1 overflow-y-auto min-h-0; }
+  .panel-header  { @apply flex-shrink-0; }
+  .panel-footer  { @apply flex-shrink-0; }
+}
+
+
+/* ── 18. FORM ELEMENT UTILITIES ─────────────────────────────────────────────── */
+@layer components {
+  /* Glass select — mirrors Input component style */
+  .select-base {
+    @apply h-10 px-3.5 rounded-xl text-sm cursor-pointer;
+    @apply bg-white/5 border border-neutral-300 text-neutral-800;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500/40 focus:border-brand-500;
+    @apply transition-all duration-150;
+    @apply disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  /* Textarea matching Input style */
+  .textarea-base {
+    @apply w-full px-3.5 py-2.5 rounded-xl text-sm;
+    @apply bg-white/5 border border-neutral-300;
+    @apply placeholder:text-neutral-400 text-neutral-800;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-0 focus:border-brand-500 focus:ring-brand-500/40 focus:bg-white/10;
+    @apply transition-all duration-150 resize-none;
+    @apply disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+}
+
+
+/* ── 19. MODAL SYSTEM ───────────────────────────────────────────────────────── */
+@layer components {
+  /* Full-screen overlay wrapper */
+  .modal-overlay {
+    @apply fixed inset-0 z-70 flex items-center justify-center p-4;
+  }
+
+  /* Blurred dark backdrop — place as first child of modal-overlay, onClick = close */
+  .modal-backdrop {
+    @apply absolute inset-0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Floating glass panel */
+  .modal-panel {
+    @apply relative glass-heavy rounded-3xl shadow-popover;
+    @apply w-full max-h-[90vh] overflow-y-auto;
+    animation: pop-in 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  /* Modal header row */
+  .modal-header {
+    @apply flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0;
+  }
+
+  /* Modal close button */
+  .modal-close {
+    @apply p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-white/10 transition-all duration-150 focus-ring;
+  }
+
+  /* Modal form body */
+  .modal-body {
+    @apply px-6 py-5 space-y-4;
+  }
+
+  /* Error callout inside modals */
+  .modal-error {
+    @apply text-sm text-danger-700 bg-danger-100/80 px-3 py-2 rounded-xl;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+
+  /* Modal footer */
+  .modal-footer {
+    @apply flex justify-end gap-3 pt-2;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   RESUME PREVIEW ISOLATION
+   Must remain at the end — highest specificity wins over app-dark theme.
+   The resume renders as white paper regardless of global dark styles.
+   All child colors are set via inline styles in ResumePreview.jsx.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
 .resume-preview {
   background: #ffffff !important;
   color: #111827 !important;
@@ -65,6 +775,10 @@
 }
 
 /* Light-themed scrollbar for the resume preview container */
-.resume-preview-container::-webkit-scrollbar-track { background: #F3F4F6; }
-.resume-preview-container::-webkit-scrollbar-thumb { background: #9CA3AF; border-radius: 3px; }
+.resume-preview-container::-webkit-scrollbar-track   { background: #F3F4F6; }
+.resume-preview-container::-webkit-scrollbar-thumb   {
+  background: #9CA3AF;
+  border-radius: 3px;
+  border: 2px solid #F3F4F6;
+}
 .resume-preview-container::-webkit-scrollbar-thumb:hover { background: #6B7280; }

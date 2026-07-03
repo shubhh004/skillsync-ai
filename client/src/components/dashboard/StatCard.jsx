@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import Card from '../ui/Card';
 
 const icons = {
   code: (
@@ -26,25 +25,33 @@ const icons = {
 
 export default function StatCard({ label, value, delta, positive = true, icon = 'code', to }) {
   const inner = (
-    <Card className={to ? 'cursor-pointer hover:-translate-y-0.5 transition-transform duration-200' : ''}>
+    <div className="card-interactive p-6 group">
       <div className="flex items-start justify-between">
-        <div className="p-2 rounded-lg bg-brand-50 text-brand-400">
-          {icons[icon]}
+        {/* Icon */}
+        <div className="w-10 h-10 rounded-xl gradient-brand-subtle flex items-center justify-center flex-shrink-0 border border-brand-200/30">
+          <span className="text-brand-400">{icons[icon]}</span>
         </div>
-        <span
-          className={[
-            'inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full',
-            positive ? 'bg-success-100 text-success-700' : 'bg-danger-100 text-danger-700',
-          ].join(' ')}
-        >
-          {positive ? '↑' : '↓'} {delta}
-        </span>
+
+        {/* Delta badge */}
+        {delta !== undefined && (
+          <span className={[
+            'inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full',
+            positive
+              ? 'bg-success-100/60 text-success-700 border border-success-500/20'
+              : 'bg-danger-100/60  text-danger-700  border border-danger-500/20',
+          ].join(' ')}>
+            {positive ? '↑' : '↓'} {delta}
+          </span>
+        )}
       </div>
+
       <div className="mt-4">
-        <p className="text-3xl font-bold text-neutral-900 leading-none">{value}</p>
-        <p className="text-sm text-neutral-500 mt-2">{label}</p>
+        <p className="text-3xl font-bold text-neutral-900 leading-none tracking-tight">{value}</p>
+        <p className="text-sm text-neutral-500 mt-1.5 group-hover:text-neutral-600 transition-colors duration-200">
+          {label}
+        </p>
       </div>
-    </Card>
+    </div>
   );
 
   if (to) return <Link to={to} className="block">{inner}</Link>;

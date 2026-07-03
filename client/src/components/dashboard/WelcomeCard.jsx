@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '../ui/Button';
-import Card from '../ui/Card';
 import { useUser } from '../../context/UserContext';
 
 function getGreeting() {
@@ -27,21 +26,21 @@ function getSmartAction(data) {
 }
 
 export default function WelcomeCard({ readiness = null, data = null }) {
-  const { user }        = useUser();
-  const navigate        = useNavigate();
-  const firstName       = user?.name?.split(' ')[0] || 'there';
-  const { to, label }   = getSmartAction(data);
-  const message         = getMotivationalMessage(readiness);
+  const { user }      = useUser();
+  const navigate      = useNavigate();
+  const firstName     = user?.name?.split(' ')[0] || 'there';
+  const { to, label } = getSmartAction(data);
+  const message       = getMotivationalMessage(readiness);
 
   return (
-    <Card>
+    <div className="card-brand p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div className="min-w-0">
-          <h2 className="text-xl font-bold text-neutral-900">
+          <h2 className="text-xl font-bold text-neutral-900 tracking-tight">
             👋 {getGreeting()}, {firstName}!
           </h2>
           {readiness !== null && (
-            <p className="text-xs font-semibold text-brand-400 mt-0.5">
+            <p className="text-xs font-semibold text-brand-400 mt-1 tracking-wide">
               Placement Readiness: {readiness}%
             </p>
           )}
@@ -49,14 +48,17 @@ export default function WelcomeCard({ readiness = null, data = null }) {
         </div>
 
         <div className="flex items-center gap-5 sm:flex-shrink-0">
+          {/* Streak */}
           <div className="text-center">
-            <p className="text-3xl font-bold text-brand-400 leading-none">7</p>
+            <p className="text-3xl font-bold text-gradient-brand leading-none">7</p>
             <p className="text-xs text-neutral-500 mt-1">day streak</p>
           </div>
+
           <div className="h-10 w-px bg-neutral-200" />
+
           <Button size="sm" onClick={() => navigate(to)}>{label}</Button>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }

@@ -7,13 +7,6 @@ const TOPICS = [
   'Two Pointer', 'Heap', 'Design', 'Greedy', 'Sliding Window', 'Backtracking',
 ];
 
-const selectClass = [
-  'h-10 px-3 rounded-md text-sm border border-neutral-300 bg-neutral-100 text-neutral-900',
-  'text-neutral-800 cursor-pointer',
-  'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500',
-  'transition-colors duration-150',
-].join(' ');
-
 export default function DsaFilterBar({ search, topic, difficulty, status, onChange, onClear, hasActiveFilters }) {
   return (
     <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
@@ -28,7 +21,7 @@ export default function DsaFilterBar({ search, topic, difficulty, status, onChan
       <select
         value={topic}
         onChange={(e) => onChange('topic', e.target.value)}
-        className={selectClass}
+        className="select-base"
         aria-label="Filter by topic"
       >
         <option value="">All Topics</option>
@@ -38,7 +31,7 @@ export default function DsaFilterBar({ search, topic, difficulty, status, onChan
       <select
         value={difficulty}
         onChange={(e) => onChange('difficulty', e.target.value)}
-        className={selectClass}
+        className="select-base"
         aria-label="Filter by difficulty"
       >
         <option value="">All Difficulties</option>
@@ -50,7 +43,7 @@ export default function DsaFilterBar({ search, topic, difficulty, status, onChan
       <select
         value={status}
         onChange={(e) => onChange('status', e.target.value)}
-        className={selectClass}
+        className="select-base"
         aria-label="Filter by status"
       >
         <option value="">All Statuses</option>
@@ -60,9 +53,7 @@ export default function DsaFilterBar({ search, topic, difficulty, status, onChan
       </select>
 
       {hasActiveFilters && (
-        <Button variant="ghost" size="md" onClick={onClear}>
-          Clear
-        </Button>
+        <Button variant="ghost" size="md" onClick={onClear}>Clear</Button>
       )}
     </div>
   );

@@ -1,56 +1,70 @@
 const CHIPS = [
-  { label: 'Improve my Resume',   icon: '📄' },
-  { label: 'Career Roadmap',      icon: '🗺️' },
-  { label: 'DSA Roadmap',         icon: '🧮' },
-  { label: 'HR Interview Tips',   icon: '🎯' },
-  { label: 'Skills to Build',     icon: '🛠️' },
-  { label: 'Resume Review',       icon: '🔍' },
-  { label: 'Mock Interview',      icon: '🎤' },
-  { label: 'Product Companies',   icon: '🏢' },
-  { label: 'Service Companies',   icon: '💼' },
-  { label: 'Placement Plan',      icon: '✨' },
+  { label: 'Improve my Resume',   icon: '📄', bg: 'rgba(59,130,246,0.12)' },
+  { label: 'Career Roadmap',      icon: '🗺️', bg: 'rgba(16,185,129,0.12)' },
+  { label: 'DSA Roadmap',         icon: '🧮', bg: 'rgba(139,92,246,0.12)' },
+  { label: 'HR Interview Tips',   icon: '🎯', bg: 'rgba(239,68,68,0.12)'  },
+  { label: 'Skills to Build',     icon: '🛠️', bg: 'rgba(245,158,11,0.12)' },
+  { label: 'Resume Review',       icon: '🔍', bg: 'rgba(6,182,212,0.12)'  },
+  { label: 'Mock Interview',      icon: '🎤', bg: 'rgba(236,72,153,0.12)' },
+  { label: 'Product Companies',   icon: '🏢', bg: 'rgba(99,102,241,0.12)' },
+  { label: 'Service Companies',   icon: '💼', bg: 'rgba(20,184,166,0.12)' },
+  { label: 'Placement Plan',      icon: '✨', bg: 'rgba(99,102,241,0.18)' },
 ];
 
 export default function EmptyState({ onChipClick }) {
   return (
-    <div className="min-h-full flex flex-col items-center justify-center px-8 py-14 text-center select-none">
-      {/* Animated icon */}
-      <div
-        className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6 animate-pop-in"
-        style={{
-          background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
-        }}
-      >
-        <svg className="w-10 h-10 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
-        </svg>
+    <div className="relative overflow-hidden min-h-full flex flex-col items-center justify-center px-8 py-14 text-center select-none">
+      {/* Ambient glow */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] rounded-full blur-3xl"
+          style={{ background: 'radial-gradient(ellipse, rgba(99,102,241,0.07) 0%, transparent 70%)' }}
+        />
+      </div>
+
+      {/* Icon */}
+      <div className="relative mb-7 animate-pop-in">
+        <div className="w-24 h-24 rounded-3xl gradient-brand flex items-center justify-center shadow-glow">
+          <svg className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
+          </svg>
+        </div>
+        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-success-500 border-2 border-neutral-50 flex items-center justify-center">
+          <span className="w-1.5 h-1.5 rounded-full bg-white" />
+        </span>
       </div>
 
       <h2
-        className="text-2xl font-bold text-neutral-900 mb-2 animate-fade-slide-up"
+        className="text-3xl font-bold text-neutral-900 mb-3 animate-fade-slide-up"
         style={{ animationDelay: '60ms' }}
       >
-        👋 Hi, I'm your AI Career Coach
+        Your{' '}
+        <span className="text-gradient-brand">AI Career Coach</span>
       </h2>
       <p
-        className="text-sm text-neutral-500 max-w-md mb-8 leading-relaxed animate-fade-slide-up"
+        className="text-sm text-neutral-500 max-w-sm mb-10 leading-relaxed animate-fade-slide-up"
         style={{ animationDelay: '100ms' }}
       >
-        Ask anything about placements, resumes, interviews, skills, career goals or next steps.
+        Ask anything about placements, resumes, interviews, skills, and career goals. I'm here to help.
       </p>
 
       {/* Suggestion chips */}
-      <div className="flex flex-wrap gap-2.5 justify-center max-w-[620px]">
-        {CHIPS.map(({ label, icon }, i) => (
+      <div className="flex flex-wrap gap-2 justify-center max-w-[640px]">
+        {CHIPS.map(({ label, icon, bg }, i) => (
           <button
             key={label}
             type="button"
             onClick={() => onChipClick(label)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-full border border-brand-200 text-brand-400 bg-brand-50 hover:bg-brand-50/80 hover:border-brand-300 hover:shadow-sm active:scale-95 transition-all duration-150 animate-fade-slide-up"
-            style={{ animationDelay: `${140 + i * 35}ms` }}
+            className="inline-flex items-center gap-2 px-3.5 py-2 text-sm rounded-2xl glass-surface border border-white/10 text-neutral-700 hover:border-brand-500/30 hover:text-brand-400 hover:-translate-y-0.5 hover:shadow-glow-sm active:scale-95 transition-all duration-200 animate-fade-slide-up"
+            style={{ animationDelay: `${140 + i * 30}ms` }}
           >
-            <span>{icon}</span>
+            <span
+              className="w-5 h-5 rounded-lg flex items-center justify-center text-xs flex-shrink-0"
+              style={{ background: bg }}
+            >
+              {icon}
+            </span>
             {label}
           </button>
         ))}

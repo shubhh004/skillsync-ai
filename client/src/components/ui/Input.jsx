@@ -18,15 +18,14 @@ export default function Input({
       onChange={onChange}
       disabled={disabled}
       className={[
-        'w-full h-10 px-3 rounded-lg text-sm',
-        'bg-neutral-100 border',
+        'w-full h-10 px-3.5 rounded-xl text-sm',
+        'bg-white/5 transition-all duration-200',
         'placeholder:text-neutral-400 text-neutral-800',
-        'transition-colors duration-150',
-        'focus:outline-none focus:ring-2 focus:ring-offset-0',
+        'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:bg-white/10',
         'disabled:opacity-40 disabled:cursor-not-allowed',
         error
-          ? 'border-danger-500 focus:ring-danger-500'
-          : 'border-neutral-300 focus:border-brand-500 focus:ring-brand-500/40',
+          ? 'border border-danger-500 focus:ring-danger-500/40 focus:border-danger-500'
+          : 'border border-neutral-300 focus:border-brand-500 focus:ring-brand-500/40',
         className,
       ].join(' ')}
       {...props}

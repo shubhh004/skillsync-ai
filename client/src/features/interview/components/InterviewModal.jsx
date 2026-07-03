@@ -3,15 +3,6 @@ import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Label from '../../../components/ui/Label';
 
-const SELECT_CLASS = [
-  'w-full h-10 px-3 rounded-md text-sm border border-neutral-300 bg-neutral-100 text-neutral-900',
-  'text-neutral-800 cursor-pointer',
-  'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500',
-  'transition-colors duration-150',
-].join(' ');
-
-const TEXTAREA_CLASS = 'w-full px-3 py-2.5 rounded-md text-sm border border-neutral-300 bg-neutral-100 text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500 transition-colors duration-150 resize-none';
-
 const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
 const STATUSES     = ['Scheduled', 'In Progress', 'Completed'];
 
@@ -61,56 +52,35 @@ export default function InterviewModal({ mode, initial, onClose, onSave }) {
   const isEdit = mode === 'edit';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-neutral-0 rounded-xl shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
+    <div className="modal-overlay">
+      <div className="modal-backdrop" onClick={onClose} aria-hidden="true" />
+
+      <div className="modal-panel max-w-md">
+        <div className="modal-header">
           <h2 className="text-base font-semibold text-neutral-900">
             {isEdit ? 'Edit Interview' : 'Create Interview'}
           </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
-          >
+          <button type="button" onClick={onClose} className="modal-close" aria-label="Close">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+        <form onSubmit={handleSubmit} className="modal-body">
           <div>
             <Label htmlFor="im-role">Role</Label>
-            <Input
-              id="im-role"
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              placeholder="Software Engineer"
-            />
+            <Input id="im-role" name="role" value={form.role} onChange={handleChange} placeholder="Software Engineer" />
           </div>
+
           <div>
             <Label htmlFor="im-company">Company</Label>
-            <Input
-              id="im-company"
-              name="company"
-              value={form.company}
-              onChange={handleChange}
-              placeholder="Google"
-            />
+            <Input id="im-company" name="company" value={form.company} onChange={handleChange} placeholder="Google" />
           </div>
+
           <div>
             <Label htmlFor="im-difficulty">Difficulty</Label>
-            <select
-              id="im-difficulty"
-              name="difficulty"
-              value={form.difficulty}
-              onChange={handleChange}
-              className={SELECT_CLASS}
-            >
+            <select id="im-difficulty" name="difficulty" value={form.difficulty} onChange={handleChange} className="select-base w-full">
               {DIFFICULTIES.map((d) => <option key={d} value={d}>{d}</option>)}
             </select>
           </div>
@@ -119,29 +89,16 @@ export default function InterviewModal({ mode, initial, onClose, onSave }) {
             <>
               <div>
                 <Label htmlFor="im-status">Status</Label>
-                <select
-                  id="im-status"
-                  name="status"
-                  value={form.status}
-                  onChange={handleChange}
-                  className={SELECT_CLASS}
-                >
+                <select id="im-status" name="status" value={form.status} onChange={handleChange} className="select-base w-full">
                   {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
+
               <div>
-                <Label htmlFor="im-score">Score</Label>
-                <Input
-                  id="im-score"
-                  name="score"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={form.score}
-                  onChange={handleChange}
-                  placeholder="0"
-                />
+                <Label htmlFor="im-score">Score (0–100)</Label>
+                <Input id="im-score" name="score" type="number" min="0" max="100" value={form.score} onChange={handleChange} placeholder="0" />
               </div>
+
               <div>
                 <Label htmlFor="im-feedback">Feedback</Label>
                 <textarea
@@ -151,20 +108,18 @@ export default function InterviewModal({ mode, initial, onClose, onSave }) {
                   onChange={handleChange}
                   placeholder="Notes or feedback from the interview..."
                   rows={3}
-                  className={TEXTAREA_CLASS}
+                  className="textarea-base"
                 />
               </div>
             </>
           )}
 
-          {error && (
-            <p className="text-sm text-danger-700 bg-danger-100 px-3 py-2 rounded-md">{error}</p>
-          )}
+          {error && <p className="modal-error">{error}</p>}
 
-          <div className="flex justify-end gap-3 pt-1">
+          <div className="modal-footer">
             <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={saving}>
-              {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Interview'}
+            <Button type="submit" isLoading={saving}>
+              {isEdit ? 'Save Changes' : 'Create Interview'}
             </Button>
           </div>
         </form>
