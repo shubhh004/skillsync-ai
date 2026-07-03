@@ -2,7 +2,7 @@ import Input from '../../../components/ui/Input';
 import Button from '../../../components/ui/Button';
 
 const selectClass = [
-  'h-10 px-3 rounded-md text-sm border border-neutral-300 bg-white',
+  'h-10 px-3 rounded-md text-sm border border-neutral-300 bg-neutral-100 text-neutral-900',
   'text-neutral-800 cursor-pointer',
   'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500',
   'transition-colors duration-150',

@@ -177,7 +177,7 @@ export default function Profile() {
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-medium text-neutral-500">Profile completion</span>
-                    <span className="text-xs font-semibold text-brand-600">{pct}%</span>
+                    <span className="text-xs font-semibold text-brand-400">{pct}%</span>
                   </div>
                   <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
                     <div

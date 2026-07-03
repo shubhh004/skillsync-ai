@@ -30,20 +30,20 @@ export default function RecentActivity({ problems = [] }) {
 
   return (
     <Card padding={false}>
-      <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between">
+      <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-neutral-900">Recent Activity</h3>
-        <Link to="/dsa" className="text-xs text-brand-600 hover:underline">View all</Link>
+        <Link to="/dsa" className="text-xs text-brand-400 hover:underline">View all</Link>
       </div>
 
       {recent.length === 0 ? (
         <div className="px-6 py-10 text-center">
           <p className="text-sm text-neutral-500">No activity yet.</p>
-          <Link to="/dsa" className="mt-2 inline-block text-sm text-brand-600 hover:underline">
+          <Link to="/dsa" className="mt-2 inline-block text-sm text-brand-400 hover:underline">
             Add your first problem →
           </Link>
         </div>
       ) : (
-        <ul className="divide-y divide-neutral-100">
+        <ul className="divide-y divide-neutral-200">
           {recent.map((p) => (
             <li key={p._id} className="flex items-start gap-4 px-6 py-4">
               <span className={`mt-2 flex-shrink-0 w-2 h-2 rounded-full ${statusDot[p.status] || 'bg-neutral-400'}`} />

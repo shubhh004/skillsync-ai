@@ -4,13 +4,13 @@ import Input from '../../../components/ui/Input';
 import Label from '../../../components/ui/Label';
 
 const SELECT_CLASS = [
-  'w-full h-10 px-3 rounded-md text-sm border border-neutral-300 bg-white',
+  'w-full h-10 px-3 rounded-md text-sm border border-neutral-300 bg-neutral-100 text-neutral-900',
   'text-neutral-800 cursor-pointer',
   'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500',
   'transition-colors duration-150',
 ].join(' ');
 
-const TEXTAREA_CLASS = 'w-full px-3 py-2.5 rounded-md text-sm border border-neutral-300 bg-white text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500 transition-colors duration-150 resize-none';
+const TEXTAREA_CLASS = 'w-full px-3 py-2.5 rounded-md text-sm border border-neutral-300 bg-neutral-100 text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500 transition-colors duration-150 resize-none';
 
 const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
 const STATUSES     = ['Scheduled', 'In Progress', 'Completed'];
@@ -63,7 +63,7 @@ export default function InterviewModal({ mode, initial, onClose, onSave }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-white rounded-xl shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-neutral-0 rounded-xl shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
           <h2 className="text-base font-semibold text-neutral-900">

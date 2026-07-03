@@ -27,7 +27,7 @@ export default function RoadmapForm({ onSubmit, loading }) {
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pop-in"
-            style={{ background: 'linear-gradient(135deg, #e0eaff 0%, #c2d4ff 100%)' }}>
+            style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)' }}>
             <svg className="w-8 h-8 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
             </svg>
@@ -45,7 +45,7 @@ export default function RoadmapForm({ onSubmit, loading }) {
               value={form.targetCompany}
               onChange={e => set('targetCompany', e.target.value)}
               placeholder="e.g. Google, TCS, Deloitte… or leave blank"
-              className="w-full px-3 py-2.5 text-sm rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+              className="w-full px-3 py-2.5 text-sm rounded-lg border border-neutral-300 bg-neutral-100 text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
             />
             {/* Quick-pick chips */}
             <div className="flex flex-wrap gap-1.5 mt-2">
@@ -57,7 +57,7 @@ export default function RoadmapForm({ onSubmit, loading }) {
                   className={`px-2.5 py-1 text-xs rounded-full border transition-colors ${
                     form.targetCompany === c
                       ? 'bg-brand-600 text-white border-brand-600'
-                      : 'border-neutral-200 text-neutral-600 hover:bg-neutral-50'
+                      : 'border-neutral-200 text-neutral-600 hover:bg-neutral-200'
                   }`}
                 >
                   {c}
@@ -75,7 +75,7 @@ export default function RoadmapForm({ onSubmit, loading }) {
               onChange={e => set('targetRole', e.target.value)}
               placeholder="e.g. Software Engineer, Backend Developer..."
               required
-              className="w-full px-3 py-2.5 text-sm rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+              className="w-full px-3 py-2.5 text-sm rounded-lg border border-neutral-300 bg-neutral-100 text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
             />
           </div>
 
@@ -86,7 +86,7 @@ export default function RoadmapForm({ onSubmit, loading }) {
               <select
                 value={form.timeline}
                 onChange={e => set('timeline', e.target.value)}
-                className="w-full px-3 py-2.5 text-sm rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-neutral-300 bg-neutral-100 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand-500"
               >
                 {TIMELINES.map(t => <option key={t}>{t}</option>)}
               </select>
@@ -96,7 +96,7 @@ export default function RoadmapForm({ onSubmit, loading }) {
               <select
                 value={form.skillLevel}
                 onChange={e => set('skillLevel', e.target.value)}
-                className="w-full px-3 py-2.5 text-sm rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-neutral-300 bg-neutral-100 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand-500"
               >
                 {SKILL_LEVELS.map(l => <option key={l}>{l}</option>)}
               </select>
@@ -117,7 +117,7 @@ export default function RoadmapForm({ onSubmit, loading }) {
             style={
               loading || !form.targetRole.trim()
                 ? undefined
-                : { background: 'linear-gradient(135deg, #3d6ef6 0%, #2240d8 100%)' }
+                : { background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }
             }
           >
             {loading ? (

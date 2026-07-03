@@ -16,7 +16,7 @@ const SECTION_LABELS = {
 // 4-tier: 90+ green, 70+ blue, 50+ amber, <50 red
 function scoreStyle(pct) {
   if (pct >= 90) return { text: 'text-success-600', stroke: '#16a34a', bar: 'bg-success-500', accent: '#f0fdf4' };
-  if (pct >= 70) return { text: 'text-brand-600',   stroke: '#2563eb', bar: 'bg-brand-500',   accent: '#eff6ff' };
+  if (pct >= 70) return { text: 'text-brand-400',   stroke: '#6366f1', bar: 'bg-brand-500',   accent: '#1e1b4b' };
   if (pct >= 50) return { text: 'text-warning-600', stroke: '#ca8a04', bar: 'bg-warning-500', accent: '#fefce8' };
   return          { text: 'text-danger-600',         stroke: '#dc2626', bar: 'bg-danger-500',  accent: '#fef2f2' };
 }
@@ -233,7 +233,7 @@ function QualityInsights({ qualityScore, technicalKeywordCount, actionVerbCount,
       <div className="grid grid-cols-3 gap-2">
         <div className="flex flex-col items-center px-2 py-2.5 rounded-lg bg-brand-50">
           <span className="text-base font-bold text-brand-700">{technicalKeywordCount}</span>
-          <span className="text-xs text-brand-600 mt-0.5 text-center leading-tight">Tech Keywords</span>
+          <span className="text-xs text-brand-400 mt-0.5 text-center leading-tight">Tech Keywords</span>
         </div>
         <div className="flex flex-col items-center px-2 py-2.5 rounded-lg bg-success-50">
           <span className="text-base font-bold text-success-700">{actionVerbCount}</span>
@@ -245,7 +245,7 @@ function QualityInsights({ qualityScore, technicalKeywordCount, actionVerbCount,
         </div>
       </div>
       {impactMetrics.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-neutral-100">
+        <div className="mt-3 pt-3 border-t border-neutral-200">
           <p className="text-xs text-neutral-500 mb-1.5">Detected impact phrases:</p>
           <div className="flex flex-wrap gap-1.5">
             {impactMetrics.slice(0, 6).map((m, i) => (
@@ -393,7 +393,7 @@ export default function AtsCheckerView() {
         <div>
           <p className="text-sm font-semibold text-neutral-700 mb-1">Your resume is empty</p>
           <p className="text-sm text-neutral-500 max-w-xs">
-            Switch to the <span className="font-medium text-brand-600">Builder</span> tab, fill in your details, and save to see your ATS score.
+            Switch to the <span className="font-medium text-brand-400">Builder</span> tab, fill in your details, and save to see your ATS score.
           </p>
         </div>
       </Card>
@@ -476,7 +476,7 @@ export default function AtsCheckerView() {
             onChange={e => { setJdText(e.target.value); setMatchData(null); setMatchError(null); }}
             placeholder="Paste the full job description here..."
             rows={6}
-            className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-y transition"
+            className="w-full rounded-lg border border-neutral-200 bg-neutral-100 px-3 py-2.5 text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-y transition"
           />
           <Button onClick={analyze} disabled={!jdText.trim() || matchLoading} size="sm">
             {matchLoading ? 'Analyzing...' : 'Analyze Match'}

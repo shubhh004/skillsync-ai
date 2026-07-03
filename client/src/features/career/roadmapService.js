@@ -86,7 +86,7 @@ export function downloadRoadmapPDF(roadmap) {
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Helvetica Neue', sans-serif; font-size: 10pt; color: #1a1a1a; line-height: 1.5; }
 .header { border-bottom: 2px solid #2a52eb; padding-bottom: 8px; margin-bottom: 12px; }
-.header h1 { font-size: 16pt; font-weight: 700; color: #2240d8; }
+.header h1 { font-size: 16pt; font-weight: 700; color: #6366f1; }
 .header .meta { font-size: 8pt; color: #666; margin-top: 3px; }
 h2 { font-size: 11pt; font-weight: 700; margin-top: 14px; margin-bottom: 5px; color: #1f2937; border-bottom: 1px solid #e4e7ed; padding-bottom: 3px; }
 h3 { font-size: 9.5pt; font-weight: 600; margin-top: 10px; margin-bottom: 4px; color: #374151; }

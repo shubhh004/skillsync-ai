@@ -1,23 +1,26 @@
 import Card from '../../../components/ui/Card';
 
+// Template thumbnails use hardcoded colors so they look like mini white documents
+// regardless of app theme. The neutral classes on bg-* would be remapped to dark
+// values in the dark theme, making the thumbnails invisible on white.
 const templates = [
   {
     id: 1,
     label: 'Classic',
     preview: (
-      <div className="space-y-1 p-2">
-        <div className="h-2 w-3/4 bg-neutral-800 rounded" />
-        <div className="h-1 w-1/2 bg-neutral-300 rounded" />
-        <div className="mt-2 h-px bg-neutral-300" />
-        <div className="mt-1 space-y-0.5">
-          <div className="h-1 w-1/3 bg-neutral-500 rounded" />
-          <div className="h-1 w-full bg-neutral-200 rounded" />
-          <div className="h-1 w-5/6 bg-neutral-200 rounded" />
+      <div style={{ padding: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div style={{ height: '8px', width: '75%', background: '#1F2937', borderRadius: '2px' }} />
+        <div style={{ height: '4px', width: '50%', background: '#9CA3AF', borderRadius: '2px' }} />
+        <div style={{ height: '1px', background: '#D1D5DB', margin: '4px 0 2px' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <div style={{ height: '4px', width: '33%', background: '#6B7280', borderRadius: '2px' }} />
+          <div style={{ height: '4px', width: '100%', background: '#E5E7EB', borderRadius: '2px' }} />
+          <div style={{ height: '4px', width: '83%', background: '#E5E7EB', borderRadius: '2px' }} />
         </div>
-        <div className="mt-2 h-px bg-neutral-300" />
-        <div className="mt-1 space-y-0.5">
-          <div className="h-1 w-1/3 bg-neutral-500 rounded" />
-          <div className="h-1 w-full bg-neutral-200 rounded" />
+        <div style={{ height: '1px', background: '#D1D5DB', margin: '2px 0' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <div style={{ height: '4px', width: '33%', background: '#6B7280', borderRadius: '2px' }} />
+          <div style={{ height: '4px', width: '100%', background: '#E5E7EB', borderRadius: '2px' }} />
         </div>
       </div>
     ),
@@ -26,19 +29,19 @@ const templates = [
     id: 2,
     label: 'Modern',
     preview: (
-      <div className="space-y-1 p-2">
-        <div className="bg-brand-600 rounded px-1.5 py-1 space-y-0.5">
-          <div className="h-2 w-3/4 bg-white/80 rounded" />
-          <div className="h-1 w-1/2 bg-white/50 rounded" />
+      <div style={{ padding: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div style={{ background: '#4338CA', borderRadius: '3px', padding: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <div style={{ height: '8px', width: '75%', background: 'rgba(255,255,255,0.8)', borderRadius: '2px' }} />
+          <div style={{ height: '4px', width: '50%', background: 'rgba(255,255,255,0.5)', borderRadius: '2px' }} />
         </div>
-        <div className="mt-1 space-y-0.5">
-          <div className="h-1 w-1/3 bg-brand-500 rounded" />
-          <div className="h-1 w-full bg-neutral-200 rounded" />
-          <div className="h-1 w-5/6 bg-neutral-200 rounded" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '2px' }}>
+          <div style={{ height: '4px', width: '33%', background: '#6366F1', borderRadius: '2px' }} />
+          <div style={{ height: '4px', width: '100%', background: '#E5E7EB', borderRadius: '2px' }} />
+          <div style={{ height: '4px', width: '83%', background: '#E5E7EB', borderRadius: '2px' }} />
         </div>
-        <div className="mt-1 space-y-0.5">
-          <div className="h-1 w-1/3 bg-brand-500 rounded" />
-          <div className="h-1 w-full bg-neutral-200 rounded" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <div style={{ height: '4px', width: '33%', background: '#6366F1', borderRadius: '2px' }} />
+          <div style={{ height: '4px', width: '100%', background: '#E5E7EB', borderRadius: '2px' }} />
         </div>
       </div>
     ),
@@ -58,17 +61,18 @@ export default function TemplateSelector({ activeTemplate, onSelect }) {
             className={[
               'flex-1 rounded-lg border-2 overflow-hidden transition-colors duration-150 text-left',
               activeTemplate === id
-                ? 'border-brand-600'
+                ? 'border-brand-500'
                 : 'border-neutral-200 hover:border-neutral-300',
             ].join(' ')}
           >
-            <div className="bg-white">{preview}</div>
+            {/* White document thumbnail — isolated from app theme */}
+            <div style={{ background: '#ffffff' }}>{preview}</div>
             <div
               className={[
                 'px-2 py-1 text-xs font-medium text-center',
                 activeTemplate === id
-                  ? 'bg-brand-600 text-white'
-                  : 'bg-neutral-50 text-neutral-600',
+                  ? 'bg-brand-500 text-white'
+                  : 'bg-neutral-200 text-neutral-600',
               ].join(' ')}
             >
               {label}

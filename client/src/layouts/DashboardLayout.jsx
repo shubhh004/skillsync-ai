@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
 
-export default function DashboardLayout({ children, title = 'Dashboard' }) {
+export default function DashboardLayout({ children, title = 'Dashboard', noPadding = false }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -19,7 +19,7 @@ export default function DashboardLayout({ children, title = 'Dashboard' }) {
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <TopNavbar title={title} onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <main className={noPadding ? 'flex-1 flex flex-col overflow-hidden' : 'flex-1 overflow-y-auto p-4 sm:p-6'}>
           {children}
         </main>
       </div>

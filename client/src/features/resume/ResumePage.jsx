@@ -165,7 +165,7 @@ export default function ResumePage() {
               className={[
                 'px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
                 pageTab === key
-                  ? 'border-brand-600 text-brand-600'
+                  ? 'border-brand-600 text-brand-400'
                   : 'border-transparent text-neutral-500 hover:text-neutral-700',
               ].join(' ')}
             >
@@ -191,7 +191,7 @@ export default function ResumePage() {
                     'flex-1 py-2 text-sm font-medium capitalize transition-colors',
                     activeView === v
                       ? 'bg-brand-600 text-white'
-                      : 'bg-white text-neutral-600 hover:bg-neutral-50',
+                      : 'bg-neutral-0 text-neutral-600 hover:bg-neutral-200',
                   ].join(' ')}
                 >
                   {v}
@@ -213,18 +213,18 @@ export default function ResumePage() {
                     return (
                       <div
                         key={key}
-                        className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden"
+                        className="bg-neutral-0 rounded-xl border border-neutral-200 shadow-sm overflow-hidden"
                       >
                         <button
                           type="button"
                           onClick={() => toggleSection(key)}
-                          className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-neutral-50 transition-colors"
+                          className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-neutral-200 transition-colors"
                         >
                           <span className="text-sm font-semibold text-neutral-800">{label}</span>
                           <ChevronIcon open={isOpen} />
                         </button>
                         {isOpen && (
-                          <div className="px-5 pb-5 border-t border-neutral-100 pt-4">
+                          <div className="px-5 pb-5 border-t border-neutral-200 pt-4">
                             <Component
                               data={resumeData[key]}
                               onChange={handleSectionChange(key)}
@@ -244,7 +244,7 @@ export default function ResumePage() {
                   <AtsScoreCard />
                 </div>
                 <div
-                  className="rounded-xl border border-neutral-200 overflow-hidden shadow-sm"
+                  className="resume-preview-container rounded-xl border border-neutral-200 overflow-hidden shadow-sm"
                   style={{ maxHeight: 'calc(100vh - 22rem)', overflowY: 'auto' }}
                 >
                   <ResumePreview data={resumeData} template={activeTemplate} />

@@ -115,7 +115,7 @@ function PlacementReadiness({ data, score }) {
       <div className="grid grid-cols-4 gap-3">
         {pillars.map(({ label, pct, link }) => (
           <Link key={label} to={link} className="group text-center">
-            <p className="text-sm font-semibold text-neutral-800 group-hover:text-brand-600 transition-colors">{pct}%</p>
+            <p className="text-sm font-semibold text-neutral-800 group-hover:text-brand-400 transition-colors">{pct}%</p>
             <p className="text-xs text-neutral-400 mt-0.5">{label}</p>
           </Link>
         ))}
@@ -150,7 +150,7 @@ function RoadmapProgressWidget() {
           </div>
           <Link
             to="/career"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-brand-600 bg-brand-50 hover:bg-brand-100 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-brand-400 bg-brand-50 hover:bg-brand-100 transition-colors"
           >
             Generate →
           </Link>
@@ -178,7 +178,7 @@ function RoadmapProgressWidget() {
           <span className={`text-lg font-bold ${scoreColor}`}>{roadmap.readinessScore}%</span>
           <Link
             to="/career"
-            className="text-xs text-brand-600 hover:underline font-medium"
+            className="text-xs text-brand-400 hover:underline font-medium"
           >
             View →
           </Link>
@@ -232,7 +232,7 @@ function WeeklyGoalsCard({ weekly }) {
   const resumeDone = weekly.resumeUpdated;
   return (
     <Card padding={false}>
-      <div className="px-5 py-4 border-b border-neutral-100">
+      <div className="px-5 py-4 border-b border-neutral-200">
         <h3 className="text-sm font-semibold text-neutral-900">Weekly Goals</h3>
         <p className="text-xs text-neutral-400 mt-0.5">Resets every 7 days</p>
       </div>
@@ -269,26 +269,26 @@ const DIFF_BADGE = {
 function UpcomingCard({ upcoming }) {
   return (
     <Card padding={false}>
-      <div className="px-5 py-4 border-b border-neutral-100 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-neutral-900">Upcoming</h3>
-        <Link to="/interview" className="text-xs text-brand-600 hover:underline">View all</Link>
+        <Link to="/interview" className="text-xs text-brand-400 hover:underline">View all</Link>
       </div>
       {upcoming.length === 0 ? (
         <div className="px-5 py-8 text-center space-y-2">
           <p className="text-sm text-neutral-400">No upcoming interviews.</p>
           <Link
             to="/interview"
-            className="inline-flex items-center gap-1 text-sm text-brand-600 hover:underline font-medium"
+            className="inline-flex items-center gap-1 text-sm text-brand-400 hover:underline font-medium"
           >
             Schedule one →
           </Link>
         </div>
       ) : (
-        <ul className="divide-y divide-neutral-100">
+        <ul className="divide-y divide-neutral-200">
           {upcoming.map((iv) => (
             <li key={iv._id} className="flex items-start gap-3 px-5 py-3.5">
               <div className="mt-0.5 w-7 h-7 rounded-full bg-brand-50 flex items-center justify-center flex-shrink-0">
-                <svg className="w-3.5 h-3.5 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-3.5 h-3.5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
@@ -315,7 +315,7 @@ function UpcomingCard({ upcoming }) {
 // ─── Job Summary ──────────────────────────────────────────────────────────────
 const JOB_STATUS_ORDER = ['Applied', 'OA', 'Interview', 'HR', 'Offer', 'Accepted', 'Rejected'];
 const JOB_STATUS_COLOR = {
-  Applied:   'bg-brand-50    text-brand-700',
+  Applied:   'bg-brand-50    text-brand-400',
   OA:        'bg-neutral-100 text-neutral-600',
   Interview: 'bg-warning-100 text-warning-700',
   HR:        'bg-warning-100 text-warning-700',
@@ -335,11 +335,11 @@ function JobSummaryCard({ jobs }) {
       className="cursor-pointer hover:-translate-y-0.5 transition-transform duration-200"
       onClick={() => navigate('/jobs')}
     >
-      <div className="px-5 py-4 border-b border-neutral-100 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-neutral-900">Job Applications</h3>
         <Link
           to="/jobs"
-          className="text-xs text-brand-600 hover:underline"
+          className="text-xs text-brand-400 hover:underline"
           onClick={(e) => e.stopPropagation()}
         >
           View all
@@ -350,7 +350,7 @@ function JobSummaryCard({ jobs }) {
           <p className="text-sm text-neutral-400">No jobs tracked yet.</p>
           <Link
             to="/jobs"
-            className="inline-flex items-center gap-1 text-sm text-brand-600 hover:underline font-medium"
+            className="inline-flex items-center gap-1 text-sm text-brand-400 hover:underline font-medium"
             onClick={(e) => e.stopPropagation()}
           >
             Track your first application →
@@ -391,11 +391,11 @@ function InterviewSummaryCard({ interviews }) {
       className="cursor-pointer hover:-translate-y-0.5 transition-transform duration-200"
       onClick={() => navigate('/interview')}
     >
-      <div className="px-5 py-4 border-b border-neutral-100 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-neutral-200 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-neutral-900">AI Interviews</h3>
         <Link
           to="/interview"
-          className="text-xs text-brand-600 hover:underline"
+          className="text-xs text-brand-400 hover:underline"
           onClick={(e) => e.stopPropagation()}
         >
           View all
@@ -406,7 +406,7 @@ function InterviewSummaryCard({ interviews }) {
           <p className="text-sm text-neutral-400">No interviews completed yet.</p>
           <Link
             to="/interview"
-            className="inline-flex items-center gap-1 text-sm text-brand-600 hover:underline font-medium"
+            className="inline-flex items-center gap-1 text-sm text-brand-400 hover:underline font-medium"
             onClick={(e) => e.stopPropagation()}
           >
             Start your first interview →
@@ -423,7 +423,7 @@ function InterviewSummaryCard({ interviews }) {
               <p className="text-base font-bold text-neutral-800">{interviews.completed}</p>
               <p className="text-xs text-neutral-400">Completed</p>
             </div>
-            <div className="text-center border-x border-neutral-100">
+            <div className="text-center border-x border-neutral-200">
               <p className={`text-base font-bold ${scoreColor}`}>{interviews.avgScore}</p>
               <p className="text-xs text-neutral-400">Avg Score</p>
             </div>
@@ -461,7 +461,7 @@ function AchievementBadges({ data }) {
         {earned.map(({ id, icon, label }) => (
           <span
             key={id}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 border border-brand-100"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand-50 text-brand-400 border border-brand-100"
           >
             {icon} {label}
           </span>
@@ -473,7 +473,7 @@ function AchievementBadges({ data }) {
 
 // ─── Recent Activity ──────────────────────────────────────────────────────────
 const ACTIVITY_STYLE = {
-  dsa:       { icon: 'text-brand-600   bg-brand-50',    label: 'DSA'       },
+  dsa:       { icon: 'text-brand-400   bg-brand-50',    label: 'DSA'       },
   job:       { icon: 'text-warning-700 bg-warning-100', label: 'Job'       },
   interview: { icon: 'text-success-700 bg-success-100', label: 'Interview' },
   resume:    { icon: 'text-neutral-600 bg-neutral-100', label: 'Resume'    },
@@ -505,7 +505,7 @@ const ACTIVITY_SVG = {
 function RecentActivityCard({ items }) {
   return (
     <Card padding={false}>
-      <div className="px-5 py-4 border-b border-neutral-100">
+      <div className="px-5 py-4 border-b border-neutral-200">
         <h3 className="text-sm font-semibold text-neutral-900">Recent Activity</h3>
       </div>
       {items.length === 0 ? (
@@ -513,7 +513,7 @@ function RecentActivityCard({ items }) {
           <p className="text-sm text-neutral-400">No activity yet. Start by adding a DSA problem or logging a job.</p>
         </div>
       ) : (
-        <ul className="divide-y divide-neutral-100">
+        <ul className="divide-y divide-neutral-200">
           {items.map((item, i) => {
             const style = ACTIVITY_STYLE[item.type] || ACTIVITY_STYLE.dsa;
             return (

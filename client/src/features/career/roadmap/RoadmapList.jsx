@@ -30,14 +30,14 @@ function EmptyList() {
 
 export default function RoadmapList({ roadmaps, loading, activeId, onSelect, onNew, onDelete }) {
   return (
-    <aside className="flex flex-col h-full border-r border-neutral-200 bg-white">
+    <aside className="flex flex-col h-full border-r border-neutral-200 bg-neutral-100">
       {/* Header */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-neutral-200 flex-shrink-0">
         <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">My Roadmaps</h2>
         <button
           type="button"
           onClick={onNew}
-          className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg text-brand-600 bg-brand-50 hover:bg-brand-100 transition-colors duration-150"
+          className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg text-brand-400 bg-brand-50 hover:bg-brand-50/80 transition-colors duration-150"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -72,7 +72,7 @@ export default function RoadmapList({ roadmaps, loading, activeId, onSelect, onN
                       'w-full text-left rounded-lg px-3 py-2.5 group relative transition-all duration-150',
                       isActive
                         ? 'bg-brand-50 border border-brand-100'
-                        : 'hover:bg-neutral-50 border border-transparent',
+                        : 'hover:bg-neutral-200 border border-transparent',
                     ].join(' ')}
                   >
                     {isActive && (
@@ -80,7 +80,7 @@ export default function RoadmapList({ roadmaps, loading, activeId, onSelect, onN
                     )}
                     <div className="flex items-start justify-between gap-2 pl-0.5">
                       <div className="min-w-0 flex-1">
-                        <p className={`text-xs font-semibold truncate ${isActive ? 'text-brand-700' : 'text-neutral-800'}`}>
+                        <p className={`text-xs font-semibold truncate ${isActive ? 'text-brand-400' : 'text-neutral-700'}`}>
                           {rm.targetCompany || rm.targetRole}
                         </p>
                         {rm.targetCompany && (

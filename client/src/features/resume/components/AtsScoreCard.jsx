@@ -15,7 +15,7 @@ export default function AtsScoreCard() {
     <Card padding={false} className="p-4">
       <div className="flex items-center justify-between mb-1">
         <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">ATS Score</p>
-        <span className="text-lg font-bold text-brand-600">{score}<span className="text-xs text-neutral-400 font-normal">/100</span></span>
+        <span className="text-lg font-bold text-brand-400">{score}<span className="text-xs text-neutral-400 font-normal">/100</span></span>
       </div>
 
       <div className="h-2 bg-neutral-100 rounded-full overflow-hidden mb-4">

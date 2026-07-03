@@ -44,12 +44,12 @@ export default function Home() {
       <section className="py-20 sm:py-28">
         <Container>
           <div className="max-w-2xl mx-auto text-center">
-            <span className="inline-block px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-sm font-medium mb-6 border border-brand-100">
+            <span className="inline-block px-3 py-1 rounded-full bg-brand-50 text-brand-400 text-sm font-medium mb-6 border border-brand-100">
               Built for placement season
             </span>
             <h1 className="text-4xl sm:text-5xl font-bold text-neutral-900 leading-tight tracking-tight">
               Ace placements with{' '}
-              <span className="text-brand-600">AI-powered</span> preparation
+              <span className="text-brand-400">AI-powered</span> preparation
             </h1>
             <p className="mt-6 text-lg text-neutral-500 leading-relaxed">
               SkillSync AI is your all-in-one placement toolkit — DSA tracking, resume building,
@@ -72,7 +72,7 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="py-16 bg-white border-t border-neutral-100">
+      <section className="py-16 bg-neutral-100 border-t border-neutral-200">
         <Container>
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900">

@@ -1,7 +1,7 @@
 import Card from '../../../components/ui/Card';
 
 const config = [
-  { status: 'Applied',   color: 'text-brand-600',   bg: 'bg-brand-50',    bar: 'bg-brand-500'   },
+  { status: 'Applied',   color: 'text-brand-400',   bg: 'bg-brand-50',    bar: 'bg-brand-500'   },
   { status: 'Interview', color: 'text-warning-700',  bg: 'bg-warning-100', bar: 'bg-warning-500' },
   { status: 'Offer',     color: 'text-success-700',  bg: 'bg-success-100', bar: 'bg-success-500' },
   { status: 'Rejected',  color: 'text-danger-700',   bg: 'bg-danger-100',  bar: 'bg-danger-500'  },

@@ -10,7 +10,7 @@ function parseInline(text) {
     if (m.index > last) parts.push(<span key={last}>{text.slice(last, m.index)}</span>);
     const t = m[0];
     if (t.startsWith('`')) {
-      parts.push(<code key={m.index} className="bg-neutral-100 text-brand-600 rounded px-1 py-0.5 text-[0.82em] font-mono border border-neutral-200">{t.slice(1,-1)}</code>);
+      parts.push(<code key={m.index} className="bg-neutral-200 text-brand-400 rounded px-1 py-0.5 text-[0.82em] font-mono border border-neutral-300">{t.slice(1,-1)}</code>);
     } else {
       parts.push(<strong key={m.index} className="font-semibold text-neutral-900">{t.slice(2,-2)}</strong>);
     }
@@ -107,9 +107,9 @@ function ChecklistPanel({ roadmapId, checklist, onChange }) {
   const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
-    <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden">
+    <div className="bg-neutral-0 border border-neutral-200 rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100 bg-neutral-50">
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-200 bg-neutral-100">
         <div>
           <h3 className="text-sm font-semibold text-neutral-900">Progress Checklist</h3>
           <p className="text-xs text-neutral-500 mt-0.5">{done}/{total} tasks completed {saving && '· saving…'}</p>
@@ -126,15 +126,15 @@ function ChecklistPanel({ roadmapId, checklist, onChange }) {
         />
       </div>
       {/* Items */}
-      <ul className="divide-y divide-neutral-50 max-h-80 overflow-y-auto">
+      <ul className="divide-y divide-neutral-200 max-h-80 overflow-y-auto">
         {checklist.map((item, idx) => (
           <li key={idx}>
-            <label className="flex items-start gap-3 px-5 py-3 cursor-pointer hover:bg-neutral-50 transition-colors">
+            <label className="flex items-start gap-3 px-5 py-3 cursor-pointer hover:bg-neutral-100 transition-colors">
               <input
                 type="checkbox"
                 checked={item.done}
                 onChange={() => toggle(idx)}
-                className="mt-0.5 w-4 h-4 rounded border-neutral-300 text-brand-600 focus:ring-brand-500 flex-shrink-0 cursor-pointer"
+                className="mt-0.5 w-4 h-4 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 flex-shrink-0 cursor-pointer"
               />
               <span className={`text-sm leading-snug ${item.done ? 'line-through text-neutral-400' : 'text-neutral-700'}`}>
                 {item.text}
@@ -172,7 +172,7 @@ export default function RoadmapView({ roadmap: initialRoadmap, onRegenerate, onD
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-5 space-y-5">
         {/* Header card */}
-        <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-5">
+        <div className="bg-neutral-0 rounded-xl border border-neutral-200 shadow-sm p-5">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="min-w-0">
               <h2 className="text-lg font-bold text-neutral-900 truncate">{roadmap.targetRole}</h2>
@@ -202,7 +202,7 @@ export default function RoadmapView({ roadmap: initialRoadmap, onRegenerate, onD
               type="button"
               onClick={onRegenerate}
               disabled={regenerating}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-brand-200 text-brand-700 bg-brand-50 hover:bg-brand-100 transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-brand-200 text-brand-400 bg-brand-50 hover:bg-brand-50/80 transition-colors disabled:opacity-50"
             >
               <svg className={`w-3.5 h-3.5 ${regenerating ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -212,7 +212,7 @@ export default function RoadmapView({ roadmap: initialRoadmap, onRegenerate, onD
             <button
               type="button"
               onClick={() => downloadRoadmapPDF(roadmap)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-neutral-200 text-neutral-700 bg-white hover:bg-neutral-50 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-neutral-200 text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -245,7 +245,7 @@ export default function RoadmapView({ roadmap: initialRoadmap, onRegenerate, onD
               className={[
                 'px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
                 activeTab === key
-                  ? 'border-brand-600 text-brand-600'
+                  ? 'border-brand-500 text-brand-400'
                   : 'border-transparent text-neutral-500 hover:text-neutral-700',
               ].join(' ')}
             >
@@ -256,7 +256,7 @@ export default function RoadmapView({ roadmap: initialRoadmap, onRegenerate, onD
 
         {/* Tab content */}
         {activeTab === 'roadmap' ? (
-          <div className="bg-white rounded-xl border border-neutral-200 shadow-sm px-5 py-5 animate-fade-slide-up">
+          <div className="bg-neutral-0 rounded-xl border border-neutral-200 shadow-sm px-5 py-5 animate-fade-slide-up">
             <div className="space-y-1">
               {renderMarkdown(roadmap.content)}
             </div>

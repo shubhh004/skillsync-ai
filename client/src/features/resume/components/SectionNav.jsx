@@ -68,8 +68,8 @@ export default function SectionNav({ activeSection, onSelect }) {
             className={[
               'flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap flex-shrink-0 transition-colors duration-100',
               active
-                ? 'bg-brand-600 text-white'
-                : 'bg-white border border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900',
+                ? 'bg-brand-500 text-white'
+                : 'bg-neutral-0 border border-neutral-200 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900',
             ].join(' ')}
           >
             {icon}

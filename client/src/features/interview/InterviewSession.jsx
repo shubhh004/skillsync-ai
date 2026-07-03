@@ -14,14 +14,14 @@ const QUESTION_COUNT = 10;
 const SECONDS_PER_QUESTION = 120;
 
 const SELECT_CLASS = [
-  'w-full h-10 px-3 rounded-md text-sm border border-neutral-300 bg-white',
+  'w-full h-10 px-3 rounded-md text-sm border border-neutral-300 bg-neutral-100 text-neutral-900',
   'text-neutral-800 cursor-pointer',
   'focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500',
   'transition-colors duration-150',
 ].join(' ');
 
 const TEXTAREA_CLASS =
-  'w-full px-3 py-2.5 rounded-md text-sm border border-neutral-300 bg-white text-neutral-800 ' +
+  'w-full px-3 py-2.5 rounded-md text-sm border border-neutral-300 bg-neutral-100 text-neutral-900 ' +
   'placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-offset-0 ' +
   'focus:ring-brand-500 focus:border-brand-500 transition-colors duration-150 resize-none';
 
@@ -254,7 +254,7 @@ function ActiveSession({ role, difficulty, questions, onFinish }) {
                   ? 'bg-brand-600 text-white border-brand-600'
                   : answered
                   ? 'bg-success-100 text-success-700 border-success-100'
-                  : 'bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50',
+                  : 'bg-neutral-100 text-neutral-600 border-neutral-200 hover:bg-neutral-200',
               ].join(' ')}
             >
               {i + 1}
@@ -390,7 +390,7 @@ function ResultsScreen({ role, difficulty, questions, answers, evaluation, onRet
               <p className="text-xs text-neutral-500 mt-1">Skipped</p>
             </Card>
             <Card className="text-center py-5">
-              <p className="text-3xl font-bold text-brand-600">{completion}%</p>
+              <p className="text-3xl font-bold text-brand-400">{completion}%</p>
               <p className="text-xs text-neutral-500 mt-1">Completion</p>
             </Card>
           </div>
@@ -563,7 +563,7 @@ function ResultsScreen({ role, difficulty, questions, answers, evaluation, onRet
 
               {/* Follow-up Question (AI) */}
               {ev.followUpQuestion && (
-                <div className="pt-2 border-t border-neutral-100">
+                <div className="pt-2 border-t border-neutral-200">
                   <p className="text-xs font-semibold text-neutral-500 mb-1.5">Follow-up Question</p>
                   <p className="text-sm text-brand-700 font-medium leading-relaxed">{ev.followUpQuestion}</p>
                 </div>

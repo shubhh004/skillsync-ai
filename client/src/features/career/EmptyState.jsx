@@ -13,12 +13,12 @@ const CHIPS = [
 
 export default function EmptyState({ onChipClick }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 text-center select-none">
+    <div className="min-h-full flex flex-col items-center justify-center px-8 py-14 text-center select-none">
       {/* Animated icon */}
       <div
         className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6 animate-pop-in"
         style={{
-          background: 'linear-gradient(135deg, #e0eaff 0%, #c2d4ff 100%)',
+          background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
         }}
       >
         <svg className="w-10 h-10 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -41,13 +41,13 @@ export default function EmptyState({ onChipClick }) {
       </p>
 
       {/* Suggestion chips */}
-      <div className="flex flex-wrap gap-2 justify-center max-w-xl">
+      <div className="flex flex-wrap gap-2.5 justify-center max-w-[620px]">
         {CHIPS.map(({ label, icon }, i) => (
           <button
             key={label}
             type="button"
             onClick={() => onChipClick(label)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-full border border-brand-200 text-brand-700 bg-brand-50 hover:bg-brand-100 hover:border-brand-400 hover:shadow-sm active:scale-95 transition-all duration-150 animate-fade-slide-up"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-full border border-brand-200 text-brand-400 bg-brand-50 hover:bg-brand-50/80 hover:border-brand-300 hover:shadow-sm active:scale-95 transition-all duration-150 animate-fade-slide-up"
             style={{ animationDelay: `${140 + i * 35}ms` }}
           >
             <span>{icon}</span>

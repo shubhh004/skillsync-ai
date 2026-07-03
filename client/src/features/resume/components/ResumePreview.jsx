@@ -1,165 +1,206 @@
 import { groupSkills } from '../../../utils/skillsUtils';
 
-const templateStyles = {
+// ─── Document-scoped palette — completely isolated from app theme ─────────────
+// These are hardcoded hex values, never Tailwind classes. The resume must render
+// correctly regardless of whether the app is in dark or light mode.
+const TEMPLATES = {
   1: {
-    name:    'text-2xl font-bold text-neutral-900 tracking-tight',
-    contact: 'text-neutral-500',
-    heading: 'text-xs font-bold uppercase tracking-widest text-neutral-700 border-b border-neutral-300 pb-0.5 mb-2 mt-5',
-    accent:  'text-neutral-700',
-    link:    'text-neutral-500',
+    name:    { color: '#111827', fontSize: '1.15rem', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.2 },
+    contact: { color: '#4B5563', fontSize: '10px' },
+    link:    { color: '#2563EB', fontSize: '10px' },
+    heading: {
+      color: '#1F2937', fontSize: '9px', fontWeight: 700,
+      textTransform: 'uppercase', letterSpacing: '0.1em',
+      borderBottom: '1px solid #D1D5DB',
+      paddingBottom: '2px', marginBottom: '7px',
+    },
+    bold:   { color: '#111827', fontWeight: 600 },
+    accent: { color: '#374151' },
+    meta:   { color: '#6B7280', flexShrink: 0 },
+    body:   { color: '#374151', lineHeight: 1.6 },
   },
   2: {
-    name:    'text-2xl font-bold text-brand-700 tracking-tight',
-    contact: 'text-brand-400',
-    heading: 'text-xs font-bold uppercase tracking-widest text-brand-600 border-b border-brand-200 pb-0.5 mb-2 mt-5',
-    accent:  'text-brand-600',
-    link:    'text-brand-500',
+    name:    { color: '#312E81', fontSize: '1.15rem', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.2 },
+    contact: { color: '#6366F1', fontSize: '10px' },
+    link:    { color: '#4338CA', fontSize: '10px' },
+    heading: {
+      color: '#312E81', fontSize: '9px', fontWeight: 700,
+      textTransform: 'uppercase', letterSpacing: '0.1em',
+      borderBottom: '1px solid #C7D2FE',
+      paddingBottom: '2px', marginBottom: '7px',
+    },
+    bold:   { color: '#1E1B4B', fontWeight: 600 },
+    accent: { color: '#4338CA' },
+    meta:   { color: '#6366F1', flexShrink: 0 },
+    body:   { color: '#374151', lineHeight: 1.6 },
   },
 };
 
-function PreviewSection({ title, children, style }) {
+const RESET  = { margin: 0, padding: 0 };
+const ROW    = { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' };
+const COL    = { display: 'flex', flexDirection: 'column' };
+const SECTION_TOP = '14px';
+
+function Section({ title, children, s }) {
   return (
-    <div>
-      <h3 className={style.heading}>{title}</h3>
+    <div style={{ marginTop: SECTION_TOP }}>
+      <div style={{ ...s.heading }}>{title}</div>
       {children}
     </div>
   );
 }
 
 export default function ResumePreview({ data, template }) {
-  const s = templateStyles[template] ?? templateStyles[1];
+  const s = TEMPLATES[template] ?? TEMPLATES[1];
   const { personal, education, skills, experience, projects, certifications, achievements } = data;
 
   return (
-    <div className="bg-white p-8 min-h-full font-sans text-sm text-neutral-800 leading-relaxed">
-      {/* Header */}
-      <div className="mb-2">
-        <h1 className={s.name}>{personal.fullName || 'Your Name'}</h1>
-        <p className={`text-xs mt-1 ${s.contact}`}>
+    <div
+      className="resume-preview"
+      style={{
+        // Explicit document base — overrides all inherited theme colors
+        background:  '#FFFFFF',
+        color:       '#111827',
+        fontFamily:  "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontSize:    '11px',
+        lineHeight:  1.6,
+        padding:     '32px',
+        minHeight:   '100%',
+        WebkitTextFillColor: 'initial',
+      }}
+    >
+
+      {/* ── Header ─────────────────────────────────────────── */}
+      <div>
+        <h1 style={{ ...s.name, ...RESET }}>
+          {personal.fullName || 'Your Name'}
+        </h1>
+        <p style={{ ...s.contact, ...RESET, marginTop: '5px' }}>
           {[personal.email, personal.phone, personal.location].filter(Boolean).join(' · ')}
         </p>
         {(personal.linkedin || personal.github || personal.portfolio) && (
-          <p className={`text-xs mt-0.5 ${s.link}`}>
+          <p style={{ ...s.link, ...RESET, marginTop: '2px' }}>
             {[personal.linkedin, personal.github, personal.portfolio].filter(Boolean).join(' · ')}
           </p>
         )}
       </div>
 
-      {/* Summary */}
+      {/* ── Summary ─────────────────────────────────────────── */}
       {personal.summary && (
-        <PreviewSection title="Summary" style={s}>
-          <p className="text-xs text-neutral-700 leading-relaxed">{personal.summary}</p>
-        </PreviewSection>
+        <Section title="Summary" s={s}>
+          <p style={{ ...s.body, ...RESET }}>{personal.summary}</p>
+        </Section>
       )}
 
-      {/* Education */}
+      {/* ── Education ─────────────────────────────────────────── */}
       {education.length > 0 && (
-        <PreviewSection title="Education" style={s}>
-          <div className="space-y-2">
+        <Section title="Education" s={s}>
+          <div style={{ ...COL, gap: '8px' }}>
             {education.map((e) => (
-              <div key={e.id} className="flex justify-between items-start gap-4">
+              <div key={e.id} style={ROW}>
                 <div>
-                  <p className="text-xs font-semibold text-neutral-900">{e.degree || 'Degree'}</p>
-                  <p className={`text-xs ${s.accent}`}>{e.institution}</p>
+                  <p style={{ ...s.bold, ...RESET }}>{e.degree || 'Degree'}</p>
+                  <p style={{ ...s.accent, ...RESET }}>{e.institution}</p>
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="text-xs text-neutral-500">{e.year}</p>
-                  {e.gpa && <p className="text-xs text-neutral-500">{e.gpa}</p>}
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <p style={{ ...s.meta, ...RESET }}>{e.year}</p>
+                  {e.gpa && <p style={{ ...s.meta, ...RESET }}>GPA: {e.gpa}</p>}
                 </div>
               </div>
             ))}
           </div>
-        </PreviewSection>
+        </Section>
       )}
 
-      {/* Experience */}
+      {/* ── Experience ─────────────────────────────────────────── */}
       {experience.length > 0 && (
-        <PreviewSection title="Experience" style={s}>
-          <div className="space-y-3">
+        <Section title="Experience" s={s}>
+          <div style={{ ...COL, gap: '10px' }}>
             {experience.map((e) => (
               <div key={e.id}>
-                <div className="flex justify-between items-start gap-4">
+                <div style={ROW}>
                   <div>
-                    <p className="text-xs font-semibold text-neutral-900">{e.role || 'Role'}</p>
-                    <p className={`text-xs ${s.accent}`}>{e.company}</p>
+                    <p style={{ ...s.bold, ...RESET }}>{e.role || 'Role'}</p>
+                    <p style={{ ...s.accent, ...RESET }}>{e.company}</p>
                   </div>
-                  <p className="text-xs text-neutral-500 flex-shrink-0">{e.duration}</p>
+                  <p style={{ ...s.meta, ...RESET }}>{e.duration}</p>
                 </div>
                 {e.description && (
-                  <p className="text-xs text-neutral-600 mt-1 leading-relaxed">{e.description}</p>
+                  <p style={{ ...s.body, ...RESET, marginTop: '4px' }}>{e.description}</p>
                 )}
               </div>
             ))}
           </div>
-        </PreviewSection>
+        </Section>
       )}
 
-      {/* Projects */}
+      {/* ── Projects ─────────────────────────────────────────── */}
       {projects.length > 0 && (
-        <PreviewSection title="Projects" style={s}>
-          <div className="space-y-3">
+        <Section title="Projects" s={s}>
+          <div style={{ ...COL, gap: '10px' }}>
             {projects.map((p) => (
               <div key={p.id}>
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <p className="text-xs font-semibold text-neutral-900">{p.title || 'Project'}</p>
-                  {p.tech && <p className={`text-xs ${s.accent}`}>· {p.tech}</p>}
-                  {p.link && <p className={`text-xs ${s.link}`}>· {p.link}</p>}
-                </div>
+                <p style={RESET}>
+                  <span style={s.bold}>{p.title || 'Project'}</span>
+                  {p.tech && <span style={{ ...s.accent, marginLeft: '4px' }}>· {p.tech}</span>}
+                  {p.link && <span style={{ ...s.link, marginLeft: '4px' }}>· {p.link}</span>}
+                </p>
                 {p.description && (
-                  <p className="text-xs text-neutral-600 mt-0.5 leading-relaxed">{p.description}</p>
+                  <p style={{ ...s.body, ...RESET, marginTop: '3px' }}>{p.description}</p>
                 )}
               </div>
             ))}
           </div>
-        </PreviewSection>
+        </Section>
       )}
 
-      {/* Skills */}
+      {/* ── Skills ─────────────────────────────────────────── */}
       {skills.length > 0 && (
-        <PreviewSection title="Skills" style={s}>
-          <div className="space-y-0.5">
+        <Section title="Skills" s={s}>
+          <div style={{ ...COL, gap: '2px' }}>
             {Object.entries(groupSkills(skills)).map(([cat, list]) => (
-              <p key={cat} className="text-xs text-neutral-700">
-                <span className="font-semibold text-neutral-800">{cat}:</span>{' '}
-                {list.join(', ')}
+              <p key={cat} style={{ ...s.body, ...RESET }}>
+                <span style={s.bold}>{cat}:</span>{' '}
+                <span style={{ color: '#374151' }}>{list.join(', ')}</span>
               </p>
             ))}
           </div>
-        </PreviewSection>
+        </Section>
       )}
 
-      {/* Certifications */}
+      {/* ── Certifications ─────────────────────────────────────────── */}
       {certifications.length > 0 && (
-        <PreviewSection title="Certifications" style={s}>
-          <div className="space-y-1">
+        <Section title="Certifications" s={s}>
+          <div style={{ ...COL, gap: '6px' }}>
             {certifications.map((c) => (
-              <div key={c.id} className="flex justify-between items-center gap-4">
+              <div key={c.id} style={{ ...ROW, alignItems: 'center' }}>
                 <div>
-                  <p className="text-xs font-semibold text-neutral-900">{c.name || 'Certificate'}</p>
-                  {c.issuer && <p className={`text-xs ${s.accent}`}>{c.issuer}</p>}
+                  <p style={{ ...s.bold, ...RESET }}>{c.name || 'Certificate'}</p>
+                  {c.issuer && <p style={{ ...s.accent, ...RESET }}>{c.issuer}</p>}
                 </div>
-                {c.year && <p className="text-xs text-neutral-500 flex-shrink-0">{c.year}</p>}
+                {c.year && <p style={{ ...s.meta, ...RESET }}>{c.year}</p>}
               </div>
             ))}
           </div>
-        </PreviewSection>
+        </Section>
       )}
 
-      {/* Achievements */}
+      {/* ── Achievements ─────────────────────────────────────────── */}
       {achievements.length > 0 && (
-        <PreviewSection title="Achievements" style={s}>
-          <div className="space-y-1">
+        <Section title="Achievements" s={s}>
+          <div style={{ ...COL, gap: '6px' }}>
             {achievements.map((a) => (
               <div key={a.id}>
-                <p className="text-xs font-semibold text-neutral-900">{a.title}</p>
+                <p style={{ ...s.bold, ...RESET }}>{a.title}</p>
                 {a.description && (
-                  <p className="text-xs text-neutral-600 mt-0.5">{a.description}</p>
+                  <p style={{ ...s.body, ...RESET, marginTop: '2px' }}>{a.description}</p>
                 )}
               </div>
             ))}
           </div>
-        </PreviewSection>
+        </Section>
       )}
+
     </div>
   );
 }

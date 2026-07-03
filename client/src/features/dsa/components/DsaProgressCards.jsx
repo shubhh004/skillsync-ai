@@ -32,7 +32,7 @@ export default function DsaProgressCards({ problems }) {
         <p className="text-sm font-medium text-neutral-500">Total Logged</p>
         <p className="mt-2 text-3xl font-bold text-neutral-900 leading-none">{total}</p>
         <p className="mt-1 text-xs text-neutral-400">across all topics</p>
-        <p className="mt-4 text-xs font-medium text-brand-600">
+        <p className="mt-4 text-xs font-medium text-brand-400">
           {solvedOf(problems)} solved · {problems.filter((p) => p.status === 'Attempted').length} attempted
         </p>
       </Card>

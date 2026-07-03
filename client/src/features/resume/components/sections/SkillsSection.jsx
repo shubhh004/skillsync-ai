@@ -133,12 +133,12 @@ export default function SkillsSection({ data, onChange }) {
             onKeyDown={handleKeyDown}
             onBlur={() => setTimeout(() => setSuggestions([]), 150)}
             placeholder="Type a skill — or paste comma-separated to add many"
-            className="flex-1 px-3 py-2 text-sm rounded-lg border border-neutral-300 bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+            className="flex-1 px-3 py-2 text-sm rounded-lg border border-neutral-300 bg-neutral-100 text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
           />
           <button
             type="button"
             onClick={addFromInput}
-            className="px-3 py-2 text-sm font-medium rounded-lg border border-neutral-300 text-neutral-700 bg-white hover:bg-neutral-50 hover:border-neutral-400 transition-colors flex-shrink-0"
+            className="px-3 py-2 text-sm font-medium rounded-lg border border-neutral-300 text-neutral-600 bg-neutral-100 hover:bg-neutral-200 hover:border-neutral-300 transition-colors flex-shrink-0"
           >
             Add
           </button>
@@ -148,7 +148,7 @@ export default function SkillsSection({ data, onChange }) {
         {suggestions.length > 0 && (
           <ul
             ref={listRef}
-            className="absolute z-20 left-0 right-10 mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg overflow-y-auto max-h-52 text-sm"
+            className="absolute z-20 left-0 right-10 mt-1 bg-neutral-0 border border-neutral-200 rounded-lg shadow-lg overflow-y-auto max-h-52 text-sm"
           >
             {suggestions.map((s, i) => (
               <li
@@ -156,7 +156,7 @@ export default function SkillsSection({ data, onChange }) {
                 onMouseDown={(e) => { e.preventDefault(); selectSuggestion(s); }}
                 className={[
                   'px-3 py-2 cursor-pointer transition-colors text-neutral-700',
-                  i === activeIdx ? 'bg-brand-50 text-brand-800' : 'hover:bg-neutral-50',
+                  i === activeIdx ? 'bg-brand-50 text-brand-400' : 'hover:bg-neutral-200',
                 ].join(' ')}
               >
                 {highlight(s, input.trim())}

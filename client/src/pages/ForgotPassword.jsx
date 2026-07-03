@@ -32,7 +32,7 @@ export default function ForgotPassword() {
       </form>
 
       <p className="mt-6 text-center text-sm text-neutral-500">
-        <Link to="/login" className="text-brand-600 font-medium hover:underline">
+        <Link to="/login" className="text-brand-400 font-medium hover:underline">
           ← Back to log in
         </Link>
       </p>

@@ -14,10 +14,10 @@ import { getInterviews, createInterview, updateInterview, deleteInterview } from
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const DIFF_COLORS   = { Easy: '#22c55e', Medium: '#eab308', Hard: '#ef4444' };
-const STATUS_COLORS = { Scheduled: '#3d6ef6', 'In Progress': '#eab308', Completed: '#22c55e' };
+const STATUS_COLORS = { Scheduled: '#6366f1', 'In Progress': '#eab308', Completed: '#22c55e' };
 
 const STAT_COLOR = {
-  brand:   { text: 'text-brand-600',   bg: 'bg-brand-50' },
+  brand:   { text: 'text-brand-400',   bg: 'bg-brand-50' },
   success: { text: 'text-success-700', bg: 'bg-success-100' },
   warning: { text: 'text-warning-700', bg: 'bg-warning-100' },
   danger:  { text: 'text-danger-700',  bg: 'bg-danger-100' },
@@ -25,11 +25,11 @@ const STAT_COLOR = {
 };
 
 const FILTER_SELECT =
-  'w-full h-9 px-3 text-sm border border-neutral-300 bg-white text-neutral-700 rounded-md ' +
+  'w-full h-9 px-3 text-sm border border-neutral-300 bg-neutral-100 text-neutral-900 rounded-md ' +
   'cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors';
 
 const FILTER_INPUT =
-  'w-full h-9 px-3 text-sm border border-neutral-300 bg-white text-neutral-700 rounded-md ' +
+  'w-full h-9 px-3 text-sm border border-neutral-300 bg-neutral-100 text-neutral-900 rounded-md ' +
   'placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors';
 
 const formatDate = (d) =>
@@ -159,9 +159,9 @@ function ScoreTrendChart({ data }) {
         <Line
           type="monotone"
           dataKey="score"
-          stroke="#3d6ef6"
+          stroke="#6366f1"
           strokeWidth={2}
-          dot={{ r: 3, fill: '#3d6ef6' }}
+          dot={{ r: 3, fill: '#6366f1' }}
           activeDot={{ r: 5 }}
         />
       </LineChart>
@@ -347,7 +347,7 @@ function InterviewDetailModal({ interview, onClose }) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl max-h-[90vh] flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden"
+        className="w-full max-w-2xl max-h-[90vh] flex flex-col bg-neutral-0 rounded-2xl shadow-lg overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -594,7 +594,7 @@ export default function InterviewPage() {
                 <button
                   type="button"
                   onClick={() => { setSearchRole(''); setSearchCompany(''); setFilterDifficulty(''); setFilterStatus(''); setSortBy('newest'); }}
-                  className="mt-2 text-sm text-brand-600 hover:underline"
+                  className="mt-2 text-sm text-brand-400 hover:underline"
                 >
                   Clear filters
                 </button>

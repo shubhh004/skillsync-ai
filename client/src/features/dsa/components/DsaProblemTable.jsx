@@ -34,9 +34,9 @@ export default function DsaProblemTable({ problems, onEdit, onDelete }) {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-100">
+          <tbody className="divide-y divide-neutral-200">
             {problems.map((problem, index) => (
-              <tr key={problem._id} className="hover:bg-neutral-50 transition-colors">
+              <tr key={problem._id} className="hover:bg-neutral-200 transition-colors">
                 <td className="px-4 py-3.5 text-neutral-400 text-xs">{index + 1}</td>
                 <td className="px-4 py-3.5">
                   {problem.problemUrl ? (
@@ -44,7 +44,7 @@ export default function DsaProblemTable({ problems, onEdit, onDelete }) {
                       href={problem.problemUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="font-medium text-neutral-900 hover:text-brand-600 transition-colors"
+                      className="font-medium text-neutral-900 hover:text-brand-400 transition-colors"
                     >
                       {problem.title}
                     </a>
@@ -69,7 +69,7 @@ export default function DsaProblemTable({ problems, onEdit, onDelete }) {
                       type="button"
                       aria-label="Edit"
                       onClick={() => onEdit(problem)}
-                      className="p-1.5 rounded-md text-neutral-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
+                      className="p-1.5 rounded-md text-neutral-400 hover:text-brand-400 hover:bg-brand-50 transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />

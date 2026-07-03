@@ -37,9 +37,9 @@ export default function JobTable({ jobs, onEdit, onDelete }) {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-100">
+          <tbody className="divide-y divide-neutral-200">
             {jobs.map((job) => (
-              <tr key={job._id} className="hover:bg-neutral-50 transition-colors">
+              <tr key={job._id} className="hover:bg-neutral-200 transition-colors">
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${avatarColor(job.company)}`}>
@@ -50,7 +50,7 @@ export default function JobTable({ jobs, onEdit, onDelete }) {
                         href={job.applicationLink}
                         target="_blank"
                         rel="noreferrer"
-                        className="font-medium text-neutral-900 hover:text-brand-600 transition-colors"
+                        className="font-medium text-neutral-900 hover:text-brand-400 transition-colors"
                       >
                         {job.company}
                       </a>
@@ -74,7 +74,7 @@ export default function JobTable({ jobs, onEdit, onDelete }) {
                       type="button"
                       aria-label="Edit"
                       onClick={() => onEdit(job)}
-                      className="p-1.5 rounded-md text-neutral-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
+                      className="p-1.5 rounded-md text-neutral-400 hover:text-brand-400 hover:bg-brand-50 transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />

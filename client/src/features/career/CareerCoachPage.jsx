@@ -57,28 +57,33 @@ function ErrorCard({ message, onRetry }) {
 
 const ChatHeader = memo(function ChatHeader({ onOpenSidebar }) {
   return (
-    <div className="h-14 flex items-center gap-3 px-4 border-b border-neutral-200 bg-white flex-shrink-0 shadow-sm">
-      <button
-        type="button"
-        onClick={onOpenSidebar}
-        aria-label="Open conversations"
-        className="lg:hidden p-1.5 rounded-lg text-neutral-500 hover:bg-neutral-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
-      >
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-      <div className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm"
-          style={{ background: 'linear-gradient(135deg, #3d6ef6 0%, #2240d8 100%)' }}>
-          <SparkleIcon className="w-4 h-4 text-white" />
-        </div>
-        <div>
-          <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-neutral-900 leading-tight">AI Career Coach</p>
-            <SparkleIcon className="w-3.5 h-3.5 text-brand-400" />
+    /* Full-width bar — content constrained to the same column as messages */
+    <div className="bg-neutral-100 border-b border-neutral-200 flex-shrink-0 shadow-sm">
+      <div className="max-w-[760px] mx-auto px-6 h-16 flex items-center gap-4">
+        <button
+          type="button"
+          onClick={onOpenSidebar}
+          aria-label="Open conversations"
+          className="lg:hidden flex-shrink-0 p-2 rounded-lg text-neutral-500 hover:bg-neutral-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div className="flex items-center gap-3.5">
+          <div
+            className="w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md"
+            style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }}
+          >
+            <SparkleIcon className="w-5 h-5 text-white" />
           </div>
-          <p className="text-[11px] text-neutral-400 leading-tight">Powered by AI</p>
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-bold text-neutral-900 leading-none">AI Career Coach</p>
+              <SparkleIcon className="w-3.5 h-3.5 text-brand-400" />
+            </div>
+            <p className="text-xs text-neutral-400 leading-none mt-1.5">Powered by AI</p>
+          </div>
         </div>
       </div>
     </div>
@@ -187,10 +192,10 @@ export default function CareerCoachPage() {
   ];
 
   return (
-    <DashboardLayout title="AI Career Coach">
-      <div className="flex flex-col h-full -m-4 sm:-m-6 overflow-hidden">
+    <DashboardLayout title="AI Career Coach" noPadding>
+      <div className="flex flex-col flex-1 min-h-0">
         {/* Tab bar */}
-        <div className="flex border-b border-neutral-200 bg-white flex-shrink-0 px-4">
+        <div className="flex border-b border-neutral-200 bg-neutral-100 flex-shrink-0 px-6">
           {TABS.map(({ key, label }) => (
             <button
               key={key}
@@ -199,7 +204,7 @@ export default function CareerCoachPage() {
               className={[
                 'px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap',
                 activeTab === key
-                  ? 'border-brand-600 text-brand-600'
+                  ? 'border-brand-500 text-brand-400'
                   : 'border-transparent text-neutral-500 hover:text-neutral-700',
               ].join(' ')}
             >
@@ -210,12 +215,14 @@ export default function CareerCoachPage() {
 
         {/* Roadmap tab */}
         {activeTab === 'roadmap' && (
-          <RoadmapTab sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <div className="flex-1 min-h-0">
+            <RoadmapTab sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          </div>
         )}
 
         {/* Career Coach tab */}
         {activeTab === 'coach' && (
-          <div className="flex flex-1 overflow-hidden">
+          <div className="flex flex-1 min-h-0">
             {/* Mobile backdrop */}
             {sidebarOpen && (
               <div
@@ -226,7 +233,7 @@ export default function CareerCoachPage() {
             )}
             {/* Sidebar */}
             <div className={[
-              'fixed inset-y-0 left-0 z-40 w-72 lg:relative lg:inset-auto lg:z-auto lg:w-72 lg:flex-shrink-0',
+              'fixed inset-y-0 left-0 z-40 w-[360px] lg:relative lg:inset-auto lg:z-auto lg:w-[360px] lg:flex-shrink-0',
               'transition-transform duration-200 ease-out lg:translate-x-0',
               sidebarOpen ? 'translate-x-0' : '-translate-x-full',
             ].join(' ')}>
@@ -240,15 +247,15 @@ export default function CareerCoachPage() {
               />
             </div>
             {/* Main chat area */}
-            <div className="flex-1 flex flex-col min-w-0 bg-neutral-50">
+            <div className="flex-1 flex flex-col min-w-0 min-h-0 bg-neutral-50">
               <ChatHeader onOpenSidebar={() => setSidebarOpen(true)} />
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto min-h-0">
                 {msgLoading ? (
                   <ChatSkeleton />
                 ) : showEmptyState ? (
                   <EmptyState onChipClick={handleChipClick} />
                 ) : (
-                  <div className="px-4 py-5 space-y-5 max-w-3xl mx-auto w-full">
+                  <div className="max-w-[760px] mx-auto px-6 py-8 space-y-6">
                     {messages.map((msg, i) => (
                       <ChatBubble key={i} role={msg.role} content={msg.content} />
                     ))}
@@ -258,8 +265,8 @@ export default function CareerCoachPage() {
                   </div>
                 )}
               </div>
-              <div className="flex-shrink-0 bg-neutral-50 border-t border-neutral-200 px-4 pb-4 pt-3">
-                <div className="max-w-3xl mx-auto w-full">
+              <div className="flex-shrink-0 bg-neutral-50 border-t border-neutral-200 py-5">
+                <div className="max-w-[760px] mx-auto px-6">
                   <MessageInput
                     value={input}
                     onChange={setInput}

@@ -60,7 +60,7 @@ export default function InterviewCard({ interview, onEdit, onDelete, onView }) {
             type="button"
             aria-label="Edit"
             onClick={(e) => { e.stopPropagation(); onEdit(interview); }}
-            className="p-1.5 rounded-md text-neutral-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
+            className="p-1.5 rounded-md text-neutral-400 hover:text-brand-400 hover:bg-brand-50 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
@@ -90,7 +90,7 @@ export default function InterviewCard({ interview, onEdit, onDelete, onView }) {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-neutral-100 pt-2 space-y-1.5">
+      <div className="border-t border-neutral-200 pt-2 space-y-1.5">
         <div className="flex items-center justify-between text-xs text-neutral-500">
           <span>Score: <span className="font-medium text-neutral-700">{interview.score ?? 0}</span></span>
           <span>{formatDate(interview.createdAt)}</span>

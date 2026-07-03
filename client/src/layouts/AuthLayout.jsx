@@ -7,8 +7,8 @@ export default function AuthLayout({ children, title, subtitle }) {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block text-xl font-bold tracking-tight">
-            <span className="text-brand-600">SkillSync</span>
-            <span className="text-neutral-800"> AI</span>
+            <span className="text-brand-500">SkillSync</span>
+            <span className="text-neutral-700"> AI</span>
           </Link>
           {title && (
             <h1 className="mt-6 text-2xl font-semibold text-neutral-900">{title}</h1>

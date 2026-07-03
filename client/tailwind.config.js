@@ -7,47 +7,50 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ── Primary brand: Indigo ──────────────────────────────────────────────
         brand: {
-          50:  '#f0f4ff',
-          100: '#e0eaff',
-          200: '#c2d4ff',
-          300: '#93b4fd',
-          400: '#6090fa',
-          500: '#3d6ef6',
-          600: '#2a52eb',
-          700: '#2240d8',
-          800: '#2236ae',
-          900: '#213189',
-          950: '#181f54',
+          50:  '#1e1b4b',   // very dark indigo tint (active nav bg)
+          100: '#312e81',
+          200: '#3730a3',
+          300: '#4338ca',
+          400: '#818cf8',   // light indigo text on dark backgrounds
+          500: '#6366f1',   // primary action
+          600: '#6366f1',   // alias kept for backward compat
+          700: '#4f46e5',   // hover / pressed
+          800: '#4338ca',
+          900: '#3730a3',
+          950: '#312e81',
         },
+        // ── Neutral: dark-first scale ──────────────────────────────────────────
         neutral: {
-          0:   '#ffffff',
-          50:  '#f8f9fb',
-          100: '#f1f3f6',
-          200: '#e4e7ed',
-          300: '#cdd2db',
-          400: '#9aa3b2',
-          500: '#6b7585',
-          600: '#4e5868',
-          700: '#374151',
-          800: '#1f2937',
-          900: '#111827',
-          950: '#070d18',
+          0:   '#18181B',   // card / component background (replaces bg-white)
+          50:  '#09090B',   // page background
+          100: '#111827',   // surface: sidebar, navbar, panels
+          200: '#27272A',   // border / divider
+          300: '#3F3F46',   // strong border
+          400: '#71717A',   // icons, timestamps, very muted
+          500: '#A1A1AA',   // secondary muted text
+          600: '#D4D4D8',   // tertiary text
+          700: '#E4E4E7',   // body text
+          800: '#F1F1F3',   // strong body text
+          900: '#F4F4F5',   // headings
+          950: '#FAFAFA',   // highest contrast text
         },
+        // ── Semantic status (dark-friendly tints) ─────────────────────────────
         success: {
-          100: '#dcfce7',
-          500: '#22c55e',
-          700: '#15803d',
+          100: '#14532d',   // dark green tint bg
+          500: '#22c55e',   // green accent
+          700: '#4ade80',   // lighter green text on dark
         },
         warning: {
-          100: '#fef9c3',
-          500: '#eab308',
-          700: '#a16207',
+          100: '#713f12',   // dark amber tint bg
+          500: '#f59e0b',   // amber accent
+          700: '#fbbf24',   // lighter amber text on dark
         },
         danger: {
-          100: '#fee2e2',
-          500: '#ef4444',
-          700: '#b91c1c',
+          100: '#7f1d1d',   // dark red tint bg
+          500: '#ef4444',   // red accent
+          700: '#f87171',   // lighter red text on dark
         },
       },
       fontFamily: {
@@ -55,29 +58,30 @@ export default {
         mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       fontSize: {
-        xs:   ['0.75rem',  { lineHeight: '1rem' }],
-        sm:   ['0.875rem', { lineHeight: '1.25rem' }],
-        base: ['1rem',     { lineHeight: '1.5rem' }],
-        lg:   ['1.125rem', { lineHeight: '1.75rem' }],
-        xl:   ['1.25rem',  { lineHeight: '1.75rem' }],
-        '2xl':['1.5rem',   { lineHeight: '2rem' }],
-        '3xl':['1.875rem', { lineHeight: '2.25rem' }],
-        '4xl':['2.25rem',  { lineHeight: '2.5rem' }],
+        xs:    ['0.75rem',  { lineHeight: '1rem' }],
+        sm:    ['0.875rem', { lineHeight: '1.25rem' }],
+        base:  ['1rem',     { lineHeight: '1.5rem' }],
+        lg:    ['1.125rem', { lineHeight: '1.75rem' }],
+        xl:    ['1.25rem',  { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem',   { lineHeight: '2rem' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
+        '4xl': ['2.25rem',  { lineHeight: '2.5rem' }],
       },
       borderRadius: {
-        sm:   '0.25rem',
+        sm:      '0.25rem',
         DEFAULT: '0.375rem',
-        md:   '0.5rem',
-        lg:   '0.75rem',
-        xl:   '1rem',
-        '2xl':'1.5rem',
-        full: '9999px',
+        md:      '0.5rem',
+        lg:      '0.75rem',
+        xl:      '1rem',
+        '2xl':   '1.5rem',
+        full:    '9999px',
       },
       boxShadow: {
-        sm:  '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-        DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08)',
-        md:  '0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08)',
-        lg:  '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08)',
+        sm:      '0 1px 2px 0 rgb(0 0 0 / 0.5)',
+        DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.6), 0 1px 2px -1px rgb(0 0 0 / 0.5)',
+        md:      '0 4px 6px -1px rgb(0 0 0 / 0.6), 0 2px 4px -2px rgb(0 0 0 / 0.5)',
+        lg:      '0 10px 15px -3px rgb(0 0 0 / 0.7), 0 4px 6px -4px rgb(0 0 0 / 0.5)',
+        glow:    '0 0 24px rgb(99 102 241 / 0.3)',
       },
       spacing: {
         18: '4.5rem',

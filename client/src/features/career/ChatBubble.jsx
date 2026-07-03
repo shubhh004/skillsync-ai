@@ -12,14 +12,14 @@ function parseInline(text) {
       parts.push(
         <code
           key={m.index}
-          className="bg-neutral-100 text-brand-600 rounded px-1 py-0.5 text-[0.82em] font-mono border border-neutral-200"
+          className="bg-neutral-200 text-brand-400 rounded px-1 py-0.5 text-[0.82em] font-mono border border-neutral-300"
         >
           {token.slice(1, -1)}
         </code>
       );
     } else {
       parts.push(
-        <strong key={m.index} className="font-semibold text-neutral-900">
+        <strong key={m.index} className="font-semibold text-neutral-950">
           {token.slice(2, -2)}
         </strong>
       );
@@ -133,7 +133,7 @@ function renderMarkdown(content) {
         <div key={`table-${i}`} className="overflow-x-auto my-3 rounded-lg border border-neutral-200">
           <table className="w-full text-xs border-collapse">
             <thead>
-              <tr className="bg-neutral-50">
+              <tr className="bg-neutral-100">
                 {headers.map((h, hi) => (
                   <th key={hi} className="border-b border-neutral-200 px-3 py-2 text-left font-semibold text-neutral-700">
                     {parseInline(h)}
@@ -143,9 +143,9 @@ function renderMarkdown(content) {
             </thead>
             <tbody>
               {rows.map((row, ri) => (
-                <tr key={ri} className={ri % 2 !== 0 ? 'bg-neutral-50/50' : ''}>
+                <tr key={ri} className={ri % 2 !== 0 ? 'bg-neutral-100/40' : ''}>
                   {row.map((cell, ci) => (
-                    <td key={ci} className="border-b border-neutral-100 px-3 py-1.5 text-neutral-700 last:border-b-0">
+                    <td key={ci} className="border-b border-neutral-200 px-3 py-1.5 text-neutral-700 last:border-b-0">
                       {parseInline(cell)}
                     </td>
                   ))}
@@ -204,7 +204,7 @@ function AIAvatar() {
   return (
     <div
       className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm"
-      style={{ background: 'linear-gradient(135deg, #3d6ef6 0%, #2240d8 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }}
     >
       <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
@@ -235,9 +235,9 @@ const ChatBubble = memo(function ChatBubble({ role, content }) {
         className={`max-w-[82%] px-4 py-3 ${
           isUser
             ? 'rounded-2xl rounded-tr-sm text-white'
-            : 'rounded-2xl rounded-tl-sm bg-white border border-neutral-200 shadow-sm'
+            : 'rounded-2xl rounded-tl-sm bg-neutral-0 border border-neutral-200 shadow-sm'
         }`}
-        style={isUser ? { background: 'linear-gradient(135deg, #3d6ef6 0%, #2240d8 100%)' } : undefined}
+        style={isUser ? { background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' } : undefined}
       >
         {isUser ? (
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{content}</p>

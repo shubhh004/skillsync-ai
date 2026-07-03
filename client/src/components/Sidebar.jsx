@@ -66,7 +66,7 @@ export default function Sidebar({ open, onClose }) {
   return (
     <aside
       className={[
-        'fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-neutral-200 flex flex-col',
+        'fixed inset-y-0 left-0 z-50 w-64 bg-neutral-100 border-r border-neutral-200 flex flex-col',
         'transform transition-transform duration-200 ease-in-out',
         'md:relative md:translate-x-0 md:inset-auto md:z-auto',
         open ? 'translate-x-0' : '-translate-x-full',
@@ -79,8 +79,8 @@ export default function Sidebar({ open, onClose }) {
           onClick={onClose}
           className="text-xl font-bold tracking-tight"
         >
-          <span className="text-brand-600">SkillSync</span>
-          <span className="text-neutral-800"> AI</span>
+          <span className="text-brand-500">SkillSync</span>
+          <span className="text-neutral-700"> AI</span>
         </Link>
       </div>
 
@@ -96,11 +96,11 @@ export default function Sidebar({ open, onClose }) {
               className={[
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150',
                 active
-                  ? 'bg-brand-50 text-brand-700'
-                  : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                  ? 'bg-brand-50 text-brand-400'
+                  : 'text-neutral-500 hover:bg-neutral-200 hover:text-neutral-900',
               ].join(' ')}
             >
-              <span className={active ? 'text-brand-600' : 'text-neutral-400'}>
+              <span className={active ? 'text-brand-500' : 'text-neutral-400'}>
                 {icon}
               </span>
               {label}
@@ -114,18 +114,18 @@ export default function Sidebar({ open, onClose }) {
         <Link
           to="/profile"
           onClick={onClose}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-100 transition-colors duration-150 group"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-neutral-200 transition-colors duration-150 group"
         >
           <UserAvatar src={user?.avatar} name={user?.name} size="md" />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-neutral-900 truncate group-hover:text-brand-700 transition-colors duration-150">
+            <p className="text-sm font-medium text-neutral-900 truncate group-hover:text-brand-400 transition-colors duration-150">
               {user?.name || '—'}
             </p>
             <p className="text-xs text-neutral-500 truncate">
               {user?.email || '—'}
             </p>
           </div>
-          <svg className="w-4 h-4 text-neutral-300 flex-shrink-0 group-hover:text-brand-400 transition-colors duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-4 h-4 text-neutral-400 flex-shrink-0 group-hover:text-brand-400 transition-colors duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </Link>

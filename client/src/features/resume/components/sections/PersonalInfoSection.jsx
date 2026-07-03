@@ -1,7 +1,7 @@
 import Input from '../../../../components/ui/Input';
 import Label from '../../../../components/ui/Label';
 
-const TEXTAREA = 'w-full px-3 py-2.5 rounded-md text-sm border border-neutral-300 bg-white text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500 transition-colors duration-150 resize-none';
+const TEXTAREA = 'w-full px-3 py-2.5 rounded-md text-sm border border-neutral-300 bg-neutral-100 text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-brand-500 focus:border-brand-500 transition-colors duration-150 resize-none';
 
 export default function PersonalInfoSection({ data, onChange }) {
   const handle = (field) => (e) => onChange({ ...data, [field]: e.target.value });

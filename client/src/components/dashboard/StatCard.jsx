@@ -28,7 +28,7 @@ export default function StatCard({ label, value, delta, positive = true, icon = 
   const inner = (
     <Card className={to ? 'cursor-pointer hover:-translate-y-0.5 transition-transform duration-200' : ''}>
       <div className="flex items-start justify-between">
-        <div className="p-2 rounded-lg bg-brand-50 text-brand-600">
+        <div className="p-2 rounded-lg bg-brand-50 text-brand-400">
           {icons[icon]}
         </div>
         <span

@@ -64,7 +64,7 @@ export default function Login() {
           <div className="mt-1.5 text-right">
             <Link
               to="/forgot-password"
-              className="text-xs text-brand-600 hover:underline"
+              className="text-xs text-brand-400 hover:underline"
             >
               Forgot password?
             </Link>
@@ -82,7 +82,7 @@ export default function Login() {
 
       <p className="mt-6 text-center text-sm text-neutral-500">
         Don't have an account?{' '}
-        <Link to="/signup" className="text-brand-600 font-medium hover:underline">
+        <Link to="/signup" className="text-brand-400 font-medium hover:underline">
           Sign up
         </Link>
       </p>

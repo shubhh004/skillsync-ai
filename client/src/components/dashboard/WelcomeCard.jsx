@@ -41,7 +41,7 @@ export default function WelcomeCard({ readiness = null, data = null }) {
             👋 {getGreeting()}, {firstName}!
           </h2>
           {readiness !== null && (
-            <p className="text-xs font-semibold text-brand-600 mt-0.5">
+            <p className="text-xs font-semibold text-brand-400 mt-0.5">
               Placement Readiness: {readiness}%
             </p>
           )}
@@ -50,7 +50,7 @@ export default function WelcomeCard({ readiness = null, data = null }) {
 
         <div className="flex items-center gap-5 sm:flex-shrink-0">
           <div className="text-center">
-            <p className="text-3xl font-bold text-brand-600 leading-none">7</p>
+            <p className="text-3xl font-bold text-brand-400 leading-none">7</p>
             <p className="text-xs text-neutral-500 mt-1">day streak</p>
           </div>
           <div className="h-10 w-px bg-neutral-200" />
