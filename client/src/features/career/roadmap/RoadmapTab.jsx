@@ -133,7 +133,7 @@ export default function RoadmapTab({ sidebarOpen, setSidebarOpen }) {
   const showEmpty = !listLoading && roadmaps.length === 0 && !showForm;
 
   return (
-    <div className="flex flex-1 overflow-hidden">
+    <div className="flex flex-1 min-h-0 overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div

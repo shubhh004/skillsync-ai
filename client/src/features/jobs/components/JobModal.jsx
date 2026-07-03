@@ -1,10 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Label from '../../../components/ui/Label';
 
 const STATUSES  = ['Applied', 'OA', 'Interview', 'HR', 'Offer', 'Rejected', 'Accepted'];
 const JOB_TYPES = ['Internship', 'Full Time', 'Part Time'];
+
+const STATUS_DOTS = {
+  Applied: '#6366f1', OA: '#818cf8', Interview: '#f59e0b',
+  HR: '#fbbf24', Offer: '#22c55e', Accepted: '#4ade80', Rejected: '#ef4444',
+};
 
 const EMPTY = {
   company: '', role: '', status: 'Applied', location: '',
@@ -29,25 +35,176 @@ function toForm(job) {
   };
 }
 
+// ─── Portal-based select — escapes backdrop-filter stacking context ───────────
+function ModalSelect({ value, onChange, options, placeholder = '' }) {
+  const [open, setOpen]               = useState(false);
+  const [coords, setCoords]           = useState(null);
+  const [highlighted, setHighlighted] = useState(-1);
+  const triggerRef = useRef(null);
+  const panelRef   = useRef(null);
+
+  const openMenu = useCallback(() => {
+    const r = triggerRef.current?.getBoundingClientRect();
+    if (!r) return;
+
+    const PANEL_MAX     = 280;
+    const OFFSET        = 6;
+    const COLLISION_PAD = 16;
+    const spaceBelow    = window.innerHeight - r.bottom - COLLISION_PAD;
+    const spaceAbove    = r.top - COLLISION_PAD;
+    const flipUp        = spaceBelow < PANEL_MAX && spaceAbove > spaceBelow;
+
+    setCoords({
+      left:      r.left,
+      width:     r.width,
+      maxHeight: Math.min(PANEL_MAX, flipUp ? spaceAbove : spaceBelow),
+      top:    flipUp ? undefined : r.bottom + OFFSET,
+      bottom: flipUp ? window.innerHeight - r.top + OFFSET : undefined,
+    });
+    setOpen(true);
+    setHighlighted(-1);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (e) => {
+      if (!triggerRef.current?.contains(e.target) && !panelRef.current?.contains(e.target))
+        setOpen(false);
+    };
+    document.addEventListener('mousedown', close);
+    const dismiss = () => setOpen(false);
+    window.addEventListener('resize', dismiss, { passive: true });
+    window.addEventListener('scroll', dismiss, { passive: true, capture: true });
+    return () => {
+      document.removeEventListener('mousedown', close);
+      window.removeEventListener('resize', dismiss);
+      window.removeEventListener('scroll', dismiss, { capture: true });
+    };
+  }, [open]);
+
+  const select = (val) => { onChange(val); setOpen(false); };
+
+  const handleKeyDown = (e) => {
+    if (!open) {
+      if (['Enter', ' ', 'ArrowDown'].includes(e.key)) { e.preventDefault(); openMenu(); }
+      return;
+    }
+    switch (e.key) {
+      case 'ArrowDown': e.preventDefault(); setHighlighted((h) => Math.min(h + 1, options.length - 1)); break;
+      case 'ArrowUp':   e.preventDefault(); setHighlighted((h) => Math.max(h - 1, 0)); break;
+      case 'Enter':     e.preventDefault(); if (highlighted >= 0 && options[highlighted]) select(options[highlighted].value); break;
+      case 'Escape':    setOpen(false); break;
+      default: break;
+    }
+  };
+
+  const active = options.find((o) => o.value === value);
+
+  const panel = coords && (
+    <div
+      ref={panelRef}
+      role="listbox"
+      className="animate-fade-in"
+      style={{
+        position:  'fixed',
+        top:       coords.top,
+        bottom:    coords.bottom,
+        left:      coords.left,
+        width:     Math.max(coords.width, 180),
+        maxHeight: coords.maxHeight,
+        zIndex:    99999,
+        background:    'rgba(15,15,17,0.98)',
+        backdropFilter:'blur(28px)',
+        WebkitBackdropFilter: 'blur(28px)',
+        border:    '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '0.75rem',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.65), 0 2px 8px rgba(0,0,0,0.3)',
+        overflow:  'hidden',
+      }}
+    >
+      <div className="py-1 overflow-y-auto" style={{ maxHeight: coords.maxHeight }}>
+        {options.map((opt, i) => {
+          const isSelected = value === opt.value;
+          const isHovered  = highlighted === i;
+          return (
+            <div
+              key={opt.value}
+              role="option"
+              aria-selected={isSelected}
+              onClick={() => select(opt.value)}
+              onMouseEnter={() => setHighlighted(i)}
+              className="flex items-center gap-2 mx-1 px-3 py-2 rounded-lg cursor-pointer text-[11px] font-medium transition-colors duration-100"
+              style={{
+                color:      isSelected ? '#a5b4fc' : isHovered ? '#e4e4e7' : '#a1a1aa',
+                background: isSelected ? 'rgba(99,102,241,0.12)' : isHovered ? 'rgba(255,255,255,0.05)' : 'transparent',
+              }}
+            >
+              {opt.dot && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: opt.dot }} />}
+              <span className="flex-1">{opt.label}</span>
+              {isSelected && (
+                <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={openMenu}
+        onKeyDown={handleKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="w-full flex items-center justify-between gap-2 h-10 px-3 rounded-xl text-xs font-medium transition-all duration-150 focus:outline-none"
+        style={{
+          background:    'rgba(24,24,27,0.65)',
+          border:        open ? '1px solid rgba(99,102,241,0.45)' : '1px solid rgba(255,255,255,0.1)',
+          backdropFilter:'blur(16px)',
+          color:         value ? '#d4d4d8' : '#52525b',
+          boxShadow:     open ? '0 0 0 2px rgba(99,102,241,0.12)' : 'none',
+        }}
+      >
+        <span className="flex items-center gap-2 truncate">
+          {active?.dot && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: active.dot }} />}
+          <span>{active?.label ?? placeholder}</span>
+        </span>
+        <svg
+          className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200"
+          style={{ transform: open ? 'rotate(180deg)' : 'none', color: '#52525b' }}
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+
+      {open && createPortal(panel, document.body)}
+    </>
+  );
+}
+
+// ─── Main modal ───────────────────────────────────────────────────────────────
 export default function JobModal({ mode, initial, onClose, onSave }) {
   const [form, setForm]     = useState(EMPTY);
   const [saving, setSaving] = useState(false);
   const [error, setError]   = useState('');
 
-  useEffect(() => {
-    setForm(toForm(initial));
-    setError('');
-  }, [initial, mode]);
+  useEffect(() => { setForm(toForm(initial)); setError(''); }, [initial, mode]);
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const setField = (name, value) =>
+    setForm((prev) => ({ ...prev, [name]: value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.company.trim() || !form.role.trim()) {
-      setError('Company and role are required.');
-      return;
-    }
+    if (!form.company.trim() || !form.role.trim()) { setError('Company and role are required.'); return; }
     setSaving(true);
     setError('');
     try {
@@ -60,13 +217,16 @@ export default function JobModal({ mode, initial, onClose, onSave }) {
     }
   };
 
+  const statusOptions  = STATUSES.map((s) => ({ value: s, label: s, dot: STATUS_DOTS[s] }));
+  const jobTypeOptions = [{ value: '', label: 'Select type' }, ...JOB_TYPES.map((t) => ({ value: t, label: t }))];
+
   return (
     <div className="modal-overlay">
       <div className="modal-backdrop" onClick={onClose} aria-hidden="true" />
 
       <div className="modal-panel max-w-lg">
         <div className="modal-header">
-          <h2 className="text-base font-semibold text-neutral-900">
+          <h2 className="text-base font-semibold" style={{ color: '#e4e4e7' }}>
             {mode === 'add' ? 'Add Application' : 'Edit Application'}
           </h2>
           <button type="button" onClick={onClose} className="modal-close" aria-label="Close">
@@ -91,16 +251,20 @@ export default function JobModal({ mode, initial, onClose, onSave }) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="status">Status</Label>
-              <select id="status" name="status" value={form.status} onChange={handleChange} className="select-base w-full">
-                {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-              </select>
+              <ModalSelect
+                value={form.status}
+                onChange={(v) => setField('status', v)}
+                options={statusOptions}
+              />
             </div>
             <div>
               <Label htmlFor="jobType">Job Type</Label>
-              <select id="jobType" name="jobType" value={form.jobType} onChange={handleChange} className="select-base w-full">
-                <option value="">Select type</option>
-                {JOB_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-              </select>
+              <ModalSelect
+                value={form.jobType}
+                onChange={(v) => setField('jobType', v)}
+                options={jobTypeOptions}
+                placeholder="Select type"
+              />
             </div>
           </div>
 

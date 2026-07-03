@@ -169,7 +169,7 @@ export default function RoadmapView({ roadmap: initialRoadmap, onRegenerate, onD
   const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-5 space-y-5">
         {/* Header card */}
         <div className="bg-neutral-0 rounded-xl border border-neutral-200 shadow-sm p-5">

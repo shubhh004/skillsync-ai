@@ -1,11 +1,11 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from 'recharts';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import Button from '../../components/ui/Button';
-import Card from '../../components/ui/Card';
+import Input from '../../components/ui/Input';
 import InterviewCard from './components/InterviewCard';
 import InterviewModal from './components/InterviewModal';
 import InterviewDeleteDialog from './components/InterviewDeleteDialog';
@@ -13,24 +13,33 @@ import InterviewEmptyState from './components/InterviewEmptyState';
 import { getInterviews, createInterview, updateInterview, deleteInterview } from '../../services/interviewService';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const DIFF_COLORS   = { Easy: '#22c55e', Medium: '#eab308', Hard: '#ef4444' };
-const STATUS_COLORS = { Scheduled: '#6366f1', 'In Progress': '#eab308', Completed: '#22c55e' };
+const DIFF_COLORS   = { Easy: '#22c55e', Medium: '#f59e0b', Hard: '#ef4444' };
+const STATUS_COLORS = { Scheduled: '#6366f1', 'In Progress': '#f59e0b', Completed: '#22c55e' };
 
-const STAT_COLOR = {
-  brand:   { text: 'text-brand-400',   bg: 'bg-brand-50' },
-  success: { text: 'text-success-700', bg: 'bg-success-100' },
-  warning: { text: 'text-warning-700', bg: 'bg-warning-100' },
-  danger:  { text: 'text-danger-700',  bg: 'bg-danger-100' },
-  neutral: { text: 'text-neutral-700', bg: 'bg-neutral-100' },
+const STAT_PALETTE = {
+  brand:   { color: '#818cf8', bg: 'rgba(99,102,241,0.08)',   border: 'rgba(99,102,241,0.2)'   },
+  success: { color: '#4ade80', bg: 'rgba(34,197,94,0.08)',    border: 'rgba(34,197,94,0.2)'    },
+  warning: { color: '#fbbf24', bg: 'rgba(245,158,11,0.08)',   border: 'rgba(245,158,11,0.2)'   },
+  danger:  { color: '#f87171', bg: 'rgba(239,68,68,0.08)',    border: 'rgba(239,68,68,0.2)'    },
+  neutral: { color: '#a1a1aa', bg: 'rgba(113,113,122,0.08)',  border: 'rgba(113,113,122,0.2)'  },
 };
 
-const FILTER_SELECT =
-  'w-full h-9 px-3 text-sm border border-neutral-300 bg-neutral-100 text-neutral-900 rounded-md ' +
-  'cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors';
+const DARK_TOOLTIP = {
+  contentStyle: {
+    background: 'rgba(15,15,17,0.96)',
+    backdropFilter: 'blur(20px)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: 12,
+    fontSize: 11,
+    color: '#d4d4d8',
+    boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+  },
+  labelStyle: { color: '#a1a1aa' },
+  itemStyle:  { color: '#d4d4d8' },
+  cursor:     { stroke: 'rgba(255,255,255,0.06)' },
+};
 
-const FILTER_INPUT =
-  'w-full h-9 px-3 text-sm border border-neutral-300 bg-neutral-100 text-neutral-900 rounded-md ' +
-  'placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors';
+const TICK_STYLE = { fontSize: 10, fill: '#52525b' };
 
 const formatDate = (d) =>
   d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
@@ -38,58 +47,42 @@ const formatDate = (d) =>
 const shortDate = (d) =>
   d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
 
-// ─── Analytics computation ────────────────────────────────────────────────────
+// ─── Analytics ────────────────────────────────────────────────────────────────
 function computeAnalytics(interviews) {
   if (!interviews.length) return null;
 
-  const completed  = interviews.filter((i) => i.status === 'Completed');
-  const scheduled  = interviews.filter((i) => i.status === 'Scheduled');
-  const scores     = interviews.map((i) => i.score || 0);
-  const avgScore   = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-  const highScore  = Math.max(...scores);
+  const completed = interviews.filter((i) => i.status === 'Completed');
+  const scheduled = interviews.filter((i) => i.status === 'Scheduled');
+  const scores    = interviews.map((i) => i.score || 0);
+  const avgScore  = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+  const highScore = Math.max(...scores);
 
-  // Score trend: last 10 by date ascending
   const trendData = [...interviews]
     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
     .slice(-10)
-    .map((iv, idx) => ({
-      label: shortDate(iv.createdAt),
-      index: idx + 1,
-      score: iv.score || 0,
-    }));
+    .map((iv, idx) => ({ label: shortDate(iv.createdAt), index: idx + 1, score: iv.score || 0 }));
 
-  // Difficulty distribution
   const diffCounts = { Easy: 0, Medium: 0, Hard: 0 };
   interviews.forEach((iv) => { if (iv.difficulty) diffCounts[iv.difficulty]++; });
-  const diffData = Object.entries(diffCounts)
-    .filter(([, v]) => v > 0)
-    .map(([name, value]) => ({ name, value }));
+  const diffData = Object.entries(diffCounts).filter(([, v]) => v > 0).map(([name, value]) => ({ name, value }));
 
-  // Status distribution
   const statusCounts = { Scheduled: 0, 'In Progress': 0, Completed: 0 };
   interviews.forEach((iv) => { if (iv.status) statusCounts[iv.status]++; });
-  const statusData = Object.entries(statusCounts)
-    .filter(([, v]) => v > 0)
-    .map(([name, value]) => ({ name, value }));
+  const statusData = Object.entries(statusCounts).filter(([, v]) => v > 0).map(([name, value]) => ({ name, value }));
 
-  // Avg completion %
   const completionPcts = interviews.map((iv) => {
     if (!iv.questions?.length) return 0;
-    const answered = iv.questions.filter((q) => q.answer?.trim()).length;
-    return Math.round((answered / iv.questions.length) * 100);
+    return Math.round((iv.questions.filter((q) => q.answer?.trim()).length / iv.questions.length) * 100);
   });
   const avgCompletion = Math.round(completionPcts.reduce((a, b) => a + b, 0) / completionPcts.length);
 
-  // Avg duration (completed with both timestamps)
   const durations = completed
     .filter((iv) => iv.startedAt && iv.completedAt)
     .map((iv) => Math.round((new Date(iv.completedAt) - new Date(iv.startedAt)) / 60000))
     .filter((d) => d > 0);
   const avgDuration = durations.length
-    ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
-    : null;
+    ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : null;
 
-  // Strongest / Weakest (by difficulty avg score)
   const diffScoreMap = {};
   interviews.forEach((iv) => {
     if (!iv.difficulty) return;
@@ -97,93 +90,74 @@ function computeAnalytics(interviews) {
     diffScoreMap[iv.difficulty].push(iv.score || 0);
   });
   const diffAvgs = Object.entries(diffScoreMap).map(([diff, s]) => ({
-    diff,
-    avg: Math.round(s.reduce((a, b) => a + b, 0) / s.length),
+    diff, avg: Math.round(s.reduce((a, b) => a + b, 0) / s.length),
   }));
   const strongest = diffAvgs.length ? diffAvgs.reduce((a, b) => (a.avg >= b.avg ? a : b)) : null;
   const weakest   = diffAvgs.length ? diffAvgs.reduce((a, b) => (a.avg <= b.avg ? a : b)) : null;
 
   return {
-    total: interviews.length,
-    avgScore,
-    highScore,
-    completedCount: completed.length,
-    scheduledCount: scheduled.length,
-    trendData,
-    diffData,
-    statusData,
-    avgCompletion,
-    avgDuration,
+    total: interviews.length, avgScore, highScore,
+    completedCount: completed.length, scheduledCount: scheduled.length,
+    trendData, diffData, statusData, avgCompletion, avgDuration,
     strongestTopic: strongest?.diff || '—',
     weakestTopic:   weakest?.diff   || '—',
   };
 }
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
+// ─── Stat card ────────────────────────────────────────────────────────────────
 function StatCard({ label, value, suffix = '', color = 'brand' }) {
-  const c = STAT_COLOR[color] || STAT_COLOR.brand;
+  const c = STAT_PALETTE[color] || STAT_PALETTE.brand;
   return (
-    <Card padding={false} className="p-4 text-center">
-      <p className={`text-2xl font-bold ${c.text}`}>
-        {value}{suffix && <span className="text-base font-normal opacity-60 ml-0.5">{suffix}</span>}
+    <div className="card p-4 flex flex-col gap-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
+      <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#52525b' }}>{label}</p>
+      <p className="text-3xl font-bold leading-none tabular-nums" style={{ color: c.color }}>
+        {value}
+        {suffix && <span className="text-base font-normal ml-0.5" style={{ color: c.color, opacity: 0.6 }}>{suffix}</span>}
       </p>
-      <p className="text-xs text-neutral-500 mt-1">{label}</p>
-    </Card>
+    </div>
   );
 }
 
-// ─── Insight Card ─────────────────────────────────────────────────────────────
+// ─── Insight card ─────────────────────────────────────────────────────────────
 function InsightCard({ label, value, color = 'brand' }) {
-  const c = STAT_COLOR[color] || STAT_COLOR.brand;
+  const c = STAT_PALETTE[color] || STAT_PALETTE.brand;
   return (
-    <Card padding={false} className={`p-4 ${c.bg}`}>
-      <p className="text-xs font-medium text-neutral-500 mb-1">{label}</p>
-      <p className={`text-base font-bold ${c.text} truncate`}>{value}</p>
-    </Card>
+    <div className="card p-4" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
+      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: '#52525b' }}>{label}</p>
+      <p className="text-sm font-bold truncate" style={{ color: c.color }}>{value}</p>
+    </div>
   );
 }
 
-// ─── Score Trend Chart ────────────────────────────────────────────────────────
+// ─── Charts ───────────────────────────────────────────────────────────────────
 function ScoreTrendChart({ data }) {
-  if (!data.length) return <p className="text-xs text-neutral-400 py-8 text-center">No data</p>;
+  if (!data.length) return <p className="text-xs py-8 text-center" style={{ color: '#3f3f46' }}>No data yet</p>;
   return (
     <ResponsiveContainer width="100%" height={180}>
       <LineChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-        <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#9aa3b2' }} tickLine={false} axisLine={false} />
-        <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#9aa3b2' }} tickLine={false} axisLine={false} />
-        <Tooltip
-          contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e4e7ed' }}
-          formatter={(v) => [`${v}/100`, 'Score']}
-          labelFormatter={(l) => `Date: ${l}`}
-        />
-        <Line
-          type="monotone"
-          dataKey="score"
-          stroke="#6366f1"
-          strokeWidth={2}
-          dot={{ r: 3, fill: '#6366f1' }}
-          activeDot={{ r: 5 }}
+        <XAxis dataKey="label" tick={TICK_STYLE} tickLine={false} axisLine={false} />
+        <YAxis domain={[0, 100]} tick={TICK_STYLE} tickLine={false} axisLine={false} />
+        <Tooltip {...DARK_TOOLTIP} formatter={(v) => [`${v}/100`, 'Score']} labelFormatter={(l) => `Date: ${l}`} />
+        <Line type="monotone" dataKey="score" stroke="#6366f1" strokeWidth={2}
+          dot={{ r: 3, fill: '#6366f1', stroke: 'rgba(99,102,241,0.4)', strokeWidth: 2 }}
+          activeDot={{ r: 5, fill: '#6366f1', stroke: '#a5b4fc', strokeWidth: 2 }}
         />
       </LineChart>
     </ResponsiveContainer>
   );
 }
 
-// ─── Difficulty Distribution Chart ───────────────────────────────────────────
 function DifficultyChart({ data }) {
-  if (!data.length) return <p className="text-xs text-neutral-400 py-8 text-center">No data</p>;
+  if (!data.length) return <p className="text-xs py-8 text-center" style={{ color: '#3f3f46' }}>No data yet</p>;
   return (
     <ResponsiveContainer width="100%" height={180}>
       <BarChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-        <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#9aa3b2' }} tickLine={false} axisLine={false} />
-        <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: '#9aa3b2' }} tickLine={false} axisLine={false} />
-        <Tooltip
-          contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e4e7ed' }}
-          formatter={(v) => [v, 'Interviews']}
-        />
+        <XAxis dataKey="name" tick={TICK_STYLE} tickLine={false} axisLine={false} />
+        <YAxis allowDecimals={false} tick={TICK_STYLE} tickLine={false} axisLine={false} />
+        <Tooltip {...DARK_TOOLTIP} formatter={(v) => [v, 'Interviews']} />
         <Bar dataKey="value" radius={[4, 4, 0, 0]}>
           {data.map((entry) => (
-            <Cell key={entry.name} fill={DIFF_COLORS[entry.name] || '#9aa3b2'} />
+            <Cell key={entry.name} fill={DIFF_COLORS[entry.name] || '#71717a'} />
           ))}
         </Bar>
       </BarChart>
@@ -191,253 +165,356 @@ function DifficultyChart({ data }) {
   );
 }
 
-// ─── Status Distribution Chart ────────────────────────────────────────────────
 function StatusChart({ data }) {
-  if (!data.length) return <p className="text-xs text-neutral-400 py-8 text-center">No data</p>;
+  if (!data.length) return <p className="text-xs py-8 text-center" style={{ color: '#3f3f46' }}>No data yet</p>;
   return (
     <ResponsiveContainer width="100%" height={180}>
       <PieChart>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          innerRadius={45}
-          outerRadius={72}
-          paddingAngle={3}
-          dataKey="value"
-          label={({ name, percent }) => `${name} ${Math.round(percent * 100)}%`}
-          labelLine={false}
-          fontSize={10}
-        >
+        <Pie data={data} cx="50%" cy="50%" innerRadius={45} outerRadius={72} paddingAngle={3} dataKey="value">
           {data.map((entry) => (
-            <Cell key={entry.name} fill={STATUS_COLORS[entry.name] || '#9aa3b2'} />
+            <Cell key={entry.name} fill={STATUS_COLORS[entry.name] || '#71717a'} />
           ))}
         </Pie>
-        <Tooltip
-          contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e4e7ed' }}
-          formatter={(v, name) => [v, name]}
-        />
+        <Tooltip {...DARK_TOOLTIP} formatter={(v, name) => [v, name]} />
       </PieChart>
     </ResponsiveContainer>
   );
 }
 
-// ─── Analytics Section ────────────────────────────────────────────────────────
+// ─── Analytics section ────────────────────────────────────────────────────────
 function AnalyticsSection({ analytics }) {
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold text-neutral-700">Analytics</h3>
+      <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#52525b' }}>Analytics</p>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <StatCard label="Total Interviews" value={analytics.total}          color="neutral" />
-        <StatCard label="Average Score"    value={analytics.avgScore}       color="brand"   suffix="/100" />
-        <StatCard label="Highest Score"    value={analytics.highScore}      color="success" suffix="/100" />
-        <StatCard label="Completed"        value={analytics.completedCount} color="success" />
-        <StatCard label="Scheduled"        value={analytics.scheduledCount} color="brand"   />
+        <StatCard label="Total"      value={analytics.total}          color="neutral" />
+        <StatCard label="Avg Score"  value={analytics.avgScore}       color="brand"   suffix="/100" />
+        <StatCard label="Best Score" value={analytics.highScore}      color="success" suffix="/100" />
+        <StatCard label="Completed"  value={analytics.completedCount} color="success" />
+        <StatCard label="Scheduled"  value={analytics.scheduledCount} color="brand"   />
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card>
-          <p className="text-xs font-semibold text-neutral-500 mb-3">Score Trend (Last 10)</p>
-          <ScoreTrendChart data={analytics.trendData} />
-        </Card>
-        <Card>
-          <p className="text-xs font-semibold text-neutral-500 mb-3">Difficulty Distribution</p>
-          <DifficultyChart data={analytics.diffData} />
-        </Card>
-        <Card>
-          <p className="text-xs font-semibold text-neutral-500 mb-3">Status Distribution</p>
-          <StatusChart data={analytics.statusData} />
-        </Card>
+        {[
+          { title: 'Score Trend (Last 10)', chart: <ScoreTrendChart data={analytics.trendData} /> },
+          { title: 'Difficulty Distribution', chart: <DifficultyChart data={analytics.diffData} /> },
+          { title: 'Status Distribution',     chart: <StatusChart data={analytics.statusData} /> },
+        ].map(({ title, chart }) => (
+          <div key={title} className="card p-4">
+            <p className="text-[10px] font-semibold uppercase tracking-widest mb-4" style={{ color: '#52525b' }}>{title}</p>
+            {chart}
+          </div>
+        ))}
       </div>
 
-      {/* Insights */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <InsightCard
-          label="Strongest Topic"
-          value={analytics.strongestTopic}
-          color="success"
+        <InsightCard label="Strongest Topic"  value={analytics.strongestTopic} color="success" />
+        <InsightCard label="Weakest Topic"    value={analytics.weakestTopic}   color="danger"  />
+        <InsightCard label="Avg Completion"   value={`${analytics.avgCompletion}%`} color="brand" />
+        <InsightCard label="Avg Duration"     value={analytics.avgDuration ? `${analytics.avgDuration} min` : '—'} color="neutral" />
+      </div>
+    </div>
+  );
+}
+
+// ─── Premium FilterSelect (inline, no new file) ───────────────────────────────
+function FilterSelect({ value, onChange, options, placeholder, minWidth = 148 }) {
+  const [open, setOpen]               = useState(false);
+  const [highlighted, setHighlighted] = useState(-1);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) { setOpen(false); }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const select = (val) => { onChange(val); setOpen(false); };
+
+  const handleKeyDown = (e) => {
+    if (!open) { if (['Enter', ' ', 'ArrowDown'].includes(e.key)) { e.preventDefault(); setOpen(true); setHighlighted(0); } return; }
+    switch (e.key) {
+      case 'ArrowDown': e.preventDefault(); setHighlighted((h) => Math.min(h + 1, options.length - 1)); break;
+      case 'ArrowUp':   e.preventDefault(); setHighlighted((h) => Math.max(h - 1, 0)); break;
+      case 'Enter':     e.preventDefault(); if (highlighted >= 0 && options[highlighted]) select(options[highlighted].value); break;
+      case 'Escape':    setOpen(false); break;
+      default: break;
+    }
+  };
+
+  const active   = options.find((o) => o.value === value);
+  const isActive = !!value;
+
+  return (
+    <div ref={containerRef} className="relative" style={{ minWidth }} onKeyDown={handleKeyDown}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="w-full flex items-center justify-between gap-2 h-10 px-3 rounded-xl text-xs font-medium transition-all duration-150 focus:outline-none"
+        style={{
+          background: isActive ? 'rgba(99,102,241,0.1)' : 'rgba(24,24,27,0.65)',
+          border: isActive ? '1px solid rgba(99,102,241,0.35)' : open ? '1px solid rgba(255,255,255,0.18)' : '1px solid rgba(255,255,255,0.09)',
+          backdropFilter: 'blur(16px)',
+          color: isActive ? '#a5b4fc' : '#71717a',
+          boxShadow: open ? '0 0 0 2px rgba(99,102,241,0.12)' : 'none',
+        }}
+      >
+        <span className="flex items-center gap-2 truncate">
+          {active?.dot && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: active.dot }} />}
+          <span className="truncate">{active?.label ?? placeholder}</span>
+        </span>
+        <svg className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200"
+          style={{ transform: open ? 'rotate(180deg)' : 'none', color: '#52525b' }}
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          className="absolute top-full left-0 mt-1.5 z-50 rounded-xl overflow-hidden animate-fade-in"
+          style={{
+            minWidth: Math.max(minWidth, 160),
+            background: 'rgba(15,15,17,0.96)',
+            backdropFilter: 'blur(28px)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.55)',
+          }}
+          role="listbox"
+        >
+          <div className="py-1">
+            <div role="option" aria-selected={!value} onClick={() => select('')}
+              onMouseEnter={() => setHighlighted(-1)}
+              className="flex items-center justify-between gap-2 mx-1 px-3 py-2 rounded-lg cursor-pointer text-[11px] font-medium transition-colors duration-100"
+              style={{ color: !value ? '#a5b4fc' : '#71717a', background: !value ? 'rgba(99,102,241,0.1)' : 'transparent' }}>
+              <span>{placeholder}</span>
+              {!value && <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>}
+            </div>
+            <div className="mx-2 my-1" style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
+            {options.map((opt, i) => {
+              const isSelected = value === opt.value;
+              const isHovered  = highlighted === i;
+              return (
+                <div key={opt.value} role="option" aria-selected={isSelected}
+                  onClick={() => select(opt.value)} onMouseEnter={() => setHighlighted(i)}
+                  className="flex items-center gap-2 mx-1 px-3 py-2 rounded-lg cursor-pointer text-[11px] font-medium transition-colors duration-100"
+                  style={{
+                    color: isSelected ? '#a5b4fc' : isHovered ? '#e4e4e7' : '#a1a1aa',
+                    background: isSelected ? 'rgba(99,102,241,0.12)' : isHovered ? 'rgba(255,255,255,0.05)' : 'transparent',
+                  }}>
+                  {opt.dot && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: opt.dot }} />}
+                  <span className="flex-1 truncate">{opt.label}</span>
+                  {isSelected && <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Filter bar ───────────────────────────────────────────────────────────────
+const DIFF_OPTIONS   = [{ value: 'Easy', label: 'Easy', dot: '#22c55e' }, { value: 'Medium', label: 'Medium', dot: '#f59e0b' }, { value: 'Hard', label: 'Hard', dot: '#ef4444' }];
+const STATUS_OPTIONS = [{ value: 'Scheduled', label: 'Scheduled', dot: '#6366f1' }, { value: 'In Progress', label: 'In Progress', dot: '#f59e0b' }, { value: 'Completed', label: 'Completed', dot: '#22c55e' }];
+const SORT_OPTIONS   = [{ value: 'newest', label: 'Newest First' }, { value: 'oldest', label: 'Oldest First' }, { value: 'highest', label: 'Highest Score' }, { value: 'lowest', label: 'Lowest Score' }];
+
+function FilterBar({ searchRole, searchCompany, filterDifficulty, filterStatus, sortBy, onChange }) {
+  return (
+    <div className="card p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <Input
+          placeholder="Search by role…"
+          value={searchRole}
+          onChange={(e) => onChange('searchRole', e.target.value)}
         />
-        <InsightCard
-          label="Weakest Topic"
-          value={analytics.weakestTopic}
-          color="danger"
+        <Input
+          placeholder="Filter by company…"
+          value={searchCompany}
+          onChange={(e) => onChange('searchCompany', e.target.value)}
         />
-        <InsightCard
-          label="Avg Completion"
-          value={`${analytics.avgCompletion}%`}
-          color="brand"
+        <FilterSelect
+          value={filterDifficulty}
+          onChange={(v) => onChange('filterDifficulty', v)}
+          options={DIFF_OPTIONS}
+          placeholder="All Difficulties"
+          minWidth={140}
         />
-        <InsightCard
-          label="Avg Duration"
-          value={analytics.avgDuration ? `${analytics.avgDuration} min` : '—'}
-          color="neutral"
+        <FilterSelect
+          value={filterStatus}
+          onChange={(v) => onChange('filterStatus', v)}
+          options={STATUS_OPTIONS}
+          placeholder="All Statuses"
+          minWidth={132}
+        />
+        <FilterSelect
+          value={sortBy}
+          onChange={(v) => onChange('sortBy', v)}
+          options={SORT_OPTIONS}
+          placeholder="Newest First"
+          minWidth={136}
         />
       </div>
     </div>
   );
 }
 
-// ─── Filter Bar ───────────────────────────────────────────────────────────────
-function FilterBar({ searchRole, searchCompany, filterDifficulty, filterStatus, sortBy, onChange }) {
-  const set = (key) => (e) => onChange(key, e.target.value);
+// ─── Detail modal ─────────────────────────────────────────────────────────────
+const DIFF_CONFIG_DET = {
+  Easy:   { dot: '#22c55e', bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.25)',  text: '#22c55e' },
+  Medium: { dot: '#f59e0b', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', text: '#f59e0b' },
+  Hard:   { dot: '#ef4444', bg: 'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.25)',  text: '#f87171' },
+};
+const STATUS_CONFIG_DET = {
+  Scheduled:     { dot: '#6366f1', bg: 'rgba(99,102,241,0.08)',  border: 'rgba(99,102,241,0.25)',  text: '#818cf8' },
+  'In Progress': { dot: '#f59e0b', bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.25)', text: '#f59e0b' },
+  Completed:     { dot: '#22c55e', bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.25)',  text: '#4ade80' },
+};
+
+function DetailBadge({ label, config }) {
+  const c = config[label];
+  if (!c || !label) return null;
   return (
-    <Card padding={false} className="p-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-        <input
-          type="text"
-          placeholder="Search by role…"
-          value={searchRole}
-          onChange={set('searchRole')}
-          className={FILTER_INPUT}
-        />
-        <input
-          type="text"
-          placeholder="Filter by company…"
-          value={searchCompany}
-          onChange={set('searchCompany')}
-          className={FILTER_INPUT}
-        />
-        <select value={filterDifficulty} onChange={set('filterDifficulty')} className={FILTER_SELECT}>
-          <option value="">All Difficulties</option>
-          <option value="Easy">Easy</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
-        </select>
-        <select value={filterStatus} onChange={set('filterStatus')} className={FILTER_SELECT}>
-          <option value="">All Statuses</option>
-          <option value="Scheduled">Scheduled</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Completed">Completed</option>
-        </select>
-        <select value={sortBy} onChange={set('sortBy')} className={FILTER_SELECT}>
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-          <option value="highest">Highest Score</option>
-          <option value="lowest">Lowest Score</option>
-        </select>
-      </div>
-    </Card>
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
+      style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: c.dot }} />
+      {label}
+    </span>
   );
 }
 
-// ─── Detail Modal ─────────────────────────────────────────────────────────────
-const difficultyStyle = {
-  Easy:   'bg-success-100 text-success-700',
-  Medium: 'bg-warning-100 text-warning-700',
-  Hard:   'bg-danger-100 text-danger-700',
-};
-
-const statusStyle = {
-  Scheduled:     'bg-brand-50 text-brand-700',
-  'In Progress': 'bg-warning-100 text-warning-700',
-  Completed:     'bg-success-100 text-success-700',
-};
+function DetailScoreRing({ score }) {
+  const size  = 64;
+  const r     = (size - 8) / 2;
+  const circ  = 2 * Math.PI * r;
+  const pct   = Math.min((score || 0) / 100, 1);
+  const color = score >= 70 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
+  return (
+    <div className="relative flex-shrink-0 mx-auto" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth="6"
+          strokeDasharray={circ} strokeDashoffset={circ * (1 - pct)} strokeLinecap="round"
+          style={{ filter: `drop-shadow(0 0 5px ${color}80)` }} />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-base font-bold leading-none tabular-nums" style={{ color }}>{score ?? 0}</span>
+        <span className="text-[9px] leading-none mt-0.5" style={{ color: '#3f3f46' }}>/100</span>
+      </div>
+    </div>
+  );
+}
 
 function InterviewDetailModal({ interview, onClose }) {
-  const scoreColor =
-    interview.score >= 70 ? '#15803d' :
-    interview.score >= 40 ? '#a16207' : '#b91c1c';
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/40 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-2xl max-h-[90vh] flex flex-col bg-neutral-0 rounded-2xl shadow-lg overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="modal-overlay">
+      <div className="modal-backdrop" onClick={onClose} aria-hidden="true" />
+
+      <div className="modal-panel max-w-2xl">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 px-6 py-4 border-b border-neutral-200 flex-shrink-0">
-          <div className="min-w-0">
-            <h2 className="text-base font-semibold text-neutral-900 truncate">
+        <div className="modal-header">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-semibold truncate" style={{ color: '#e4e4e7' }}>
               {interview.role || 'Mock Interview'}
             </h2>
             {interview.company && (
-              <p className="text-sm text-neutral-500 truncate mt-0.5">{interview.company}</p>
+              <p className="text-xs truncate mt-0.5" style={{ color: '#71717a' }}>{interview.company}</p>
             )}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition-colors flex-shrink-0"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <button type="button" onClick={onClose} className="modal-close flex-shrink-0" aria-label="Close">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        {/* Scrollable body */}
-        <div className="overflow-y-auto px-6 py-5 space-y-5 flex-1">
+        {/* Body */}
+        <div className="modal-body overflow-y-auto" style={{ maxHeight: 'calc(90vh - 130px)' }}>
+
           {/* Badges */}
           <div className="flex flex-wrap gap-2">
-            <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${difficultyStyle[interview.difficulty] ?? 'bg-neutral-100 text-neutral-600'}`}>
-              {interview.difficulty}
-            </span>
-            <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${statusStyle[interview.status] ?? 'bg-neutral-100 text-neutral-600'}`}>
-              {interview.status}
-            </span>
+            <DetailBadge label={interview.difficulty} config={DIFF_CONFIG_DET} />
+            <DetailBadge label={interview.status} config={STATUS_CONFIG_DET} />
           </div>
 
           {/* Stats row */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-4 text-center">
-              <p className="text-2xl font-bold" style={{ color: scoreColor }}>{interview.score ?? 0}</p>
-              <p className="text-xs text-neutral-500 mt-0.5">Score</p>
+            <div className="rounded-2xl p-4 flex flex-col items-center gap-2"
+              style={{ background: 'rgba(24,24,27,0.65)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <DetailScoreRing score={interview.score ?? 0} />
+              <p className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: '#52525b' }}>Score</p>
             </div>
-            <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-4 text-center">
-              <p className="text-sm font-semibold text-neutral-700">{formatDate(interview.createdAt)}</p>
-              <p className="text-xs text-neutral-500 mt-0.5">Created</p>
+            <div className="rounded-2xl p-4 flex flex-col items-center justify-center gap-1 text-center"
+              style={{ background: 'rgba(24,24,27,0.65)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p className="text-sm font-semibold tabular-nums" style={{ color: '#d4d4d8' }}>{formatDate(interview.createdAt)}</p>
+              <p className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: '#52525b' }}>Created</p>
             </div>
-            <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-4 text-center">
-              <p className="text-sm font-semibold text-neutral-700">{formatDate(interview.completedAt)}</p>
-              <p className="text-xs text-neutral-500 mt-0.5">Completed</p>
+            <div className="rounded-2xl p-4 flex flex-col items-center justify-center gap-1 text-center"
+              style={{ background: 'rgba(24,24,27,0.65)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p className="text-sm font-semibold tabular-nums" style={{ color: interview.completedAt ? '#d4d4d8' : '#3f3f46' }}>
+                {formatDate(interview.completedAt)}
+              </p>
+              <p className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: '#52525b' }}>Completed</p>
             </div>
           </div>
 
           {/* Feedback */}
           {interview.feedback && (
             <div>
-              <p className="text-xs font-semibold text-neutral-500 mb-1.5">Feedback</p>
-              <p className="text-sm text-neutral-700 bg-neutral-50 border border-neutral-200 rounded-lg p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-widest mb-2" style={{ color: '#52525b' }}>Feedback</p>
+              <p className="text-sm leading-relaxed rounded-xl p-4"
+                style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', color: '#c7d2fe' }}>
                 {interview.feedback}
               </p>
             </div>
           )}
 
-          {/* Question breakdown */}
+          {/* Questions */}
           {interview.questions && interview.questions.length > 0 && (
             <div className="space-y-3">
-              <p className="text-xs font-semibold text-neutral-500">
+              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#52525b' }}>
                 Questions ({interview.questions.length})
               </p>
               {interview.questions.map((q, i) => {
-                const scoreCls =
-                  q.score >= 70 ? 'bg-success-100 text-success-700' :
-                  q.score >= 40 ? 'bg-warning-100 text-warning-700' :
-                  'bg-danger-100 text-danger-700';
+                const sc     = q.score ?? 0;
+                const scCol  = sc >= 70 ? '#22c55e' : sc >= 40 ? '#f59e0b' : '#ef4444';
+                const scBg   = sc >= 70 ? 'rgba(34,197,94,0.08)'  : sc >= 40 ? 'rgba(245,158,11,0.08)'  : 'rgba(239,68,68,0.08)';
+                const scBord = sc >= 70 ? 'rgba(34,197,94,0.25)'  : sc >= 40 ? 'rgba(245,158,11,0.25)'  : 'rgba(239,68,68,0.25)';
                 return (
-                  <div key={i} className="border border-neutral-200 rounded-xl p-4 space-y-3">
+                  <div key={i} className="rounded-2xl p-4 space-y-3"
+                    style={{ background: 'rgba(24,24,27,0.65)', border: '1px solid rgba(255,255,255,0.08)' }}>
                     <div className="flex items-start justify-between gap-3">
-                      <p className="text-xs text-neutral-400 font-medium pt-0.5">Q{i + 1}</p>
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0 ${scoreCls}`}>
-                        {q.score ?? 0}/100
+                      <span className="inline-flex items-center px-2 py-1 rounded-lg text-[10px] font-bold"
+                        style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', color: '#818cf8' }}>
+                        Q{i + 1}
+                      </span>
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold"
+                        style={{ background: scBg, border: `1px solid ${scBord}`, color: scCol }}>
+                        {sc}/100
                       </span>
                     </div>
-                    <p className="text-sm font-medium text-neutral-900 leading-relaxed">{q.question}</p>
+                    <p className="text-sm font-medium leading-relaxed" style={{ color: '#d4d4d8' }}>{q.question}</p>
                     <div>
-                      <p className="text-xs font-semibold text-neutral-500 mb-1.5">Your Answer</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: '#52525b' }}>Your Answer</p>
                       {q.answer
-                        ? <p className="text-sm text-neutral-700 bg-neutral-50 rounded-lg p-3 whitespace-pre-wrap">{q.answer}</p>
-                        : <p className="text-sm text-neutral-400 italic">No answer provided.</p>}
+                        ? <p className="text-xs leading-relaxed rounded-xl p-3 whitespace-pre-wrap"
+                            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', color: '#a1a1aa' }}>
+                            {q.answer}
+                          </p>
+                        : <p className="text-xs italic" style={{ color: '#3f3f46' }}>No answer provided.</p>
+                      }
                     </div>
                     <div>
-                      <p className="text-xs font-semibold text-neutral-500 mb-1.5">Ideal Answer</p>
-                      <p className="text-sm text-neutral-700 bg-brand-50 border border-brand-100 rounded-lg p-3 whitespace-pre-wrap">
+                      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: '#52525b' }}>Ideal Answer</p>
+                      <p className="text-xs leading-relaxed rounded-xl p-3 whitespace-pre-wrap"
+                        style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', color: '#c7d2fe' }}>
                         {q.idealAnswer}
                       </p>
                     </div>
@@ -449,7 +526,7 @@ function InterviewDetailModal({ interview, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-neutral-200 flex-shrink-0">
+        <div className="px-6 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <Button variant="outline" fullWidth onClick={onClose}>Close</Button>
         </div>
       </div>
@@ -457,11 +534,43 @@ function InterviewDetailModal({ interview, onClose }) {
   );
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
+// ─── Glass toast ──────────────────────────────────────────────────────────────
 function Toast({ message, type }) {
+  const isSuccess = type !== 'error';
   return (
-    <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white ${type === 'error' ? 'bg-danger-700' : 'bg-success-700'}`}>
-      {message}
+    <div
+      className="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium animate-fade-slide-up"
+      style={{
+        background: isSuccess ? 'rgba(20,30,22,0.88)' : 'rgba(30,18,18,0.88)',
+        backdropFilter: 'blur(20px)',
+        border: isSuccess ? '1px solid rgba(34,197,94,0.28)' : '1px solid rgba(239,68,68,0.28)',
+        boxShadow: isSuccess
+          ? '0 0 0 1px rgba(34,197,94,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(34,197,94,0.12)'
+          : '0 0 0 1px rgba(239,68,68,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(239,68,68,0.12)',
+      }}
+    >
+      <span className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold"
+        style={{ background: isSuccess ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)', color: isSuccess ? '#22c55e' : '#ef4444' }}>
+        {isSuccess ? '✓' : '✕'}
+      </span>
+      <span style={{ color: isSuccess ? '#86efac' : '#fca5a5' }}>{message}</span>
+    </div>
+  );
+}
+
+// ─── Page skeleton ────────────────────────────────────────────────────────────
+function PageSkeleton() {
+  return (
+    <div className="space-y-5 animate-fade-in">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {[1, 2, 3, 4, 5].map((i) => <div key={i} className="card h-20 skeleton-shimmer rounded-2xl" />)}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {[1, 2, 3].map((i) => <div key={i} className="card h-52 skeleton-shimmer rounded-2xl" />)}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[1, 2, 3].map((i) => <div key={i} className="card h-52 skeleton-shimmer rounded-2xl" />)}
+      </div>
     </div>
   );
 }
@@ -476,7 +585,6 @@ export default function InterviewPage() {
   const [detailTarget,     setDetailTarget]     = useState(null);
   const [toast,            setToast]            = useState(null);
 
-  // Filter state
   const [searchRole,       setSearchRole]       = useState('');
   const [searchCompany,    setSearchCompany]    = useState('');
   const [filterDifficulty, setFilterDifficulty] = useState('');
@@ -501,10 +609,8 @@ export default function InterviewPage() {
 
   useEffect(() => { fetchInterviews(); }, [fetchInterviews]);
 
-  // Analytics (computed from ALL interviews, not filtered)
   const analytics = useMemo(() => computeAnalytics(interviews), [interviews]);
 
-  // Filtered + sorted list
   const filteredInterviews = useMemo(() => {
     let list = [...interviews];
     if (searchRole)       list = list.filter((i) => (i.role || '').toLowerCase().includes(searchRole.toLowerCase()));
@@ -550,34 +656,50 @@ export default function InterviewPage() {
   const openView   = (iv) => setDetailTarget(iv);
   const closeView  = () => setDetailTarget(null);
 
+  const clearFilters = () => {
+    setSearchRole(''); setSearchCompany('');
+    setFilterDifficulty(''); setFilterStatus(''); setSortBy('newest');
+  };
+  const hasFilters = searchRole || searchCompany || filterDifficulty || filterStatus || sortBy !== 'newest';
+
   return (
     <DashboardLayout title="AI Interviews">
-      <div className="space-y-6">
-        {/* Page header */}
+      <div className="space-y-5">
+
+        {/* ── Page header ──────────────────────────────────────────────────── */}
         <div className="flex items-start justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-bold text-neutral-900">AI Interviews</h2>
-            <p className="mt-0.5 text-sm text-neutral-500">
-              Track your mock interviews, scores, and performance analytics.
-            </p>
+          <div className="flex items-center gap-3.5">
+            <div
+              className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
+              style={{
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 55%, #4338ca 100%)',
+                boxShadow: '0 0 0 1px rgba(99,102,241,0.3), 0 0 20px rgba(99,102,241,0.35), 0 4px 12px rgba(0,0,0,0.4)',
+              }}
+            >
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round"
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold leading-none" style={{ color: '#e4e4e7' }}>AI Interviews</h2>
+              <p className="mt-1 text-xs leading-none" style={{ color: '#52525b' }}>
+                Track mock interviews, scores and analytics
+              </p>
+            </div>
           </div>
-          <Button size="sm" className="flex-shrink-0" onClick={openAdd}>
-            + Create Interview
-          </Button>
+          <Button size="sm" className="flex-shrink-0" onClick={openAdd}>+ Create Interview</Button>
         </div>
 
+        {/* ── Content ──────────────────────────────────────────────────────── */}
         {loading ? (
-          <div className="flex justify-center py-16">
-            <div className="w-8 h-8 rounded-full border-2 border-neutral-200 border-t-brand-600 animate-spin" />
-          </div>
+          <PageSkeleton />
         ) : interviews.length === 0 ? (
           <InterviewEmptyState onAdd={openAdd} />
         ) : (
           <>
-            {/* Analytics */}
             {analytics && <AnalyticsSection analytics={analytics} />}
 
-            {/* Filters */}
             <FilterBar
               searchRole={searchRole}
               searchCompany={searchCompany}
@@ -587,25 +709,40 @@ export default function InterviewPage() {
               onChange={handleFilterChange}
             />
 
-            {/* History grid */}
             {filteredInterviews.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-sm text-neutral-500">No interviews match your filters.</p>
+              <div
+                className="card py-16 relative overflow-hidden text-center"
+                style={{ minHeight: 220 }}
+              >
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{ background: 'radial-gradient(ellipse 50% 40% at 50% 60%, rgba(99,102,241,0.06) 0%, transparent 70%)' }}
+                />
+                <p className="text-sm font-medium mb-2" style={{ color: '#52525b' }}>
+                  No interviews match your filters.
+                </p>
                 <button
                   type="button"
-                  onClick={() => { setSearchRole(''); setSearchCompany(''); setFilterDifficulty(''); setFilterStatus(''); setSortBy('newest'); }}
-                  className="mt-2 text-sm text-brand-400 hover:underline"
+                  onClick={clearFilters}
+                  className="text-xs font-semibold transition-colors duration-150 hover:underline"
+                  style={{ color: '#818cf8' }}
                 >
                   Clear filters
                 </button>
               </div>
             ) : (
-              <>
-                <div className="flex items-center justify-between">
-                  <p className="text-xs text-neutral-400">
-                    {filteredInterviews.length} of {interviews.length} interview{interviews.length !== 1 ? 's' : ''}
-                  </p>
-                </div>
+              <div className="space-y-3">
+                {hasFilters && (
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
+                      style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', color: '#a5b4fc' }}
+                    >
+                      {filteredInterviews.length} result{filteredInterviews.length !== 1 ? 's' : ''}
+                    </span>
+                    <span className="text-xs" style={{ color: '#3f3f46' }}>of {interviews.length} interviews</span>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredInterviews.map((interview) => (
                     <InterviewCard
@@ -617,36 +754,21 @@ export default function InterviewPage() {
                     />
                   ))}
                 </div>
-              </>
+              </div>
             )}
           </>
         )}
       </div>
 
       {modal && (
-        <InterviewModal
-          mode={modal}
-          initial={editTarget}
-          onClose={closeModal}
-          onSave={handleSave}
-        />
+        <InterviewModal mode={modal} initial={editTarget} onClose={closeModal} onSave={handleSave} />
       )}
-
       {deleteTarget && (
-        <InterviewDeleteDialog
-          interview={deleteTarget}
-          onConfirm={handleDeleteConfirm}
-          onCancel={() => setDeleteTarget(null)}
-        />
+        <InterviewDeleteDialog interview={deleteTarget} onConfirm={handleDeleteConfirm} onCancel={() => setDeleteTarget(null)} />
       )}
-
       {detailTarget && (
-        <InterviewDetailModal
-          interview={detailTarget}
-          onClose={closeView}
-        />
+        <InterviewDetailModal interview={detailTarget} onClose={closeView} />
       )}
-
       {toast && <Toast message={toast.message} type={toast.type} />}
     </DashboardLayout>
   );
