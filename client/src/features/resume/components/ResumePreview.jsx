@@ -1,3 +1,5 @@
+import { groupSkills } from '../../../utils/skillsUtils';
+
 const templateStyles = {
   1: {
     name:    'text-2xl font-bold text-neutral-900 tracking-tight',
@@ -115,7 +117,14 @@ export default function ResumePreview({ data, template }) {
       {/* Skills */}
       {skills.length > 0 && (
         <PreviewSection title="Skills" style={s}>
-          <p className="text-xs text-neutral-700">{skills.join(', ')}</p>
+          <div className="space-y-0.5">
+            {Object.entries(groupSkills(skills)).map(([cat, list]) => (
+              <p key={cat} className="text-xs text-neutral-700">
+                <span className="font-semibold text-neutral-800">{cat}:</span>{' '}
+                {list.join(', ')}
+              </p>
+            ))}
+          </div>
         </PreviewSection>
       )}
 
