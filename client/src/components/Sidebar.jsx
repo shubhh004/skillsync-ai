@@ -1,6 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useUser } from '../context/UserContext';
 import UserAvatar from './ui/UserAvatar';
+import { sidebarNavContainer, sidebarNavItem } from '../motion/variants';
 
 const navItems = [
   {
@@ -66,31 +68,30 @@ export default function Sidebar({ open, onClose }) {
   return (
     <aside
       className={[
-        // Glass floating panel
         'flex flex-col glass-surface rounded-3xl w-72 flex-shrink-0',
-        // Mobile: fixed overlay with slide animation
         'fixed inset-y-3 left-3 z-50',
-        // Desktop: back into flex flow
         'md:static md:inset-auto md:z-auto',
-        // Smooth slide transition
         'transition-transform duration-300 ease-out-quart',
         open ? 'translate-x-0' : '-translate-x-[calc(100%+0.75rem)] md:translate-x-0',
       ].join(' ')}
     >
       {/* ── Brand area ── */}
-      <div className="px-5 pt-6 pb-5 flex-shrink-0">
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+        className="px-5 pt-6 pb-5 flex-shrink-0"
+      >
         <Link
           to="/dashboard"
           onClick={onClose}
           className="group flex items-center gap-3 rounded-xl p-1 -m-1 focus-ring"
         >
-          {/* Logo mark */}
           <div className="w-9 h-9 rounded-xl gradient-brand flex items-center justify-center flex-shrink-0 shadow-glow-sm group-hover:shadow-glow transition-shadow duration-300">
             <svg className="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} style={{ width: '1.125rem', height: '1.125rem' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-
           <div className="min-w-0">
             <p className="text-sm font-bold text-neutral-900 leading-tight tracking-tight">
               SkillSync{' '}
@@ -99,62 +100,74 @@ export default function Sidebar({ open, onClose }) {
             <p className="text-label-sm mt-0.5">AI Career Platform</p>
           </div>
         </Link>
-      </div>
+      </motion.div>
 
       {/* Divider */}
       <div className="mx-4 h-px bg-white/5 flex-shrink-0" />
 
-      {/* ── Navigation ── */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto scrollbar-hidden space-y-0.5">
+      {/* ── Navigation — staggered on mount ── */}
+      <motion.nav
+        variants={sidebarNavContainer}
+        initial="hidden"
+        animate="show"
+        className="flex-1 px-3 py-4 overflow-y-auto scrollbar-hidden space-y-0.5"
+      >
         <p className="px-3 mb-2 text-label-sm">Navigation</p>
 
         {navItems.map(({ label, path, icon }) => {
           const active = pathname === path || pathname.startsWith(path + '/');
           return (
-            <Link
-              key={path}
-              to={path}
-              onClick={onClose}
-              className={[
-                'relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium',
-                'transition-all duration-200 ease-smooth focus-ring',
-                active
-                  ? 'glass-brand text-brand-400 shadow-glow-sm'
-                  : 'text-neutral-500 hover:bg-white/5 hover:text-neutral-700 hover:-translate-y-px',
-              ].join(' ')}
-            >
-              {/* Active left accent */}
-              {active && (
-                <span
-                  aria-hidden="true"
-                  className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full bg-brand-500"
-                />
-              )}
+            <motion.div key={path} variants={sidebarNavItem}>
+              <Link
+                to={path}
+                onClick={onClose}
+                className={[
+                  'relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium',
+                  'transition-all duration-200 ease-smooth focus-ring',
+                  active
+                    ? 'glass-brand text-brand-400 shadow-glow-sm'
+                    : 'text-neutral-500 hover:bg-white/5 hover:text-neutral-700',
+                ].join(' ')}
+              >
+                {/* Active left accent */}
+                {active && (
+                  <motion.span
+                    layoutId="nav-accent"
+                    aria-hidden="true"
+                    className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full bg-brand-500"
+                    transition={{ duration: 0.22, ease: [0.25, 1, 0.5, 1] }}
+                  />
+                )}
 
-              <span className={[
-                'transition-colors duration-200',
-                active ? 'text-brand-400' : 'text-neutral-400',
-              ].join(' ')}>
-                {icon}
-              </span>
+                <span className={[
+                  'transition-colors duration-200',
+                  active ? 'text-brand-400' : 'text-neutral-400',
+                ].join(' ')}>
+                  {icon}
+                </span>
 
-              {label}
-            </Link>
+                {label}
+              </Link>
+            </motion.div>
           );
         })}
-      </nav>
+      </motion.nav>
 
       {/* Divider */}
       <div className="mx-4 h-px bg-white/5 flex-shrink-0" />
 
       {/* ── Profile card ── */}
-      <div className="p-3 flex-shrink-0">
+      <motion.div
+        className="p-3 flex-shrink-0"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1], delay: 0.35 }}
+      >
         <Link
           to="/profile"
           onClick={onClose}
           className="glass-card flex items-center gap-3 p-3 rounded-2xl transition-all duration-200 hover:shadow-card-hover hover:-translate-y-px group focus-ring"
         >
-          {/* Avatar with online indicator */}
           <div className="relative flex-shrink-0">
             <UserAvatar src={user?.avatar} name={user?.name} size="md" />
             <span
@@ -163,7 +176,6 @@ export default function Sidebar({ open, onClose }) {
             />
           </div>
 
-          {/* Name + email */}
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-neutral-800 truncate group-hover:text-brand-400 transition-colors duration-200">
               {user?.name || '—'}
@@ -173,7 +185,6 @@ export default function Sidebar({ open, onClose }) {
             </p>
           </div>
 
-          {/* Chevron */}
           <svg
             className="w-4 h-4 text-neutral-400 flex-shrink-0 group-hover:text-brand-400 transition-colors duration-200"
             fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
@@ -181,7 +192,7 @@ export default function Sidebar({ open, onClose }) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </Link>
-      </div>
+      </motion.div>
     </aside>
   );
 }

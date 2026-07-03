@@ -1,7 +1,12 @@
+import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, animate, useInView } from 'framer-motion';
 import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
 import MainLayout from '../layouts/MainLayout';
+import { useLenis } from '../hooks/useLenis';
+
+const ease = [0.25, 1, 0.5, 1];
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -45,10 +50,10 @@ const FEATURES = [
 ];
 
 const STATS = [
-  { value: '10K+', label: 'Students Preparing',   color: '#818cf8' },
+  { value: '10K+', label: 'Students Preparing',    color: '#818cf8' },
   { value: '95%',  label: 'Interview Success Rate', color: '#4ade80' },
-  { value: '6',    label: 'AI-Powered Tools',       color: '#fbbf24' },
-  { value: '500+', label: 'Companies Targeted',     color: '#c084fc' },
+  { value: '6',    label: 'AI-Powered Tools',        color: '#fbbf24' },
+  { value: '500+', label: 'Companies Targeted',      color: '#c084fc' },
 ];
 
 const STEPS = [
@@ -92,6 +97,72 @@ const TESTIMONIALS = [
   },
 ];
 
+// ─── Animation variants ────────────────────────────────────────────────────────
+
+const heroContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+};
+const heroItem = {
+  hidden: { opacity: 0, y: 18 },
+  show:   { opacity: 1, y: 0,  transition: { duration: 0.55, ease } },
+};
+
+const staggerGrid = {
+  hidden: {},
+  show:   { transition: { staggerChildren: 0.07 } },
+};
+const cardItem = {
+  hidden: { opacity: 0, y: 22 },
+  show:   { opacity: 1, y: 0,  transition: { duration: 0.5, ease } },
+};
+
+const sectionFade = {
+  hidden: { opacity: 0, y: 16 },
+  show:   { opacity: 1, y: 0,  transition: { duration: 0.5, ease } },
+};
+
+// ─── Counter stat ──────────────────────────────────────────────────────────────
+function CounterStat({ value, label, color }) {
+  const ref    = useRef(null);
+  const numRef = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-60px' });
+
+  useEffect(() => {
+    if (!inView) return;
+    const match = value.match(/^([\d.]+)(.*)$/);
+    if (!match || !numRef.current) return;
+    const num    = parseFloat(match[1]);
+    const suffix = match[2];
+    const ctrl   = animate(0, num, {
+      duration: 1.6,
+      ease,
+      onUpdate: (v) => {
+        if (numRef.current) {
+          numRef.current.textContent = (Number.isInteger(num) ? Math.round(v) : v.toFixed(1)) + suffix;
+        }
+      },
+    });
+    return () => ctrl.stop();
+  }, [inView, value]);
+
+  return (
+    <motion.div
+      ref={ref}
+      whileHover={{ y: -6, transition: { duration: 0.2, ease } }}
+      className="flex flex-col items-center justify-center gap-1.5 py-10 px-4"
+      style={{ background: 'rgba(9,9,11,0.95)', cursor: 'default', transition: 'background 0.15s ease' }}
+      onMouseEnter={e => e.currentTarget.style.background = 'rgba(18,18,22,0.95)'}
+      onMouseLeave={e => e.currentTarget.style.background = 'rgba(9,9,11,0.95)'}
+    >
+      <span ref={numRef} className="text-3xl sm:text-4xl font-bold tabular-nums tracking-tight leading-none" style={{ color }}>
+        {value}
+      </span>
+      <span className="text-xs text-center leading-tight" style={{ color: '#52525b' }}>{label}</span>
+    </motion.div>
+  );
+}
+
 // ─── Sub-components ────────────────────────────────────────────────────────────
 
 function Stars() {
@@ -125,64 +196,74 @@ function CheckIcon() {
 
 // ─── Main page ─────────────────────────────────────────────────────────────────
 export default function Home() {
+  useLenis();
   return (
     <MainLayout>
 
       {/* ═══════════════════════════════ HERO ═══════════════════════════════ */}
       <section className="relative overflow-hidden pt-14 pb-24 sm:pt-20 sm:pb-32">
 
-        {/* Ambient radial lighting */}
+        {/* Ambient radial lighting — breathing blobs */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div
+          <motion.div
             className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px]"
+            animate={{ opacity: [0.75, 1, 0.75] }}
+            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
             style={{ background: 'radial-gradient(ellipse at center top, rgba(99,102,241,0.22) 0%, rgba(79,70,229,0.1) 40%, transparent 65%)' }}
           />
-          <div
+          <motion.div
             className="absolute top-24 -right-16 w-96 h-96 rounded-full blur-3xl"
+            animate={{ y: [0, -22, 0], opacity: [0.18, 0.28, 0.18] }}
+            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
             style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.18) 0%, transparent 65%)' }}
           />
-          <div
+          <motion.div
             className="absolute bottom-0 -left-16 w-80 h-80 rounded-full blur-3xl"
+            animate={{ y: [0, -16, 0], opacity: [0.12, 0.22, 0.12] }}
+            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 2.5 }}
             style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.14) 0%, transparent 65%)' }}
           />
         </div>
 
         <Container>
-          <div className="max-w-3xl mx-auto text-center">
-
+          <motion.div
+            className="max-w-3xl mx-auto text-center"
+            variants={heroContainer}
+            initial="hidden"
+            animate="show"
+          >
             {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold animate-fade-slide-down"
+            <motion.div
+              variants={heroItem}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold"
               style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.22)', color: '#a5b4fc' }}
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
               </svg>
               AI-Powered Placement Preparation
-            </div>
+            </motion.div>
 
             {/* Headline */}
-            <h1
-              className="text-display mb-6 animate-fade-slide-up"
-              style={{ animationDelay: '60ms' }}
-            >
+            <motion.h1 variants={heroItem} className="text-display mb-6">
               Ace your placement{' '}
               <span className="text-gradient-brand">with AI</span>
-            </h1>
+            </motion.h1>
 
             {/* Subtitle */}
-            <p
-              className="text-lg leading-relaxed max-w-xl mx-auto animate-fade-slide-up"
-              style={{ color: '#71717a', animationDelay: '120ms' }}
+            <motion.p
+              variants={heroItem}
+              className="text-lg leading-relaxed max-w-xl mx-auto"
+              style={{ color: '#71717a' }}
             >
               SkillSync AI is your all-in-one placement toolkit — DSA tracking, resume building,
               mock interviews, and job management in one focused platform.
-            </p>
+            </motion.p>
 
             {/* CTAs */}
-            <div
-              className="mt-10 flex flex-col sm:flex-row gap-3 justify-center items-center animate-fade-slide-up"
-              style={{ animationDelay: '180ms' }}
+            <motion.div
+              variants={heroItem}
+              className="mt-10 flex flex-col sm:flex-row gap-3 justify-center items-center"
             >
               <Link to="/signup">
                 <Button size="lg">
@@ -197,12 +278,12 @@ export default function Home() {
                   See how it works
                 </Button>
               </a>
-            </div>
+            </motion.div>
 
             {/* Trust row */}
-            <div
-              className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 animate-fade-in"
-              style={{ animationDelay: '300ms' }}
+            <motion.div
+              variants={heroItem}
+              className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2"
             >
               {['No credit card required', 'Free forever plan', '10K+ students'].map((t) => (
                 <span key={t} className="flex items-center gap-1.5 text-xs" style={{ color: '#52525b' }}>
@@ -210,8 +291,8 @@ export default function Home() {
                   {t}
                 </span>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </Container>
       </section>
 
@@ -220,21 +301,10 @@ export default function Home() {
         <Container>
           <div
             className="grid grid-cols-2 md:grid-cols-4"
-            style={{ gap: '1px', background: 'rgba(255,255,255,0.04)', borderRadius: '0' }}
+            style={{ gap: '1px', background: 'rgba(255,255,255,0.04)' }}
           >
             {STATS.map(({ value, label, color }) => (
-              <div
-                key={label}
-                className="flex flex-col items-center justify-center gap-1.5 py-10 px-4 transition-all duration-200"
-                style={{ background: 'rgba(9,9,11,0.95)' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(18,18,22,0.95)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'rgba(9,9,11,0.95)'}
-              >
-                <span className="text-3xl sm:text-4xl font-bold tabular-nums tracking-tight leading-none" style={{ color }}>
-                  {value}
-                </span>
-                <span className="text-xs text-center leading-tight" style={{ color: '#52525b' }}>{label}</span>
-              </div>
+              <CounterStat key={label} value={value} label={label} color={color} />
             ))}
           </div>
         </Container>
@@ -243,25 +313,39 @@ export default function Home() {
       {/* ════════════════════════════ FEATURES ══════════════════════════════ */}
       <section id="features" className="py-24 sm:py-28">
         <Container>
-          <div className="max-w-xl mx-auto text-center mb-16">
+          <motion.div
+            className="max-w-xl mx-auto text-center mb-16"
+            variants={sectionFade}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-60px' }}
+          >
             <SectionLabel>Features</SectionLabel>
             <h2 className="text-h2 mb-4">Everything you need to get placed</h2>
             <p className="text-body-lg" style={{ color: '#71717a' }}>
               Six focused AI-powered tools. One goal: your offer letter.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {FEATURES.map(({ title, description, icon, color, bg, border, glow }, i) => (
-              <div
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+            variants={staggerGrid}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-80px' }}
+          >
+            {FEATURES.map(({ title, description, icon, color, bg, border, glow }) => (
+              <motion.div
                 key={title}
-                className="group relative flex flex-col gap-4 p-6 rounded-2xl cursor-default transition-all duration-200 hover:-translate-y-1"
+                variants={cardItem}
+                whileHover={{ y: -6, transition: { duration: 0.22, ease } }}
+                className="group relative flex flex-col gap-4 p-6 rounded-2xl cursor-default"
                 style={{
                   background:    'rgba(24,24,27,0.65)',
                   border:        '1px solid rgba(255,255,255,0.08)',
                   backdropFilter:'blur(20px)',
                   boxShadow:     '0 4px 16px rgba(0,0,0,0.25)',
-                  animationFillMode: 'both',
+                  transition:    'border-color 0.2s ease, box-shadow 0.2s ease',
                 }}
                 onMouseEnter={e => {
                   e.currentTarget.style.borderColor = border;
@@ -292,9 +376,9 @@ export default function Home() {
                   className="absolute top-0 right-0 w-24 h-24 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{ background: `radial-gradient(circle at top right, ${glow}, transparent 70%)` }}
                 />
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </Container>
       </section>
 
@@ -305,13 +389,19 @@ export default function Home() {
         style={{ background: 'rgba(255,255,255,0.015)', borderTop: '1px solid rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
       >
         <Container>
-          <div className="max-w-xl mx-auto text-center mb-16">
+          <motion.div
+            className="max-w-xl mx-auto text-center mb-16"
+            variants={sectionFade}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-60px' }}
+          >
             <SectionLabel>How it works</SectionLabel>
             <h2 className="text-h2 mb-4">From zero to offer in 4 steps</h2>
             <p className="text-body-lg" style={{ color: '#71717a' }}>
               SkillSync AI guides you through every step of your placement journey.
             </p>
-          </div>
+          </motion.div>
 
           <div className="relative">
             {/* Connector line — desktop */}
@@ -320,9 +410,15 @@ export default function Home() {
               style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(99,102,241,0.15) 10%, rgba(99,102,241,0.4) 50%, rgba(99,102,241,0.15) 90%, transparent 100%)' }}
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
-              {STEPS.map(({ num, title, desc, icon }, i) => (
-                <div key={num} className="flex flex-col items-center text-center gap-5">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4"
+              variants={staggerGrid}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-60px' }}
+            >
+              {STEPS.map(({ num, title, desc, icon }) => (
+                <motion.div key={num} variants={cardItem} className="flex flex-col items-center text-center gap-5">
                   {/* Step icon */}
                   <div
                     className="relative z-10 w-[72px] h-[72px] rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-200 hover:scale-105 hover:-translate-y-0.5"
@@ -346,9 +442,9 @@ export default function Home() {
                     <h3 className="text-sm font-semibold mb-2 leading-snug" style={{ color: '#e4e4e7' }}>{title}</h3>
                     <p className="text-xs leading-relaxed" style={{ color: '#71717a' }}>{desc}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
 
           {/* Bottom CTA */}
@@ -368,17 +464,27 @@ export default function Home() {
       {/* ═══════════════════════════ WHY US ══════════════════════════════ */}
       <section className="py-24 sm:py-28">
         <Container>
-          <div className="max-w-xl mx-auto text-center mb-16">
+          <motion.div
+            className="max-w-xl mx-auto text-center mb-16"
+            variants={sectionFade}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-60px' }}
+          >
             <SectionLabel>Why SkillSync AI</SectionLabel>
             <h2 className="text-h2 mb-4">One platform. Complete preparation.</h2>
             <p className="text-body-lg" style={{ color: '#71717a' }}>
               Stop juggling five different tools. Everything you need is here.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {/* Without SkillSync */}
-            <div
+            <motion.div
+              initial={{ opacity: 0, x: -28 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.55, ease }}
               className="p-7 rounded-2xl"
               style={{
                 background: 'rgba(239,68,68,0.04)',
@@ -405,10 +511,14 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
 
             {/* With SkillSync */}
-            <div
+            <motion.div
+              initial={{ opacity: 0, x: 28 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.55, ease, delay: 0.07 }}
               className="p-7 rounded-2xl relative overflow-hidden"
               style={{
                 background: 'rgba(99,102,241,0.05)',
@@ -438,7 +548,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           </div>
         </Container>
       </section>
@@ -450,24 +560,39 @@ export default function Home() {
         style={{ background: 'rgba(255,255,255,0.015)', borderTop: '1px solid rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
       >
         <Container>
-          <div className="max-w-xl mx-auto text-center mb-16">
+          <motion.div
+            className="max-w-xl mx-auto text-center mb-16"
+            variants={sectionFade}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-60px' }}
+          >
             <SectionLabel>Testimonials</SectionLabel>
             <h2 className="text-h2 mb-4">Students are getting placed</h2>
             <p className="text-body-lg" style={{ color: '#71717a' }}>
               Real stories from students who used SkillSync AI to land their dream roles.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-5"
+            variants={staggerGrid}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-80px' }}
+          >
             {TESTIMONIALS.map(({ name, role, quote, avatar, grad }) => (
-              <div
+              <motion.div
                 key={name}
-                className="group flex flex-col gap-5 p-6 rounded-2xl transition-all duration-200 hover:-translate-y-1"
+                variants={cardItem}
+                whileHover={{ y: -6, transition: { duration: 0.22, ease } }}
+                className="group flex flex-col gap-5 p-6 rounded-2xl"
                 style={{
                   background:    'rgba(24,24,27,0.65)',
                   border:        '1px solid rgba(255,255,255,0.08)',
                   backdropFilter:'blur(20px)',
                   boxShadow:     '0 4px 16px rgba(0,0,0,0.25)',
+                  transition:    'border-color 0.2s ease, box-shadow 0.2s ease',
                 }}
                 onMouseEnter={e => {
                   e.currentTarget.style.borderColor = 'rgba(99,102,241,0.22)';
@@ -494,16 +619,20 @@ export default function Home() {
                     <p className="text-[11px] mt-0.5" style={{ color: '#52525b' }}>{role}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </Container>
       </section>
 
       {/* ═══════════════════════════ FINAL CTA ══════════════════════════════ */}
       <section className="py-24 sm:py-28">
         <Container>
-          <div
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.55, ease }}
             className="relative max-w-2xl mx-auto text-center overflow-hidden rounded-3xl px-8 py-16 sm:px-14"
             style={{
               background: 'radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.22) 0%, rgba(24,24,27,0.97) 65%)',
@@ -550,7 +679,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         </Container>
       </section>
 

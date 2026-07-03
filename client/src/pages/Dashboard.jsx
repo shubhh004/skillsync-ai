@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import DashboardLayout from '../layouts/DashboardLayout';
+import { staggerContainer, staggerItem } from '../motion/variants';
 import WelcomeCard from '../components/dashboard/WelcomeCard';
 import StatCard from '../components/dashboard/StatCard';
 import DsaStatsCard from '../components/dashboard/DsaStatsCard';
@@ -634,87 +636,120 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-5 animate-fade-in">
-
+      <motion.div
+        className="space-y-5"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+      >
         {/* Header */}
-        <DashboardHeader readiness={hasAnyData ? readiness : null} />
+        <motion.div variants={staggerItem}>
+          <DashboardHeader readiness={hasAnyData ? readiness : null} />
+        </motion.div>
 
         {/* Welcome hero */}
-        <WelcomeCard
-          readiness={hasAnyData ? readiness : null}
-          data={hasAnyData ? data : null}
-        />
+        <motion.div variants={staggerItem}>
+          <WelcomeCard
+            readiness={hasAnyData ? readiness : null}
+            data={hasAnyData ? data : null}
+          />
+        </motion.div>
 
         {!hasAnyData ? (
-          <DashboardEmpty />
+          <motion.div variants={staggerItem}>
+            <DashboardEmpty />
+          </motion.div>
         ) : (
           <>
             {/* Placement readiness + Roadmap */}
-            <PlacementReadiness data={data} score={readiness} />
-            <RoadmapProgressWidget />
+            <motion.div variants={staggerItem}>
+              <PlacementReadiness data={data} score={readiness} />
+            </motion.div>
+            <motion.div variants={staggerItem}>
+              <RoadmapProgressWidget />
+            </motion.div>
 
             {/* 4 stat cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-              <StatCard
-                label="DSA Solved"
-                value={String(dsa.solved)}
-                delta={dsa.total ? `${solvedPct}% of ${dsa.total}` : 'none yet'}
-                positive={dsa.solved > 0}
-                icon="code"
-                to="/dsa"
-              />
-              <StatCard
-                label="Resume Completion"
-                value={`${resumeCompletion}%`}
-                delta={resumeCompletion >= 100 ? 'complete' : 'sections filled'}
-                positive={resumeCompletion >= 50}
-                icon="document"
-                to="/resume"
-              />
-              <StatCard
-                label="Jobs Applied"
-                value={String(jobs.total)}
-                delta={jobs.byStatus?.Offer ? `${jobs.byStatus.Offer} offer${jobs.byStatus.Offer > 1 ? 's' : ''}` : 'applications tracked'}
-                positive={jobs.total > 0}
-                icon="briefcase"
-                to="/jobs"
-              />
-              <StatCard
-                label="Interviews Done"
-                value={String(interviews.completed)}
-                delta={interviews.total > 0 ? `avg ${interviews.avgScore}/100` : 'none yet'}
-                positive={interviews.completed > 0}
-                icon="chat"
-                to="/interview"
-              />
-            </div>
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5"
+              variants={staggerContainer}
+            >
+              <motion.div variants={staggerItem}>
+                <StatCard
+                  label="DSA Solved"
+                  value={String(dsa.solved)}
+                  delta={dsa.total ? `${solvedPct}% of ${dsa.total}` : 'none yet'}
+                  positive={dsa.solved > 0}
+                  icon="code"
+                  to="/dsa"
+                />
+              </motion.div>
+              <motion.div variants={staggerItem}>
+                <StatCard
+                  label="Resume Completion"
+                  value={`${resumeCompletion}%`}
+                  delta={resumeCompletion >= 100 ? 'complete' : 'sections filled'}
+                  positive={resumeCompletion >= 50}
+                  icon="document"
+                  to="/resume"
+                />
+              </motion.div>
+              <motion.div variants={staggerItem}>
+                <StatCard
+                  label="Jobs Applied"
+                  value={String(jobs.total)}
+                  delta={jobs.byStatus?.Offer ? `${jobs.byStatus.Offer} offer${jobs.byStatus.Offer > 1 ? 's' : ''}` : 'applications tracked'}
+                  positive={jobs.total > 0}
+                  icon="briefcase"
+                  to="/jobs"
+                />
+              </motion.div>
+              <motion.div variants={staggerItem}>
+                <StatCard
+                  label="Interviews Done"
+                  value={String(interviews.completed)}
+                  delta={interviews.total > 0 ? `avg ${interviews.avgScore}/100` : 'none yet'}
+                  positive={interviews.completed > 0}
+                  icon="chat"
+                  to="/interview"
+                />
+              </motion.div>
+            </motion.div>
 
             {/* DSA breakdown */}
-            <DsaStatsCard dsaStats={dsa} />
+            <motion.div variants={staggerItem}>
+              <DsaStatsCard dsaStats={dsa} />
+            </motion.div>
 
             {/* Weekly goals + Upcoming */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-5" variants={staggerItem}>
               <WeeklyGoalsCard weekly={weekly} />
               <UpcomingCard    upcoming={upcoming} />
-            </div>
+            </motion.div>
 
             {/* Job + Interview summaries */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-5" variants={staggerItem}>
               <JobSummaryCard       jobs={jobs} />
               <InterviewSummaryCard interviews={interviews} />
-            </div>
+            </motion.div>
 
             {/* Achievements */}
-            <AchievementBadges data={data} />
+            <motion.div variants={staggerItem}>
+              <AchievementBadges data={data} />
+            </motion.div>
 
             {/* Recent activity */}
-            <RecentActivityCard items={recentActivity} />
+            <motion.div variants={staggerItem}>
+              <RecentActivityCard items={recentActivity} />
+            </motion.div>
 
             {/* Quick actions */}
-            <QuickActions />
+            <motion.div variants={staggerItem}>
+              <QuickActions />
+            </motion.div>
           </>
         )}
-      </div>
+      </motion.div>
     </DashboardLayout>
   );
 }
