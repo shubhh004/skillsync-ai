@@ -111,7 +111,7 @@ function Toast({ message, type }) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       )}
-      <span className="text-neutral-800">{message}</span>
+      <span style={{ color: type === 'error' ? '#fca5a5' : '#86efac' }}>{message}</span>
     </div>
   );
 }

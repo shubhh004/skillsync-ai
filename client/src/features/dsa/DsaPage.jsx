@@ -173,8 +173,8 @@ export default function DsaPage() {
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold leading-none" style={{ color: '#e4e4e7' }}>DSA Tracker</h2>
-              <p className="mt-1 text-xs leading-none" style={{ color: '#52525b' }}>
+              <h2 className="text-xl font-bold text-neutral-900 tracking-tight leading-none">DSA Tracker</h2>
+              <p className="mt-1 text-xs text-neutral-400 leading-none">
                 Track and manage your practice problems
               </p>
             </div>
@@ -212,7 +212,7 @@ export default function DsaPage() {
                 >
                   {filteredProblems.length} result{filteredProblems.length !== 1 ? 's' : ''}
                 </span>
-                <span className="text-xs" style={{ color: '#3f3f46' }}>
+                <span className="text-xs text-neutral-300">
                   of {problems.length} problems
                 </span>
               </div>

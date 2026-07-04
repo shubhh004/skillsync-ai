@@ -19,7 +19,7 @@ function SparkleIcon({ className }) {
 
 function Toast({ message, type }) {
   return (
-    <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-elevated text-sm font-medium text-white flex items-center gap-2.5 animate-pop-in glass-heavy border ${
+    <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-elevated text-sm font-medium flex items-center gap-2.5 animate-pop-in glass-heavy border ${
       type === 'error' ? 'border-danger-500/30' : 'border-success-500/30'
     }`}>
       {type === 'error' ? (
@@ -31,7 +31,7 @@ function Toast({ message, type }) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       )}
-      <span className="text-neutral-800">{message}</span>
+      <span style={{ color: type === 'error' ? '#fca5a5' : '#86efac' }}>{message}</span>
     </div>
   );
 }
@@ -106,7 +106,7 @@ const ChatHeader = memo(function ChatHeader({ onOpenSidebar, activeChatId }) {
               GPT-4o
             </span>
           </div>
-          <p className="text-[11px] font-medium leading-none mt-1.5" style={{ color: '#22c55e' }}>● Online</p>
+          <p className="text-[11px] font-medium leading-none mt-1.5 text-success-500">● Online</p>
         </div>
       </div>
 

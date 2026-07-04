@@ -111,7 +111,7 @@ function StatCard({ label, value, suffix = '', color = 'brand' }) {
   const c = STAT_PALETTE[color] || STAT_PALETTE.brand;
   return (
     <div className="card p-4 flex flex-col gap-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
-      <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#52525b' }}>{label}</p>
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-400">{label}</p>
       <p className="text-3xl font-bold leading-none tabular-nums" style={{ color: c.color }}>
         {value}
         {suffix && <span className="text-base font-normal ml-0.5" style={{ color: c.color, opacity: 0.6 }}>{suffix}</span>}
@@ -125,7 +125,7 @@ function InsightCard({ label, value, color = 'brand' }) {
   const c = STAT_PALETTE[color] || STAT_PALETTE.brand;
   return (
     <div className="card p-4" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
-      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: '#52525b' }}>{label}</p>
+      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5 text-neutral-400">{label}</p>
       <p className="text-sm font-bold truncate" style={{ color: c.color }}>{value}</p>
     </div>
   );
@@ -133,7 +133,7 @@ function InsightCard({ label, value, color = 'brand' }) {
 
 // ─── Charts ───────────────────────────────────────────────────────────────────
 function ScoreTrendChart({ data }) {
-  if (!data.length) return <p className="text-xs py-8 text-center" style={{ color: '#3f3f46' }}>No data yet</p>;
+  if (!data.length) return <p className="text-xs py-8 text-center text-neutral-300">No data yet</p>;
   return (
     <ResponsiveContainer width="100%" height={180}>
       <LineChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
@@ -150,7 +150,7 @@ function ScoreTrendChart({ data }) {
 }
 
 function DifficultyChart({ data }) {
-  if (!data.length) return <p className="text-xs py-8 text-center" style={{ color: '#3f3f46' }}>No data yet</p>;
+  if (!data.length) return <p className="text-xs py-8 text-center text-neutral-300">No data yet</p>;
   return (
     <ResponsiveContainer width="100%" height={180}>
       <BarChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
@@ -168,7 +168,7 @@ function DifficultyChart({ data }) {
 }
 
 function StatusChart({ data }) {
-  if (!data.length) return <p className="text-xs py-8 text-center" style={{ color: '#3f3f46' }}>No data yet</p>;
+  if (!data.length) return <p className="text-xs py-8 text-center text-neutral-300">No data yet</p>;
   return (
     <ResponsiveContainer width="100%" height={180}>
       <PieChart>
@@ -187,7 +187,7 @@ function StatusChart({ data }) {
 function AnalyticsSection({ analytics }) {
   return (
     <div className="space-y-4">
-      <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#52525b' }}>Analytics</p>
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-400">Analytics</p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         <StatCard label="Total"      value={analytics.total}          color="neutral" />
@@ -204,7 +204,7 @@ function AnalyticsSection({ analytics }) {
           { title: 'Status Distribution',     chart: <StatusChart data={analytics.statusData} /> },
         ].map(({ title, chart }) => (
           <div key={title} className="card p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-widest mb-4" style={{ color: '#52525b' }}>{title}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest mb-4 text-neutral-400">{title}</p>
             {chart}
           </div>
         ))}
@@ -271,8 +271,8 @@ function FilterSelect({ value, onChange, options, placeholder, minWidth = 148 })
           {active?.dot && <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: active.dot }} />}
           <span className="truncate">{active?.label ?? placeholder}</span>
         </span>
-        <svg className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200"
-          style={{ transform: open ? 'rotate(180deg)' : 'none', color: '#52525b' }}
+        <svg className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 text-neutral-400"
+          style={{ transform: open ? 'rotate(180deg)' : 'none' }}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
         </svg>
@@ -414,7 +414,7 @@ function DetailScoreRing({ score }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-base font-bold leading-none tabular-nums" style={{ color }}>{score ?? 0}</span>
-        <span className="text-[9px] leading-none mt-0.5" style={{ color: '#3f3f46' }}>/100</span>
+        <span className="text-[9px] leading-none mt-0.5 text-neutral-300">/100</span>
       </div>
     </div>
   );
@@ -442,11 +442,11 @@ function InterviewDetailModal({ interview, onClose }) {
         {/* Header */}
         <div className="modal-header">
           <div className="min-w-0 flex-1">
-            <h2 className="text-base font-semibold truncate" style={{ color: '#e4e4e7' }}>
+            <h2 className="text-base font-semibold truncate text-neutral-700">
               {interview.role || 'Mock Interview'}
             </h2>
             {interview.company && (
-              <p className="text-xs truncate mt-0.5" style={{ color: '#71717a' }}>{interview.company}</p>
+              <p className="text-xs truncate mt-0.5 text-neutral-400">{interview.company}</p>
             )}
           </div>
           <button type="button" onClick={onClose} className="modal-close flex-shrink-0" aria-label="Close">
@@ -470,26 +470,26 @@ function InterviewDetailModal({ interview, onClose }) {
             <div className="rounded-2xl p-4 flex flex-col items-center gap-2"
               style={{ background: 'rgba(24,24,27,0.65)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <DetailScoreRing score={interview.score ?? 0} />
-              <p className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: '#52525b' }}>Score</p>
+              <p className="text-[10px] uppercase tracking-widest font-semibold text-neutral-400">Score</p>
             </div>
             <div className="rounded-2xl p-4 flex flex-col items-center justify-center gap-1 text-center"
               style={{ background: 'rgba(24,24,27,0.65)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="text-sm font-semibold tabular-nums" style={{ color: '#d4d4d8' }}>{formatDate(interview.createdAt)}</p>
-              <p className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: '#52525b' }}>Created</p>
+              <p className="text-sm font-semibold tabular-nums text-neutral-600">{formatDate(interview.createdAt)}</p>
+              <p className="text-[10px] uppercase tracking-widest font-semibold text-neutral-400">Created</p>
             </div>
             <div className="rounded-2xl p-4 flex flex-col items-center justify-center gap-1 text-center"
               style={{ background: 'rgba(24,24,27,0.65)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="text-sm font-semibold tabular-nums" style={{ color: interview.completedAt ? '#d4d4d8' : '#3f3f46' }}>
+              <p className={`text-sm font-semibold tabular-nums ${interview.completedAt ? 'text-neutral-600' : 'text-neutral-300'}`}>
                 {formatDate(interview.completedAt)}
               </p>
-              <p className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: '#52525b' }}>Completed</p>
+              <p className="text-[10px] uppercase tracking-widest font-semibold text-neutral-400">Completed</p>
             </div>
           </div>
 
           {/* Feedback */}
           {interview.feedback && (
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest mb-2" style={{ color: '#52525b' }}>Feedback</p>
+              <p className="text-[10px] font-semibold uppercase tracking-widest mb-2 text-neutral-400">Feedback</p>
               <p className="text-sm leading-relaxed rounded-xl p-4"
                 style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', color: '#c7d2fe' }}>
                 {interview.feedback}
@@ -500,7 +500,7 @@ function InterviewDetailModal({ interview, onClose }) {
           {/* Questions */}
           {interview.questions && interview.questions.length > 0 && (
             <div className="space-y-3">
-              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#52525b' }}>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 Questions ({interview.questions.length})
               </p>
               {interview.questions.map((q, i) => {
@@ -521,19 +521,19 @@ function InterviewDetailModal({ interview, onClose }) {
                         {sc}/100
                       </span>
                     </div>
-                    <p className="text-sm font-medium leading-relaxed" style={{ color: '#d4d4d8' }}>{q.question}</p>
+                    <p className="text-sm font-medium leading-relaxed text-neutral-600">{q.question}</p>
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: '#52525b' }}>Your Answer</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5 text-neutral-400">Your Answer</p>
                       {q.answer
-                        ? <p className="text-xs leading-relaxed rounded-xl p-3 whitespace-pre-wrap"
-                            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', color: '#a1a1aa' }}>
+                        ? <p className="text-xs leading-relaxed rounded-xl p-3 whitespace-pre-wrap text-neutral-500"
+                            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                             {q.answer}
                           </p>
-                        : <p className="text-xs italic" style={{ color: '#3f3f46' }}>No answer provided.</p>
+                        : <p className="text-xs italic text-neutral-300">No answer provided.</p>
                       }
                     </div>
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: '#52525b' }}>Ideal Answer</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5 text-neutral-400">Ideal Answer</p>
                       <p className="text-xs leading-relaxed rounded-xl p-3 whitespace-pre-wrap"
                         style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', color: '#c7d2fe' }}>
                         {q.idealAnswer}
@@ -711,8 +711,8 @@ export default function InterviewPage() {
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold leading-none" style={{ color: '#e4e4e7' }}>AI Interviews</h2>
-              <p className="mt-1 text-xs leading-none" style={{ color: '#52525b' }}>
+              <h2 className="text-xl font-bold text-neutral-900 tracking-tight leading-none">AI Interviews</h2>
+              <p className="mt-1 text-xs text-neutral-400 leading-none">
                 Track mock interviews, scores and analytics
               </p>
             </div>
@@ -747,14 +747,13 @@ export default function InterviewPage() {
                   className="absolute inset-0 pointer-events-none"
                   style={{ background: 'radial-gradient(ellipse 50% 40% at 50% 60%, rgba(99,102,241,0.06) 0%, transparent 70%)' }}
                 />
-                <p className="text-sm font-medium mb-2" style={{ color: '#52525b' }}>
+                <p className="text-sm font-medium mb-2 text-neutral-400">
                   No interviews match your filters.
                 </p>
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="text-xs font-semibold transition-colors duration-150 hover:underline"
-                  style={{ color: '#818cf8' }}
+                  className="text-xs font-semibold text-brand-400 hover:text-[#a5b4fc] transition-colors duration-150 hover:underline"
                 >
                   Clear filters
                 </button>
@@ -769,7 +768,7 @@ export default function InterviewPage() {
                     >
                       {filteredInterviews.length} result{filteredInterviews.length !== 1 ? 's' : ''}
                     </span>
-                    <span className="text-xs" style={{ color: '#3f3f46' }}>of {interviews.length} interviews</span>
+                    <span className="text-xs text-neutral-300">of {interviews.length} interviews</span>
                   </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

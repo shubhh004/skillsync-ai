@@ -1,7 +1,9 @@
+import { useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useUser } from '../context/UserContext';
 import UserAvatar from './ui/UserAvatar';
+import ProfileDropdown from './ProfileDropdown';
 import { sidebarNavContainer, sidebarNavItem } from '../motion/variants';
 
 const navItems = [
@@ -64,6 +66,8 @@ const navItems = [
 export default function Sidebar({ open, onClose }) {
   const { pathname } = useLocation();
   const { user } = useUser();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const cardRef = useRef(null);
 
   return (
     <aside
@@ -163,10 +167,14 @@ export default function Sidebar({ open, onClose }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1], delay: 0.35 }}
       >
-        <Link
-          to="/profile"
-          onClick={onClose}
-          className="glass-card flex items-center gap-3 p-3 rounded-2xl transition-all duration-200 hover:shadow-card-hover hover:-translate-y-px group focus-ring"
+        <button
+          ref={cardRef}
+          type="button"
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((o) => !o)}
+          className="glass-card w-full flex items-center gap-3 p-3 rounded-2xl transition-all duration-200 hover:shadow-card-hover hover:-translate-y-px group focus-ring text-left"
+          style={{ background: menuOpen ? 'rgba(99,102,241,0.07)' : undefined }}
         >
           <div className="relative flex-shrink-0">
             <UserAvatar src={user?.avatar} name={user?.name} size="md" />
@@ -177,7 +185,8 @@ export default function Sidebar({ open, onClose }) {
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-neutral-800 truncate group-hover:text-brand-400 transition-colors duration-200">
+            <p className="text-sm font-semibold text-neutral-800 truncate group-hover:text-brand-400 transition-colors duration-200"
+              style={{ color: menuOpen ? '#818cf8' : undefined }}>
               {user?.name || '—'}
             </p>
             <p className="text-xs text-neutral-500 truncate">
@@ -186,13 +195,23 @@ export default function Sidebar({ open, onClose }) {
           </div>
 
           <svg
-            className="w-4 h-4 text-neutral-400 flex-shrink-0 group-hover:text-brand-400 transition-colors duration-200"
+            className="w-4 h-4 flex-shrink-0 transition-all duration-200"
+            style={{
+              color: menuOpen ? '#818cf8' : undefined,
+              transform: menuOpen ? 'rotate(-90deg)' : 'rotate(0deg)',
+            }}
             fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
-        </Link>
+        </button>
       </motion.div>
+
+      <ProfileDropdown
+        anchorRef={cardRef}
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+      />
     </aside>
   );
 }

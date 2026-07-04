@@ -160,8 +160,8 @@ export default function JobsPage() {
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold leading-none" style={{ color: '#e4e4e7' }}>Job Applications</h2>
-              <p className="mt-1 text-xs leading-none" style={{ color: '#52525b' }}>
+              <h2 className="text-xl font-bold text-neutral-900 tracking-tight leading-none">Job Applications</h2>
+              <p className="mt-1 text-xs text-neutral-400 leading-none">
                 Track every application, status, and next step
               </p>
             </div>
@@ -194,7 +194,7 @@ export default function JobsPage() {
                 >
                   {filteredJobs.length} result{filteredJobs.length !== 1 ? 's' : ''}
                 </span>
-                <span className="text-xs" style={{ color: '#3f3f46' }}>of {jobs.length} applications</span>
+                <span className="text-xs text-neutral-300">of {jobs.length} applications</span>
               </div>
             )}
 

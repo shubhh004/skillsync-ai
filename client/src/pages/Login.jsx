@@ -67,15 +67,10 @@ export default function Login() {
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label htmlFor="password" className="text-xs font-medium tracking-wide" style={{ color: '#a1a1aa' }}>
-              Password <span style={{ color: '#f87171' }} aria-hidden="true">*</span>
-            </label>
+            <Label htmlFor="password" required className="!mb-0">Password</Label>
             <Link
               to="/forgot-password"
-              className="text-xs transition-colors duration-150"
-              style={{ color: '#818cf8' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#a5b4fc'}
-              onMouseLeave={e => e.currentTarget.style.color = '#818cf8'}
+              className="text-xs text-brand-400 hover:text-[#a5b4fc] transition-colors duration-150"
             >
               Forgot password?
             </Link>
@@ -95,10 +90,7 @@ export default function Login() {
               type="button"
               onClick={() => setShowPassword((v) => !v)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
-              className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-150"
-              style={{ color: '#52525b' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#a1a1aa'}
-              onMouseLeave={e => e.currentTarget.style.color = '#52525b'}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-500 transition-colors duration-150"
             >
               <EyeIcon open={showPassword} />
             </button>
@@ -130,14 +122,11 @@ export default function Login() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm" style={{ color: '#71717a' }}>
+      <p className="mt-6 text-center text-sm text-neutral-400">
         Don't have an account?{' '}
         <Link
           to="/signup"
-          className="font-medium transition-colors duration-150"
-          style={{ color: '#818cf8' }}
-          onMouseEnter={e => e.currentTarget.style.color = '#a5b4fc'}
-          onMouseLeave={e => e.currentTarget.style.color = '#818cf8'}
+          className="font-medium text-brand-400 hover:text-[#a5b4fc] transition-colors duration-150"
         >
           Sign up free
         </Link>

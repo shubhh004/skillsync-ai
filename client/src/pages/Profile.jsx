@@ -52,7 +52,7 @@ function toForm(user) {
 function SectionCard({ title, children }) {
   return (
     <Card>
-      <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-5">{title}</h3>
+      <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-5">{title}</h3>
       <div className="space-y-4">{children}</div>
     </Card>
   );
@@ -77,7 +77,7 @@ function Textarea({ id, name, value, onChange, placeholder, rows = 4 }) {
       placeholder={placeholder}
       rows={rows}
       className={[
-        'w-full px-3 py-2.5 rounded-md text-sm resize-none',
+        'w-full px-3 py-2.5 rounded-xl text-sm resize-none',
         'bg-neutral-0 border border-neutral-300',
         'placeholder:text-neutral-400 text-neutral-800',
         'transition-colors duration-150',
@@ -315,10 +315,10 @@ export default function Profile() {
 
           {/* Footer actions */}
           {error && (
-            <p className="text-sm text-danger-700 bg-danger-100 px-4 py-3 rounded-lg">{error}</p>
+            <p className="text-sm text-danger-700 bg-danger-100 px-4 py-3 rounded-xl">{error}</p>
           )}
           {success && (
-            <p className="text-sm text-success-700 bg-success-100 px-4 py-3 rounded-lg">{success}</p>
+            <p className="text-sm text-success-700 bg-success-100 px-4 py-3 rounded-xl">{success}</p>
           )}
 
           <div className="flex justify-end pb-6">
