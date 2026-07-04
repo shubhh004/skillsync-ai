@@ -254,7 +254,7 @@ export default function JobModal({ mode, initial, onClose, onSave }) {
         </div>
 
         <form onSubmit={handleSubmit} className="modal-body">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="company" required>Company</Label>
               <Input id="company" name="company" value={form.company} onChange={handleChange} placeholder="Google" />
@@ -265,7 +265,7 @@ export default function JobModal({ mode, initial, onClose, onSave }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="status">Status</Label>
               <ModalSelect
@@ -285,7 +285,7 @@ export default function JobModal({ mode, initial, onClose, onSave }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="location">Location</Label>
               <Input id="location" name="location" value={form.location} onChange={handleChange} placeholder="Bangalore, India" />
@@ -296,7 +296,7 @@ export default function JobModal({ mode, initial, onClose, onSave }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="appliedDate">Applied Date</Label>
               <Input id="appliedDate" name="appliedDate" type="date" value={form.appliedDate} onChange={handleChange} />

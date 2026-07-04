@@ -287,7 +287,7 @@ export default function DsaModal({ mode, initial, onClose, onSave }) {
             <Input id="title" name="title" value={form.title} onChange={handleChange} placeholder="Two Sum" />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label required>Topic</Label>
               <ModalSelect
@@ -307,7 +307,7 @@ export default function DsaModal({ mode, initial, onClose, onSave }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label>Status</Label>
               <ModalSelect

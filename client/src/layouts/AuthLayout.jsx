@@ -132,7 +132,7 @@ export default function AuthLayout({ children, title, subtitle }) {
       />
 
       {/* ── RIGHT PANEL ────────────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-5 py-10 relative z-10">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-5 py-10 relative z-10">
 
         {/* Mobile logo */}
         <div className="lg:hidden mb-8">
@@ -147,7 +147,7 @@ export default function AuthLayout({ children, title, subtitle }) {
         >
           {/* Glass card */}
           <div
-            className="glass-heavy rounded-3xl px-8 py-9"
+            className="glass-heavy rounded-3xl px-5 py-7 sm:px-8 sm:py-9"
             style={{
               boxShadow: '0 0 0 1px rgba(255,255,255,0.05), 0 32px 80px rgba(0,0,0,0.5), 0 0 50px rgba(99,102,241,0.07)',
             }}

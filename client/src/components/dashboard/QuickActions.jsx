@@ -67,7 +67,7 @@ export default function QuickActions() {
             to={path}
             className="flex items-start gap-4 p-5 bg-transparent hover:bg-white/5 transition-all duration-200 group"
             style={{
-              borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.06)' : undefined,
+              borderBottom: i < actions.length - 1 ? '1px solid rgba(255,255,255,0.06)' : undefined,
               borderRight: i % 2 === 0 ? '1px solid rgba(255,255,255,0.06)' : undefined,
             }}
           >

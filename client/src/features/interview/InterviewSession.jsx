@@ -249,7 +249,7 @@ function ActiveSession({ role, difficulty, questions, onFinish }) {
               type="button"
               onClick={() => goTo(i)}
               className={[
-                'w-9 h-9 rounded-lg text-sm font-medium transition-colors border',
+                'w-10 h-10 rounded-lg text-sm font-medium transition-colors border',
                 active
                   ? 'bg-brand-600 text-white border-brand-600'
                   : answered
@@ -294,21 +294,29 @@ function ActiveSession({ role, difficulty, questions, onFinish }) {
       </Card>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between gap-3">
-        <Button
-          variant="outline"
-          onClick={() => goTo(currentIndex - 1)}
-          disabled={currentIndex === 0}
-        >
+      {/* Mobile: Prev/Next in a grid row, Finish full-width below */}
+      <div className="sm:hidden space-y-2">
+        <div className="grid grid-cols-2 gap-2">
+          <Button variant="outline" onClick={() => goTo(currentIndex - 1)} disabled={currentIndex === 0}>
+            ← Previous
+          </Button>
+          <Button onClick={() => goTo(currentIndex + 1)} disabled={currentIndex === questions.length - 1}>
+            Next →
+          </Button>
+        </div>
+        <Button variant="danger" fullWidth onClick={() => onFinish(answers)}>
+          Finish Interview
+        </Button>
+      </div>
+      {/* Desktop: original single-row layout */}
+      <div className="hidden sm:flex items-center justify-between gap-3">
+        <Button variant="outline" onClick={() => goTo(currentIndex - 1)} disabled={currentIndex === 0}>
           ← Previous
         </Button>
         <Button variant="danger" onClick={() => onFinish(answers)}>
           Finish Interview
         </Button>
-        <Button
-          onClick={() => goTo(currentIndex + 1)}
-          disabled={currentIndex === questions.length - 1}
-        >
+        <Button onClick={() => goTo(currentIndex + 1)} disabled={currentIndex === questions.length - 1}>
           Next →
         </Button>
       </div>

@@ -23,7 +23,7 @@ function Toast({ toast }) {
           initial={{ opacity: 0, y: 16, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] } }}
           exit={{ opacity: 0, y: 8, scale: 0.97, transition: { duration: 0.15 } }}
-          className="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium"
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium max-w-[calc(100vw-2.5rem)]"
           style={{
             background: isSuccess ? 'rgba(20,30,22,0.88)' : 'rgba(30,18,18,0.88)',
             backdropFilter: 'blur(20px)',

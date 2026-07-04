@@ -19,7 +19,7 @@ function SparkleIcon({ className }) {
 
 function Toast({ message, type }) {
   return (
-    <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-elevated text-sm font-medium flex items-center gap-2.5 animate-pop-in glass-heavy border ${
+    <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-elevated text-sm font-medium flex items-center gap-2.5 animate-pop-in glass-heavy border max-w-[calc(100vw-3rem)] ${
       type === 'error' ? 'border-danger-500/30' : 'border-success-500/30'
     }`}>
       {type === 'error' ? (
@@ -246,8 +246,8 @@ export default function CareerCoachPage() {
   const showEmptyState = !msgLoading && messages.length === 0 && !error;
 
   const TABS = [
-    { key: 'coach',   label: '💬 Career Coach' },
-    { key: 'roadmap', label: '🗺️ Placement Roadmap' },
+    { key: 'coach',   label: '💬 Career Coach',      labelSm: '💬 Career Coach' },
+    { key: 'roadmap', label: '🗺️ Roadmap',           labelSm: '🗺️ Placement Roadmap' },
   ];
 
   return (
@@ -257,19 +257,20 @@ export default function CareerCoachPage() {
         {/* ── Tab bar ──────────────────────────────────────────────────────── */}
         <div className="flex-shrink-0 px-4 py-3 border-b border-white/10 bg-white/[0.02]">
           <div className="flex gap-1 bg-white/5 rounded-2xl p-1">
-            {TABS.map(({ key, label }) => (
+            {TABS.map(({ key, label, labelSm }) => (
               <button
                 key={key}
                 type="button"
                 onClick={() => { setActiveTab(key); setSidebarOpen(false); }}
                 className={[
-                  'flex-1 px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 whitespace-nowrap',
+                  'flex-1 px-3 sm:px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 whitespace-nowrap',
                   activeTab === key
                     ? 'glass-brand text-brand-400 shadow-glow-sm'
                     : 'text-neutral-500 hover:text-neutral-700 hover:bg-white/5',
                 ].join(' ')}
               >
-                {label}
+                <span className="sm:hidden">{label}</span>
+                <span className="hidden sm:inline">{labelSm}</span>
               </button>
             ))}
           </div>
@@ -360,7 +361,8 @@ export default function CareerCoachPage() {
                   disabled={typing || msgLoading}
                 />
                 <p className="text-[10px] text-neutral-500 text-center mt-2.5">
-                  AI can make mistakes. Always verify important career advice. · Enter to send · Shift+Enter for new line
+                  <span className="sm:hidden">Enter to send · Shift+Enter for new line</span>
+                  <span className="hidden sm:inline">AI can make mistakes. Always verify important career advice. · Enter to send · Shift+Enter for new line</span>
                 </p>
               </div>
             </div>

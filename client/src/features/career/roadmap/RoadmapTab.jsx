@@ -145,9 +145,9 @@ export default function RoadmapTab({ sidebarOpen, setSidebarOpen }) {
 
       {/* Sidebar */}
       <div className={[
-        'fixed inset-y-0 left-0 z-40 w-72 lg:relative lg:inset-auto lg:z-auto lg:w-72 lg:flex-shrink-0',
-        'transition-transform duration-200 ease-out lg:translate-x-0',
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+        'fixed inset-y-3 left-3 z-40 w-72 rounded-3xl overflow-hidden lg:relative lg:inset-auto lg:rounded-none lg:z-auto lg:w-72 lg:flex-shrink-0',
+        'transition-transform duration-300 ease-out-quart lg:translate-x-0',
+        sidebarOpen ? 'translate-x-0' : '-translate-x-[calc(100%+0.75rem)]',
       ].join(' ')}>
         <RoadmapList
           roadmaps={roadmaps}

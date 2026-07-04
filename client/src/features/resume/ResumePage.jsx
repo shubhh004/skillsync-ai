@@ -97,7 +97,7 @@ const SECTIONS = [
 function Toast({ message, type }) {
   return (
     <div
-      className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl text-sm font-medium flex items-center gap-2.5 animate-pop-in glass-heavy border ${
+      className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl text-sm font-medium flex items-center gap-2.5 animate-pop-in glass-heavy border max-w-[calc(100vw-3rem)] ${
         type === 'error' ? 'border-danger-500/30' : 'border-success-500/30'
       }`}
       style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
