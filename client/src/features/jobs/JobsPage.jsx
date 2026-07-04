@@ -150,8 +150,8 @@ export default function JobsPage() {
             <div
               className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
               style={{
-                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 55%, #4338ca 100%)',
-                boxShadow: '0 0 0 1px rgba(99,102,241,0.3), 0 0 20px rgba(99,102,241,0.35), 0 4px 12px rgba(0,0,0,0.4)',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 55%, #b45309 100%)',
+                boxShadow: '0 0 0 1px rgba(245,158,11,0.32), 0 0 24px rgba(245,158,11,0.42), 0 4px 12px rgba(0,0,0,0.4)',
               }}
             >
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>

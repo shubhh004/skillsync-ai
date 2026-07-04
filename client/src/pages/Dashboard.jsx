@@ -108,10 +108,22 @@ function PlacementReadiness({ data, score }) {
       </div>
 
       {/* Main bar */}
-      <div className="h-2.5 rounded-full bg-neutral-200 overflow-hidden mb-5">
+      <div className="h-2.5 rounded-full overflow-hidden mb-5" style={{ background: 'rgba(255,255,255,0.07)' }}>
         <div
-          className={`h-full rounded-full ${barClass} transition-all duration-700 ease-smooth`}
-          style={{ width: `${score}%` }}
+          className="h-full rounded-full transition-all duration-700 ease-smooth"
+          style={{
+            width: `${score}%`,
+            background: score >= 70
+              ? 'linear-gradient(90deg, #22c55e, #16a34a)'
+              : score >= 40
+              ? 'linear-gradient(90deg, #f59e0b, #d97706)'
+              : 'linear-gradient(90deg, #ef4444, #dc2626)',
+            boxShadow: score >= 70
+              ? '0 0 8px rgba(34,197,94,0.55)'
+              : score >= 40
+              ? '0 0 8px rgba(245,158,11,0.55)'
+              : '0 0 8px rgba(239,68,68,0.55)',
+          }}
         />
       </div>
 
@@ -192,10 +204,14 @@ function RoadmapProgressWidget() {
           <span>Tasks completed</span>
           <span className="tabular-nums font-medium">{roadmap.checklistDone}/{roadmap.checklistTotal} ({pct}%)</span>
         </div>
-        <div className="h-1.5 rounded-full bg-neutral-200 overflow-hidden">
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
           <div
-            className="h-full rounded-full bg-brand-500 transition-all duration-500 ease-smooth"
-            style={{ width: `${pct}%` }}
+            className="h-full rounded-full transition-all duration-500 ease-smooth"
+            style={{
+              width: `${pct}%`,
+              background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
+              boxShadow: '0 0 6px rgba(99,102,241,0.45)',
+            }}
           />
         </div>
       </div>
@@ -221,10 +237,22 @@ function GoalRow({ label, current, target, barKey, suffix = '' }) {
           {current}/{target}{suffix}{done ? ' ✓' : ''}
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-neutral-200 overflow-hidden">
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
         <div
-          className={`h-full rounded-full transition-all duration-500 ease-smooth ${done ? 'bg-success-500' : GOAL_BAR[barKey]}`}
-          style={{ width: `${pct}%` }}
+          className="h-full rounded-full transition-all duration-500 ease-smooth"
+          style={{
+            width: `${pct}%`,
+            background: done
+              ? 'linear-gradient(90deg, #22c55e, #16a34a)'
+              : barKey === 'dsa'       ? 'linear-gradient(90deg, #6366f1, #8b5cf6)'
+              : barKey === 'jobs'      ? 'linear-gradient(90deg, #f59e0b, #d97706)'
+              : /* interview */          'linear-gradient(90deg, #22c55e, #16a34a)',
+            boxShadow: done
+              ? '0 0 6px rgba(34,197,94,0.5)'
+              : barKey === 'dsa'       ? '0 0 6px rgba(99,102,241,0.45)'
+              : barKey === 'jobs'      ? '0 0 6px rgba(245,158,11,0.45)'
+              :                          '0 0 6px rgba(34,197,94,0.45)',
+          }}
         />
       </div>
     </div>
@@ -252,10 +280,14 @@ function WeeklyGoalsCard({ weekly }) {
               {resumeDone ? 'Done ✓' : 'Pending'}
             </span>
           </div>
-          <div className="h-1.5 rounded-full bg-neutral-200 overflow-hidden">
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
             <div
-              className={`h-full rounded-full transition-all duration-500 ease-smooth ${resumeDone ? 'bg-success-500' : 'bg-neutral-300'}`}
-              style={{ width: resumeDone ? '100%' : '0%' }}
+              className="h-full rounded-full transition-all duration-500 ease-smooth"
+              style={{
+                width: resumeDone ? '100%' : '0%',
+                background: 'linear-gradient(90deg, #22c55e, #16a34a)',
+                boxShadow: '0 0 6px rgba(34,197,94,0.5)',
+              }}
             />
           </div>
         </div>
@@ -293,7 +325,8 @@ function UpcomingCard({ upcoming }) {
           {upcoming.map((iv, i) => (
             <li
               key={iv._id}
-              className={`flex items-start gap-3 px-5 py-4 hover:bg-white/5 transition-colors duration-150 ${i < upcoming.length - 1 ? 'border-b border-neutral-200' : ''}`}
+              className="flex items-start gap-3 px-5 py-4 hover:bg-white/5 transition-colors duration-150"
+              style={i < upcoming.length - 1 ? { borderBottom: '1px solid rgba(255,255,255,0.06)' } : undefined}
             >
               <div className="mt-0.5 w-8 h-8 rounded-xl gradient-brand-subtle border border-brand-200/20 flex items-center justify-center flex-shrink-0">
                 <svg className="w-3.5 h-3.5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -431,7 +464,7 @@ function InterviewSummaryCard({ interviews }) {
               <p className="text-base font-bold text-neutral-800 tabular-nums">{interviews.completed}</p>
               <p className="text-xs text-neutral-500">Completed</p>
             </div>
-            <div className="text-center border-x border-neutral-200">
+            <div className="text-center" style={{ borderLeft: '1px solid rgba(255,255,255,0.08)', borderRight: '1px solid rgba(255,255,255,0.08)' }}>
               <p className={`text-base font-bold tabular-nums ${scoreClass}`}>{interviews.avgScore}</p>
               <p className="text-xs text-neutral-500">Avg Score</p>
             </div>
@@ -478,10 +511,10 @@ function AchievementBadges({ data }) {
 
 // ─── Recent Activity ──────────────────────────────────────────────────────────
 const ACTIVITY_CONFIG = {
-  dsa:       { iconBg: 'gradient-brand-subtle border-brand-200/20',  iconClass: 'text-brand-400',   label: 'DSA',       badgeClass: 'badge-brand'   },
-  job:       { iconBg: 'bg-warning-100/40 border-warning-500/20',    iconClass: 'text-warning-700', label: 'Job',       badgeClass: 'badge-warning' },
-  interview: { iconBg: 'bg-success-100/40 border-success-500/20',    iconClass: 'text-success-700', label: 'Interview', badgeClass: 'badge-success' },
-  resume:    { iconBg: 'bg-neutral-100/60 border-neutral-300/30',    iconClass: 'text-neutral-500', label: 'Resume',    badgeClass: 'badge-neutral' },
+  dsa:       { iconStyle: { background: 'rgba(108,92,255,0.12)', border: '1px solid rgba(108,92,255,0.22)' }, iconColor: '#a78bfa',  label: 'DSA',       badgeClass: 'badge-brand'   },
+  job:       { iconStyle: { background: 'rgba(245,158,11,0.1)',  border: '1px solid rgba(245,158,11,0.2)'  }, iconColor: '#fcd34d',  label: 'Job',       badgeClass: 'badge-warning' },
+  interview: { iconStyle: { background: 'rgba(168,85,247,0.1)',  border: '1px solid rgba(168,85,247,0.2)'  }, iconColor: '#d8b4fe',  label: 'Interview', badgeClass: 'badge-success' },
+  resume:    { iconStyle: { background: 'rgba(34,197,94,0.1)',   border: '1px solid rgba(34,197,94,0.2)'   }, iconColor: '#86efac',  label: 'Resume',    badgeClass: 'badge-neutral' },
 };
 
 const ACTIVITY_SVG = {
@@ -527,10 +560,14 @@ function RecentActivityCard({ items }) {
             return (
               <li
                 key={i}
-                className={`flex items-start gap-3 px-5 py-4 hover:bg-white/5 transition-colors duration-150 ${i < items.length - 1 ? 'border-b border-neutral-200' : ''}`}
+                className="flex items-start gap-3 px-5 py-4 hover:bg-white/5 transition-colors duration-150"
+                style={i < items.length - 1 ? { borderBottom: '1px solid rgba(255,255,255,0.06)' } : undefined}
               >
-                <div className={`mt-0.5 w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 border ${cfg.iconBg}`}>
-                  <span className={cfg.iconClass}>{ACTIVITY_SVG[item.type]}</span>
+                <div
+                  className="mt-0.5 w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={cfg.iconStyle}
+                >
+                  <span style={{ color: cfg.iconColor }}>{ACTIVITY_SVG[item.type]}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-neutral-800 truncate">{item.title}</p>

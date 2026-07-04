@@ -119,10 +119,10 @@ function ChecklistPanel({ roadmapId, checklist, onChange }) {
         </span>
       </div>
       {/* Progress bar */}
-      <div className="h-1.5 bg-neutral-100">
+      <div className="h-1.5" style={{ background: 'rgba(255,255,255,0.07)' }}>
         <div
-          className="h-full bg-brand-500 transition-all duration-500"
-          style={{ width: `${pct}%` }}
+          className="h-full transition-all duration-500"
+          style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', boxShadow: '0 0 6px rgba(99,102,241,0.4)' }}
         />
       </div>
       {/* Items */}
@@ -190,8 +190,8 @@ export default function RoadmapView({ roadmap: initialRoadmap, onRegenerate, onD
                 <span>{done}/{total} tasks completed</span>
                 <span>{pct}%</span>
               </div>
-              <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
-                <div className="h-full rounded-full bg-brand-500 transition-all duration-500" style={{ width: `${pct}%` }} />
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
+                <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', boxShadow: '0 0 6px rgba(99,102,241,0.4)' }} />
               </div>
             </div>
           )}

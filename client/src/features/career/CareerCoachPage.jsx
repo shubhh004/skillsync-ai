@@ -84,8 +84,8 @@ const ChatHeader = memo(function ChatHeader({ onOpenSidebar, activeChatId }) {
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center"
             style={{
-              background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-              boxShadow: '0 0 0 2px rgba(99,102,241,0.3), 0 0 20px rgba(99,102,241,0.5), 0 4px 12px rgba(0,0,0,0.4)',
+              background: 'linear-gradient(135deg, #f472b6 0%, #ec4899 55%, #db2777 100%)',
+              boxShadow: '0 0 0 2px rgba(244,114,182,0.32), 0 0 24px rgba(244,114,182,0.5), 0 4px 12px rgba(0,0,0,0.4)',
             }}
           >
             <SparkleIcon className="w-5 h-5 text-white" />

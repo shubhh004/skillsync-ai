@@ -98,10 +98,10 @@ export default function RoadmapList({ roadmaps, loading, activeId, onSelect, onN
                         <span className="text-[10px] text-neutral-400">{rm.checklistDone}/{rm.checklistTotal} tasks</span>
                         <span className="text-[10px] text-neutral-400">{timeAgo(rm.updatedAt)}</span>
                       </div>
-                      <div className="h-1 rounded-full bg-neutral-100 overflow-hidden">
+                      <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
                         <div
-                          className="h-full rounded-full bg-brand-400 transition-all duration-500"
-                          style={{ width: `${pct}%` }}
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', boxShadow: '0 0 4px rgba(99,102,241,0.4)' }}
                         />
                       </div>
                     </div>

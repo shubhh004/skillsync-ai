@@ -39,12 +39,13 @@ export default function StatCard({ label, value, delta, positive = true, icon = 
 
         {/* Delta badge */}
         {delta !== undefined && (
-          <span className={[
-            'inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full',
-            positive
-              ? 'bg-success-100/60 text-success-700 border border-success-500/20'
-              : 'bg-danger-100/60  text-danger-700  border border-danger-500/20',
-          ].join(' ')}>
+          <span
+            className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full"
+            style={positive
+              ? { background: 'rgba(34,197,94,0.1)', color: '#86efac', border: '1px solid rgba(34,197,94,0.2)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)' }
+              : { background: 'rgba(239,68,68,0.1)',  color: '#fca5a5', border: '1px solid rgba(239,68,68,0.2)',  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)' }
+            }
+          >
             {positive ? '↑' : '↓'} {delta}
           </span>
         )}

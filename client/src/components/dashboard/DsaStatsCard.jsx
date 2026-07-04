@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
 const DIFF_CONFIG = [
-  { label: 'Easy',   bar: 'bg-success-500', text: 'text-success-700' },
-  { label: 'Medium', bar: 'bg-warning-500', text: 'text-warning-700' },
-  { label: 'Hard',   bar: 'bg-danger-500',  text: 'text-danger-700'  },
+  { label: 'Easy',   barStyle: { background: 'linear-gradient(90deg,#22c55e,#16a34a)', boxShadow: '0 0 6px rgba(34,197,94,0.4)'  }, text: 'text-success-700' },
+  { label: 'Medium', barStyle: { background: 'linear-gradient(90deg,#f59e0b,#d97706)', boxShadow: '0 0 6px rgba(245,158,11,0.4)' }, text: 'text-warning-700' },
+  { label: 'Hard',   barStyle: { background: 'linear-gradient(90deg,#ef4444,#dc2626)', boxShadow: '0 0 6px rgba(239,68,68,0.4)'  }, text: 'text-danger-700'  },
 ];
 
-function ProgressRow({ label, value, total, pct, barClass, textClass }) {
+function ProgressRow({ label, value, total, pct, barStyle, textClass }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
@@ -15,10 +15,10 @@ function ProgressRow({ label, value, total, pct, barClass, textClass }) {
           {total !== undefined ? `${value}/${total}` : `${pct}%`}
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-neutral-200 overflow-hidden">
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
         <div
-          className={`h-full rounded-full ${barClass} transition-all duration-500 ease-smooth`}
-          style={{ width: `${pct}%` }}
+          className="h-full rounded-full transition-all duration-500 ease-smooth"
+          style={{ width: `${pct}%`, ...barStyle }}
         />
       </div>
     </div>
@@ -32,14 +32,14 @@ export default function DsaStatsCard({ problems, dsaStats }) {
       const pct = (n) => (total ? Math.round((n / total) * 100) : 0);
       return {
         diff: [
-          { label: 'Easy',   bar: 'bg-success-500', text: 'text-success-700', total: easy,   value: easySolved,   pct: easy   ? Math.round((easySolved   / easy)   * 100) : 0 },
-          { label: 'Medium', bar: 'bg-warning-500', text: 'text-warning-700', total: medium, value: mediumSolved, pct: medium ? Math.round((mediumSolved / medium) * 100) : 0 },
-          { label: 'Hard',   bar: 'bg-danger-500',  text: 'text-danger-700',  total: hard,   value: hardSolved,   pct: hard   ? Math.round((hardSolved   / hard)   * 100) : 0 },
+          { label: 'Easy',   barStyle: DIFF_CONFIG[0].barStyle, text: 'text-success-700', total: easy,   value: easySolved,   pct: easy   ? Math.round((easySolved   / easy)   * 100) : 0 },
+          { label: 'Medium', barStyle: DIFF_CONFIG[1].barStyle, text: 'text-warning-700', total: medium, value: mediumSolved, pct: medium ? Math.round((mediumSolved / medium) * 100) : 0 },
+          { label: 'Hard',   barStyle: DIFF_CONFIG[2].barStyle, text: 'text-danger-700',  total: hard,   value: hardSolved,   pct: hard   ? Math.round((hardSolved   / hard)   * 100) : 0 },
         ],
         progress: [
-          { label: 'Solved',    pct: pct(solved),    bar: 'bg-success-500', text: 'text-success-700' },
-          { label: 'Attempted', pct: pct(attempted), bar: 'bg-warning-500', text: 'text-warning-700' },
-          { label: 'Todo',      pct: pct(todo),      bar: 'bg-neutral-400', text: 'text-neutral-500' },
+          { label: 'Solved',    pct: pct(solved),    barStyle: { background: 'linear-gradient(90deg,#22c55e,#16a34a)', boxShadow: '0 0 6px rgba(34,197,94,0.4)'  }, text: 'text-success-700' },
+          { label: 'Attempted', pct: pct(attempted), barStyle: { background: 'linear-gradient(90deg,#f59e0b,#d97706)', boxShadow: '0 0 6px rgba(245,158,11,0.4)' }, text: 'text-warning-700' },
+          { label: 'Todo',      pct: pct(todo),      barStyle: { background: 'rgba(255,255,255,0.2)' },                                                              text: 'text-neutral-500' },
         ],
       };
     }
@@ -52,16 +52,16 @@ export default function DsaStatsCard({ problems, dsaStats }) {
     const pct       = (n) => (total ? Math.round((n / total) * 100) : 0);
 
     return {
-      diff: DIFF_CONFIG.map(({ label, bar, text }) => {
+      diff: DIFF_CONFIG.map(({ label, barStyle, text }) => {
         const group     = list.filter((p) => p.difficulty === label);
         const grpSolved = group.filter((p) => p.status === 'Solved').length;
         const grpPct    = group.length ? Math.round((grpSolved / group.length) * 100) : 0;
-        return { label, bar, text, total: group.length, value: grpSolved, pct: grpPct };
+        return { label, barStyle, text, total: group.length, value: grpSolved, pct: grpPct };
       }),
       progress: [
-        { label: 'Solved',    pct: pct(solved),    bar: 'bg-success-500', text: 'text-success-700' },
-        { label: 'Attempted', pct: pct(attempted), bar: 'bg-warning-500', text: 'text-warning-700' },
-        { label: 'Todo',      pct: pct(todo),      bar: 'bg-neutral-400', text: 'text-neutral-500' },
+        { label: 'Solved',    pct: pct(solved),    barStyle: { background: 'linear-gradient(90deg,#22c55e,#16a34a)', boxShadow: '0 0 6px rgba(34,197,94,0.4)'  }, text: 'text-success-700' },
+        { label: 'Attempted', pct: pct(attempted), barStyle: { background: 'linear-gradient(90deg,#f59e0b,#d97706)', boxShadow: '0 0 6px rgba(245,158,11,0.4)' }, text: 'text-warning-700' },
+        { label: 'Todo',      pct: pct(todo),      barStyle: { background: 'rgba(255,255,255,0.2)' },                                                              text: 'text-neutral-500' },
       ],
     };
   }, [problems, dsaStats]);
@@ -76,14 +76,14 @@ export default function DsaStatsCard({ problems, dsaStats }) {
         <div>
           <p className="text-label mb-4">By Difficulty</p>
           <div className="space-y-3.5">
-            {diff.map(({ label, bar, text, total, value, pct }) => (
+            {diff.map(({ label, barStyle, text, total, value, pct }) => (
               <ProgressRow
                 key={label}
                 label={label}
                 value={value}
                 total={total}
                 pct={pct}
-                barClass={bar}
+                barStyle={barStyle}
                 textClass={text}
               />
             ))}
@@ -94,12 +94,12 @@ export default function DsaStatsCard({ problems, dsaStats }) {
         <div>
           <p className="text-label mb-4">Overall Progress</p>
           <div className="space-y-3.5">
-            {progress.map(({ label, pct, bar, text }) => (
+            {progress.map(({ label, pct, barStyle, text }) => (
               <ProgressRow
                 key={label}
                 label={label}
                 pct={pct}
-                barClass={bar}
+                barStyle={barStyle}
                 textClass={text}
               />
             ))}

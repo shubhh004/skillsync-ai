@@ -245,7 +245,7 @@ export default function ResumePage() {
           <div className="flex items-start gap-3">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', boxShadow: '0 0 14px rgba(99,102,241,0.4)' }}
+              style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 55%, #15803d 100%)', boxShadow: '0 0 0 1px rgba(34,197,94,0.28), 0 0 20px rgba(34,197,94,0.4), 0 4px 10px rgba(0,0,0,0.4)' }}
             >
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

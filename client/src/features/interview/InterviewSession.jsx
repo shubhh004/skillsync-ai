@@ -230,10 +230,10 @@ function ActiveSession({ role, difficulty, questions, onFinish }) {
           <span>Progress</span>
           <span>{answeredCount} / {questions.length} answered</span>
         </div>
-        <div className="w-full h-2 bg-neutral-200 rounded-full overflow-hidden">
+        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
           <div
-            className="h-full bg-brand-500 rounded-full transition-all duration-300"
-            style={{ width: `${(answeredCount / questions.length) * 100}%` }}
+            className="h-full rounded-full transition-all duration-300"
+            style={{ width: `${(answeredCount / questions.length) * 100}%`, background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', boxShadow: '0 0 6px rgba(99,102,241,0.45)' }}
           />
         </div>
       </div>
@@ -406,10 +406,22 @@ function ResultsScreen({ role, difficulty, questions, answers, evaluation, onRet
                       <span>{category}</span>
                       <span className="font-medium text-neutral-700">{avg}/100</span>
                     </div>
-                    <div className="h-1.5 w-full bg-neutral-200 rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
                       <div
-                        className={`h-full rounded-full transition-all ${avg >= 70 ? 'bg-success-500' : avg >= 40 ? 'bg-warning-500' : 'bg-danger-500'}`}
-                        style={{ width: `${avg}%` }}
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${avg}%`,
+                          background: avg >= 70
+                            ? 'linear-gradient(90deg,#22c55e,#16a34a)'
+                            : avg >= 40
+                            ? 'linear-gradient(90deg,#f59e0b,#d97706)'
+                            : 'linear-gradient(90deg,#ef4444,#dc2626)',
+                          boxShadow: avg >= 70
+                            ? '0 0 6px rgba(34,197,94,0.4)'
+                            : avg >= 40
+                            ? '0 0 6px rgba(245,158,11,0.4)'
+                            : '0 0 6px rgba(239,68,68,0.4)',
+                        }}
                       />
                     </div>
                   </div>
@@ -563,7 +575,7 @@ function ResultsScreen({ role, difficulty, questions, answers, evaluation, onRet
 
               {/* Follow-up Question (AI) */}
               {ev.followUpQuestion && (
-                <div className="pt-2 border-t border-neutral-200">
+                <div className="pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                   <p className="text-xs font-semibold text-neutral-500 mb-1.5">Follow-up Question</p>
                   <p className="text-sm text-brand-700 font-medium leading-relaxed">{ev.followUpQuestion}</p>
                 </div>

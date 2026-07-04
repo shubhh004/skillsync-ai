@@ -15,10 +15,10 @@ const SECTION_LABELS = {
 
 // 4-tier: 90+ green, 70+ blue, 50+ amber, <50 red
 function scoreStyle(pct) {
-  if (pct >= 90) return { text: 'text-success-600', stroke: '#16a34a', bar: 'bg-success-500', accent: '#f0fdf4' };
-  if (pct >= 70) return { text: 'text-brand-400',   stroke: '#6366f1', bar: 'bg-brand-500',   accent: '#1e1b4b' };
-  if (pct >= 50) return { text: 'text-warning-600', stroke: '#ca8a04', bar: 'bg-warning-500', accent: '#fefce8' };
-  return          { text: 'text-danger-600',         stroke: '#dc2626', bar: 'bg-danger-500',  accent: '#fef2f2' };
+  if (pct >= 90) return { text: 'text-success-700', stroke: '#22c55e', barStyle: { background: 'linear-gradient(90deg,#22c55e,#16a34a)', boxShadow: '0 0 6px rgba(34,197,94,0.4)' },   accent: 'rgba(34,197,94,0.08)',  accentBorder: 'rgba(34,197,94,0.2)' };
+  if (pct >= 70) return { text: 'text-brand-400',   stroke: '#6366f1', barStyle: { background: 'linear-gradient(90deg,#6366f1,#8b5cf6)', boxShadow: '0 0 6px rgba(99,102,241,0.4)' },   accent: 'rgba(99,102,241,0.1)',  accentBorder: 'rgba(99,102,241,0.2)' };
+  if (pct >= 50) return { text: 'text-warning-700', stroke: '#f59e0b', barStyle: { background: 'linear-gradient(90deg,#f59e0b,#d97706)', boxShadow: '0 0 6px rgba(245,158,11,0.4)' },   accent: 'rgba(245,158,11,0.08)', accentBorder: 'rgba(245,158,11,0.2)' };
+  return          { text: 'text-danger-700',         stroke: '#ef4444', barStyle: { background: 'linear-gradient(90deg,#ef4444,#dc2626)', boxShadow: '0 0 6px rgba(239,68,68,0.4)'  },   accent: 'rgba(239,68,68,0.08)',  accentBorder: 'rgba(239,68,68,0.2)' };
 }
 
 function scoreLabel(score) {
@@ -51,12 +51,12 @@ function categorizeSuggestions(ats = [], jd = []) {
 function CircularScore({ score }) {
   const r    = 54;
   const circ = 2 * Math.PI * r;
-  const { text, stroke, accent } = scoreStyle(score);
+  const { text, stroke, accent, accentBorder } = scoreStyle(score);
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="rounded-full p-3" style={{ background: accent }}>
+      <div className="rounded-full p-3" style={{ background: accent, border: `1px solid ${accentBorder}` }}>
         <svg width="148" height="148" viewBox="0 0 148 148" aria-label={`ATS score ${score} out of 100`}>
-          <circle cx="74" cy="74" r={r} fill="none" stroke="#e5e7eb" strokeWidth="12" />
+          <circle cx="74" cy="74" r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="12" />
           <circle
             cx="74" cy="74" r={r}
             fill="none"
@@ -100,7 +100,7 @@ function SectionBreakdown({ breakdown, sectionQuality }) {
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {Object.entries(breakdown).map(([key, { score, max }]) => {
         const pct  = Math.round((score / max) * 100);
-        const { text, bar } = scoreStyle(pct);
+        const { text } = scoreStyle(pct);
         const sq   = sectionQuality?.[key];
         const qPct = sq ? Math.round((sq.quality / sq.max) * 100) : null;
         return (
@@ -120,14 +120,14 @@ function SectionBreakdown({ breakdown, sectionQuality }) {
               </div>
             </div>
             <div className="space-y-1">
-              <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
-                <div className={`h-full rounded-full transition-all duration-500 ${bar}`} style={{ width: `${pct}%` }} />
+              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
+                <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, ...scoreStyle(pct).barStyle }} />
               </div>
               {qPct !== null && (
-                <div className="h-1 bg-neutral-100 rounded-full overflow-hidden">
+                <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
                   <div
-                    className={`h-full rounded-full transition-all duration-700 ${scoreStyle(qPct).bar} opacity-50`}
-                    style={{ width: `${qPct}%` }}
+                    className="h-full rounded-full transition-all duration-700 opacity-60"
+                    style={{ width: `${qPct}%`, ...scoreStyle(qPct).barStyle }}
                   />
                 </div>
               )}
@@ -218,7 +218,7 @@ function SmartSuggestions({ atsSuggestions, qualitySuggestions, jdRecommendation
 }
 
 function QualityInsights({ qualityScore, technicalKeywordCount, actionVerbCount, impactMetrics }) {
-  const { text, bar } = scoreStyle(qualityScore);
+  const { text } = scoreStyle(qualityScore);
   return (
     <Card padding={false} className="p-4">
       <div className="flex items-center justify-between mb-3">
@@ -227,29 +227,29 @@ function QualityInsights({ qualityScore, technicalKeywordCount, actionVerbCount,
           {qualityScore}<span className="text-xs text-neutral-400 font-normal">/100</span>
         </span>
       </div>
-      <div className="h-2 bg-neutral-100 rounded-full overflow-hidden mb-4">
-        <div className={`h-full rounded-full transition-all duration-700 ${bar}`} style={{ width: `${qualityScore}%` }} />
+      <div className="h-2 rounded-full overflow-hidden mb-4" style={{ background: 'rgba(255,255,255,0.07)' }}>
+        <div className="h-full rounded-full transition-all duration-700" style={{ width: `${qualityScore}%`, ...scoreStyle(qualityScore).barStyle }} />
       </div>
       <div className="grid grid-cols-3 gap-2">
-        <div className="flex flex-col items-center px-2 py-2.5 rounded-lg bg-brand-50">
-          <span className="text-base font-bold text-brand-700">{technicalKeywordCount}</span>
-          <span className="text-xs text-brand-400 mt-0.5 text-center leading-tight">Tech Keywords</span>
+        <div className="flex flex-col items-center px-2 py-2.5 rounded-lg" style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}>
+          <span className="text-base font-bold text-brand-400">{technicalKeywordCount}</span>
+          <span className="text-xs text-neutral-500 mt-0.5 text-center leading-tight">Tech Keywords</span>
         </div>
-        <div className="flex flex-col items-center px-2 py-2.5 rounded-lg bg-success-50">
+        <div className="flex flex-col items-center px-2 py-2.5 rounded-lg" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
           <span className="text-base font-bold text-success-700">{actionVerbCount}</span>
-          <span className="text-xs text-success-600 mt-0.5 text-center leading-tight">Action Verbs</span>
+          <span className="text-xs text-neutral-500 mt-0.5 text-center leading-tight">Action Verbs</span>
         </div>
-        <div className="flex flex-col items-center px-2 py-2.5 rounded-lg bg-warning-50">
+        <div className="flex flex-col items-center px-2 py-2.5 rounded-lg" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
           <span className="text-base font-bold text-warning-700">{impactMetrics.length}</span>
-          <span className="text-xs text-warning-600 mt-0.5 text-center leading-tight">Impact Metrics</span>
+          <span className="text-xs text-neutral-500 mt-0.5 text-center leading-tight">Impact Metrics</span>
         </div>
       </div>
       {impactMetrics.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-neutral-200">
+        <div className="mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="text-xs text-neutral-500 mb-1.5">Detected impact phrases:</p>
           <div className="flex flex-wrap gap-1.5">
             {impactMetrics.slice(0, 6).map((m, i) => (
-              <span key={i} className="px-2 py-0.5 rounded text-xs font-medium bg-warning-50 text-warning-700">{m}</span>
+              <span key={i} className="px-2 py-0.5 rounded text-xs font-medium text-warning-700" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)' }}>{m}</span>
             ))}
           </div>
         </div>
@@ -278,9 +278,11 @@ function QualityFlags({ flags }) {
           return (
             <span
               key={key}
-              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                pass ? 'bg-success-50 text-success-700' : 'bg-danger-50 text-danger-700'
-              }`}
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium"
+              style={pass
+                ? { background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', color: '#4ade80' }
+                : { background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }
+              }
             >
               {pass ? '✓' : '✗'} {cfg.label}
             </span>
@@ -445,7 +447,7 @@ export default function AtsCheckerView() {
           <h4 className="text-sm font-semibold text-neutral-700 mb-2.5">Missing Sections</h4>
           <div className="flex flex-wrap gap-2">
             {data.missingSections.map(s => (
-              <span key={s} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-50 text-danger-700">
+              <span key={s} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-danger-700" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
                 {SECTION_LABELS[s] ?? s}
               </span>
             ))}
@@ -462,7 +464,7 @@ export default function AtsCheckerView() {
 
       {/* ── Job Description Match ── */}
       <div>
-        <div className="border-t border-neutral-200 mb-6" />
+        <div className="mb-6" style={{ height: 1, background: 'rgba(255,255,255,0.06)' }} />
         <div className="mb-4">
           <h3 className="text-base font-semibold text-neutral-900">Job Description Match</h3>
           <p className="mt-0.5 text-sm text-neutral-500">
@@ -476,7 +478,7 @@ export default function AtsCheckerView() {
             onChange={e => { setJdText(e.target.value); setMatchData(null); setMatchError(null); }}
             placeholder="Paste the full job description here..."
             rows={6}
-            className="w-full rounded-lg border border-neutral-200 bg-neutral-100 px-3 py-2.5 text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-y transition"
+            className="textarea-base resize-y"
           />
           <Button onClick={analyze} disabled={!jdText.trim() || matchLoading} size="sm">
             {matchLoading ? 'Analyzing...' : 'Analyze Match'}
@@ -505,10 +507,10 @@ export default function AtsCheckerView() {
                   {matchData.matchPercentage}%
                 </span>
               </div>
-              <div className="h-2.5 bg-neutral-100 rounded-full overflow-hidden">
+              <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
                 <div
-                  className={`h-full rounded-full transition-all duration-700 ${scoreStyle(matchData.matchPercentage).bar}`}
-                  style={{ width: `${matchData.matchPercentage}%` }}
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{ width: `${matchData.matchPercentage}%`, ...scoreStyle(matchData.matchPercentage).barStyle }}
                 />
               </div>
             </Card>
@@ -524,7 +526,7 @@ export default function AtsCheckerView() {
               {matchData.matchedSkills.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {matchData.matchedSkills.map(s => (
-                    <span key={s} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-50 text-success-700">
+                    <span key={s} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-success-700" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}>
                       {s}
                     </span>
                   ))}
@@ -543,7 +545,7 @@ export default function AtsCheckerView() {
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {matchData.missingSkills.map(s => (
-                    <span key={s} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-50 text-danger-700">
+                    <span key={s} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-danger-700" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
                       {s}
                     </span>
                   ))}

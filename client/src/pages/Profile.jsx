@@ -179,10 +179,10 @@ export default function Profile() {
                     <span className="text-xs font-medium text-neutral-500">Profile completion</span>
                     <span className="text-xs font-semibold text-brand-400">{pct}%</span>
                   </div>
-                  <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
                     <div
-                      className="h-full rounded-full bg-brand-500 transition-all duration-500"
-                      style={{ width: `${pct}%` }}
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', boxShadow: '0 0 6px rgba(99,102,241,0.45)' }}
                     />
                   </div>
                 </div>

@@ -57,10 +57,8 @@ export default function RecentActivity({ problems = [] }) {
             return (
               <li
                 key={p._id}
-                className={[
-                  'flex items-start gap-4 px-6 py-4 transition-colors duration-150 hover:bg-white/5',
-                  i < recent.length - 1 ? 'border-b border-neutral-200' : '',
-                ].join(' ')}
+                className="flex items-start gap-4 px-6 py-4 transition-colors duration-150 hover:bg-white/5"
+                style={i < recent.length - 1 ? { borderBottom: '1px solid rgba(255,255,255,0.06)' } : undefined}
               >
                 {/* Status dot */}
                 <span className={`mt-1.5 flex-shrink-0 w-2 h-2 rounded-full ${cfg.dot}`} />

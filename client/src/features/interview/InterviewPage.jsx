@@ -110,9 +110,23 @@ function computeAnalytics(interviews) {
 function StatCard({ label, value, suffix = '', color = 'brand' }) {
   const c = STAT_PALETTE[color] || STAT_PALETTE.brand;
   return (
-    <div className="card p-4 flex flex-col gap-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-neutral-400">{label}</p>
-      <p className="text-3xl font-bold leading-none tabular-nums" style={{ color: c.color }}>
+    <div
+      className="card p-4 flex flex-col gap-2.5 transition-all duration-200 relative overflow-hidden"
+      style={{ transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease' }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'translateY(-3px)';
+        e.currentTarget.style.borderColor = `${c.border}`;
+        e.currentTarget.style.boxShadow = `0 2px 8px rgba(0,0,0,0.5), 0 12px 28px rgba(0,0,0,0.4), 0 0 24px ${c.bg.replace('0.08', '0.18')}`;
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = '';
+        e.currentTarget.style.borderColor = '';
+        e.currentTarget.style.boxShadow = '';
+      }}
+    >
+      <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse at 80% 20%, ${c.bg} 0%, transparent 65%)` }} />
+      <p className="relative text-[10px] font-semibold uppercase tracking-widest text-neutral-400">{label}</p>
+      <p className="relative text-3xl font-bold leading-none tabular-nums" style={{ color: c.color }}>
         {value}
         {suffix && <span className="text-base font-normal ml-0.5" style={{ color: c.color, opacity: 0.6 }}>{suffix}</span>}
       </p>
@@ -124,7 +138,15 @@ function StatCard({ label, value, suffix = '', color = 'brand' }) {
 function InsightCard({ label, value, color = 'brand' }) {
   const c = STAT_PALETTE[color] || STAT_PALETTE.brand;
   return (
-    <div className="card p-4" style={{ background: c.bg, border: `1px solid ${c.border}` }}>
+    <div
+      className="rounded-2xl p-4 relative overflow-hidden"
+      style={{
+        background: c.bg,
+        border: `1px solid ${c.border}`,
+        boxShadow: `0 1px 3px rgba(0,0,0,0.4), 0 0 16px ${c.bg.replace('0.08', '0.1')}, inset 0 1px 0 rgba(255,255,255,0.06)`,
+      }}
+    >
+      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${c.color}44, transparent)` }} />
       <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5 text-neutral-400">{label}</p>
       <p className="text-sm font-bold truncate" style={{ color: c.color }}>{value}</p>
     </div>
@@ -701,8 +723,8 @@ export default function InterviewPage() {
             <div
               className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
               style={{
-                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 55%, #4338ca 100%)',
-                boxShadow: '0 0 0 1px rgba(99,102,241,0.3), 0 0 20px rgba(99,102,241,0.35), 0 4px 12px rgba(0,0,0,0.4)',
+                background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 55%, #6d28d9 100%)',
+                boxShadow: '0 0 0 1px rgba(168,85,247,0.32), 0 0 24px rgba(168,85,247,0.42), 0 4px 12px rgba(0,0,0,0.4)',
               }}
             >
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>

@@ -54,7 +54,7 @@ export default function WelcomeCard({ readiness = null, data = null }) {
             <p className="text-xs text-neutral-500 mt-1">day streak</p>
           </div>
 
-          <div className="h-10 w-px bg-neutral-200" />
+          <div className="h-10 w-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
 
           <Button size="sm" onClick={() => navigate(to)}>{label}</Button>
         </div>
