@@ -33,7 +33,7 @@ export default function Card({
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
       onClick={onClick}
-      onKeyDown={isClickable ? (e) => e.key === 'Enter' && onClick(e) : undefined}
+      onKeyDown={isClickable ? (e) => (e.key === 'Enter' || e.key === ' ') && onClick(e) : undefined}
       whileHover={{ ...(hoverLift[variant] ?? hoverLift.default), transition: { duration: 0.2, ease: [0.25, 1, 0.5, 1] } }}
       whileTap={isClickable ? { scale: 0.99, transition: { duration: 0.1 } } : undefined}
       className={[

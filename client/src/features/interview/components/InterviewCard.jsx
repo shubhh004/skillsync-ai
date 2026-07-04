@@ -113,7 +113,7 @@ export default function InterviewCard({ interview, onEdit, onDelete, onView }) {
       role="button"
       tabIndex={0}
       onClick={() => onView(interview)}
-      onKeyDown={(e) => e.key === 'Enter' && onView(interview)}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onView(interview)}
       whileHover={{ y: -4 }}
       transition={{ type: 'spring', stiffness: 400, damping: 28 }}
       style={{

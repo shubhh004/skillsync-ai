@@ -58,10 +58,10 @@ function SectionCard({ title, children }) {
   );
 }
 
-function Field({ label, required, children }) {
+function Field({ label, required, htmlFor, children }) {
   return (
     <div>
-      <Label required={required}>{label}</Label>
+      <Label htmlFor={htmlFor} required={required}>{label}</Label>
       {children}
     </div>
   );
@@ -193,18 +193,18 @@ export default function Profile() {
           {/* Personal Information */}
           <SectionCard title="Personal Information">
             <TwoCol>
-              <Field label="Full Name" required>
+              <Field label="Full Name" required htmlFor="name">
                 <Input id="name" name="name" value={form.name} onChange={handleChange} placeholder="Priya Sharma" />
               </Field>
-              <Field label="Phone">
+              <Field label="Phone" htmlFor="phone">
                 <Input id="phone" name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="+91 98765 43210" />
               </Field>
             </TwoCol>
             <TwoCol>
-              <Field label="City">
+              <Field label="City" htmlFor="city">
                 <Input id="city" name="city" value={form.city} onChange={handleChange} placeholder="Mumbai" />
               </Field>
-              <Field label="State">
+              <Field label="State" htmlFor="state">
                 <Input id="state" name="state" value={form.state} onChange={handleChange} placeholder="Maharashtra" />
               </Field>
             </TwoCol>
@@ -216,22 +216,22 @@ export default function Profile() {
           {/* Education */}
           <SectionCard title="Education">
             <TwoCol>
-              <Field label="College">
+              <Field label="College" htmlFor="college">
                 <Input id="college" name="college" value={form.college} onChange={handleChange} placeholder="NIT Trichy" />
               </Field>
-              <Field label="University">
+              <Field label="University" htmlFor="university">
                 <Input id="university" name="university" value={form.university} onChange={handleChange} placeholder="Anna University" />
               </Field>
             </TwoCol>
             <TwoCol>
-              <Field label="Degree">
+              <Field label="Degree" htmlFor="degree">
                 <Input id="degree" name="degree" value={form.degree} onChange={handleChange} placeholder="B.Tech" />
               </Field>
-              <Field label="Branch">
+              <Field label="Branch" htmlFor="branch">
                 <Input id="branch" name="branch" value={form.branch} onChange={handleChange} placeholder="Computer Science" />
               </Field>
             </TwoCol>
-            <Field label="Graduation Year">
+            <Field label="Graduation Year" htmlFor="graduationYear">
               <Input id="graduationYear" name="graduationYear" value={form.graduationYear} onChange={handleChange} placeholder="2025" />
             </Field>
           </SectionCard>
@@ -239,10 +239,10 @@ export default function Profile() {
           {/* Career */}
           <SectionCard title="Career">
             <TwoCol>
-              <Field label="Current Status">
+              <Field label="Current Status" htmlFor="currentStatus">
                 <Input id="currentStatus" name="currentStatus" value={form.currentStatus} onChange={handleChange} placeholder="Final Year Student" />
               </Field>
-              <Field label="Dream Role">
+              <Field label="Dream Role" htmlFor="dreamRole">
                 <Input id="dreamRole" name="dreamRole" value={form.dreamRole} onChange={handleChange} placeholder="SDE at a FAANG company" />
               </Field>
             </TwoCol>
@@ -251,26 +251,26 @@ export default function Profile() {
           {/* Social Links */}
           <SectionCard title="Social Links">
             <TwoCol>
-              <Field label="GitHub">
+              <Field label="GitHub" htmlFor="github">
                 <Input id="github" name="github" value={form.github} onChange={handleChange} placeholder="https://github.com/username" />
               </Field>
-              <Field label="LinkedIn">
+              <Field label="LinkedIn" htmlFor="linkedin">
                 <Input id="linkedin" name="linkedin" value={form.linkedin} onChange={handleChange} placeholder="https://linkedin.com/in/username" />
               </Field>
             </TwoCol>
             <TwoCol>
-              <Field label="Portfolio">
+              <Field label="Portfolio" htmlFor="portfolio">
                 <Input id="portfolio" name="portfolio" value={form.portfolio} onChange={handleChange} placeholder="https://yoursite.com" />
               </Field>
-              <Field label="LeetCode">
+              <Field label="LeetCode" htmlFor="leetcode">
                 <Input id="leetcode" name="leetcode" value={form.leetcode} onChange={handleChange} placeholder="https://leetcode.com/username" />
               </Field>
             </TwoCol>
             <TwoCol>
-              <Field label="Codeforces">
+              <Field label="Codeforces" htmlFor="codeforces">
                 <Input id="codeforces" name="codeforces" value={form.codeforces} onChange={handleChange} placeholder="https://codeforces.com/profile/handle" />
               </Field>
-              <Field label="HackerRank">
+              <Field label="HackerRank" htmlFor="hackerrank">
                 <Input id="hackerrank" name="hackerrank" value={form.hackerrank} onChange={handleChange} placeholder="https://hackerrank.com/username" />
               </Field>
             </TwoCol>
@@ -278,7 +278,7 @@ export default function Profile() {
 
           {/* About */}
           <SectionCard title="About">
-            <Field label="Bio">
+            <Field label="Bio" htmlFor="bio">
               <Textarea
                 id="bio"
                 name="bio"
@@ -292,7 +292,7 @@ export default function Profile() {
 
           {/* Skills */}
           <SectionCard title="Skills">
-            <Field label="Skills">
+            <Field label="Skills" htmlFor="skills">
               <Input
                 id="skills"
                 name="skills"
@@ -322,7 +322,7 @@ export default function Profile() {
           )}
 
           <div className="flex justify-end pb-6">
-            <Button type="submit" disabled={saving}>
+            <Button type="submit" isLoading={saving}>
               {saving ? 'Saving…' : 'Save Profile'}
             </Button>
           </div>

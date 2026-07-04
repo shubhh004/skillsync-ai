@@ -78,7 +78,7 @@ export default function Signup() {
         </div>
 
         <div>
-          <Label htmlFor="college" required>College</Label>
+          <Label htmlFor="college">College</Label>
           <Input
             id="college"
             name="college"

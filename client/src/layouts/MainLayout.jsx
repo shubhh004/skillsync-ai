@@ -74,6 +74,7 @@ export default function MainLayout({ children }) {
               <button
                 type="button"
                 aria-label="Toggle menu"
+                aria-expanded={menuOpen}
                 onClick={() => setMenuOpen((v) => !v)}
                 className="md:hidden p-2 rounded-xl transition-all duration-150"
                 style={{ color: '#71717a' }}

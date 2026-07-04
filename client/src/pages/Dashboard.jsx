@@ -341,7 +341,7 @@ function JobSummaryCard({ jobs }) {
       role="button"
       tabIndex={0}
       onClick={() => navigate('/jobs')}
-      onKeyDown={(e) => e.key === 'Enter' && navigate('/jobs')}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigate('/jobs')}
     >
       <div className="card-header">
         <h3 className="text-sm font-semibold text-neutral-800">Job Applications</h3>
@@ -396,7 +396,7 @@ function InterviewSummaryCard({ interviews }) {
       role="button"
       tabIndex={0}
       onClick={() => navigate('/interview')}
-      onKeyDown={(e) => e.key === 'Enter' && navigate('/interview')}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigate('/interview')}
     >
       <div className="card-header">
         <h3 className="text-sm font-semibold text-neutral-800">AI Interviews</h3>

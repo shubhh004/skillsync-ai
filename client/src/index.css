@@ -737,7 +737,6 @@
   .modal-panel {
     @apply relative glass-heavy rounded-3xl shadow-popover;
     @apply w-full max-h-[90vh] overflow-y-auto;
-    animation: pop-in 0.22s cubic-bezier(0.25, 1, 0.5, 1) both;
   }
 
   /* Modal header row */

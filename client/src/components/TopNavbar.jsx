@@ -41,6 +41,7 @@ export default function TopNavbar({ onMenuClick }) {
           type="text"
           placeholder="Search anything..."
           readOnly
+          tabIndex={-1}
           aria-label="Search"
           className={[
             'w-full h-8 pl-8 pr-16 rounded-full text-sm',

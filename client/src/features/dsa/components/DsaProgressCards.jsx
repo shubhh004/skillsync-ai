@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion';
+
 // ─── SVG ring progress indicator ─────────────────────────────────────────────
 function Ring({ solved, total, stroke, size = 88 }) {
   const r    = (size - 12) / 2;
@@ -33,13 +35,11 @@ function Ring({ solved, total, stroke, size = 88 }) {
   );
 }
 
-import { motion } from 'framer-motion';
-
 // ─── Quick stat card ──────────────────────────────────────────────────────────
 function StatCard({ label, value, sub, iconBg, iconStroke, icon }) {
   return (
     <motion.div
-      className="card p-4 flex flex-col justify-between gap-3 transition-all duration-200 hover:shadow-card-hover"
+      className="card p-4 flex flex-col justify-between gap-3 transition-shadow duration-200 hover:shadow-card-hover"
       whileHover={{ y: -4 }}
       transition={{ type: 'spring', stiffness: 400, damping: 28 }}
     >
