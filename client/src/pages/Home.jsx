@@ -345,7 +345,7 @@ export default function Home() {
             <motion.div variants={heroItem} className="flex flex-col sm:flex-row gap-4 justify-center items-center relative">
               <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
                 style={{ background: `radial-gradient(ellipse at center, ${primaryC}0.15) 0%, transparent 60%)`, filter: 'blur(32px)' }} />
-              <Link to="/signup" className="relative"><Button size="lg">Get Started Free <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg></Button></Link>
+              <Link to="/signup" className="relative"><Button size="lg" className="group">Get Started Free <svg className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg></Button></Link>
               <a href="#how-it-works" className="relative"><Button variant="outline" size="lg">See how it works</Button></a>
             </motion.div>
 

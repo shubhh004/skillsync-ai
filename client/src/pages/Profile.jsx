@@ -208,8 +208,8 @@ export default function Profile() {
                 <Input id="state" name="state" value={form.state} onChange={handleChange} placeholder="Maharashtra" />
               </Field>
             </TwoCol>
-            <Field label="Email">
-              <Input value={user?.email || ''} disabled />
+            <Field label="Email" htmlFor="profile-email">
+              <Input id="profile-email" value={user?.email || ''} disabled />
             </Field>
           </SectionCard>
 
@@ -304,8 +304,8 @@ export default function Profile() {
             </Field>
             {form.skills.trim() && (
               <div className="flex flex-wrap gap-2 mt-1">
-                {form.skills.split(',').map((s) => s.trim()).filter(Boolean).map((skill) => (
-                  <span key={skill} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700">
+                {form.skills.split(',').map((s) => s.trim()).filter(Boolean).map((skill, i) => (
+                  <span key={`${skill}-${i}`} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700">
                     {skill}
                   </span>
                 ))}

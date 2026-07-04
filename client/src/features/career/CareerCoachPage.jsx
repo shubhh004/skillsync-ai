@@ -340,7 +340,7 @@ export default function CareerCoachPage() {
                 ) : (
                   <div className="max-w-[840px] mx-auto px-6 py-8 space-y-5">
                     {messages.map((msg, i) => (
-                      <ChatBubble key={i} role={msg.role} content={msg.content} />
+                      <ChatBubble key={`${msg.role}-${i}`} role={msg.role} content={msg.content} />
                     ))}
                     {typing && <TypingIndicator />}
                     {error && <ErrorCard message={error} onRetry={handleRetry} />}

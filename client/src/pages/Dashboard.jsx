@@ -559,7 +559,7 @@ function RecentActivityCard({ items }) {
             const cfg = ACTIVITY_CONFIG[item.type] ?? ACTIVITY_CONFIG.dsa;
             return (
               <li
-                key={i}
+                key={`${item.type}-${item.timestamp}-${i}`}
                 className="flex items-start gap-3 px-5 py-4 hover:bg-white/5 transition-colors duration-150"
                 style={i < items.length - 1 ? { borderBottom: '1px solid rgba(255,255,255,0.06)' } : undefined}
               >

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const INITIAL_NOTIFICATIONS = [
+export const INITIAL_NOTIFICATIONS = [
   {
     id: 1,
     type: 'dsa',
@@ -66,8 +66,7 @@ const dropdownVariants = {
   exit:   { opacity: 0, scale: 0.97, y: -4, transition: { duration: 0.13 } },
 };
 
-export default function NotificationDropdown({ anchorRef, open, onClose }) {
-  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+export default function NotificationDropdown({ anchorRef, open, onClose, notifications, setNotifications }) {
   const panelRef = useRef(null);
 
   const unreadCount = notifications.filter((n) => !n.read).length;

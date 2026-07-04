@@ -25,7 +25,7 @@ export default function Input({
         'disabled:opacity-40 disabled:cursor-not-allowed',
         error
           ? 'border border-danger-500 focus:ring-danger-500/40 focus:border-danger-500'
-          : 'border border-neutral-300 focus:border-brand-500 focus:ring-brand-500/40',
+          : 'border border-neutral-300 hover:border-neutral-400 focus:border-brand-500 focus:ring-brand-500/40',
         className,
       ].join(' ')}
       {...props}

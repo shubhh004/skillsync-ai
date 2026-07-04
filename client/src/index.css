@@ -446,7 +446,7 @@
   .card-interactive {
     @apply bg-neutral-0 rounded-2xl border border-neutral-200;
     box-shadow: 0 1px 3px rgba(0,0,0,0.55), 0 4px 18px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04);
-    @apply transition-all duration-200;
+    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
   }
   .card-interactive:hover {
     @apply -translate-y-0.5 border-neutral-300;
