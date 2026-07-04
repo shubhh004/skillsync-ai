@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Label from '../../../components/ui/Label';
+import { backdropTransition, springModal, dropdownTransition } from '../../../motion/variants';
 
 const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
 const STATUSES     = ['Scheduled', 'In Progress', 'Completed'];
@@ -95,10 +97,12 @@ function ModalSelect({ value, onChange, options }) {
   const active = options.find((o) => o.value === value);
 
   const panel = coords && (
-    <div
+    <motion.div
       ref={panelRef}
       role="listbox"
-      className="animate-fade-in"
+      variants={dropdownTransition}
+      initial="hidden"
+      animate="show"
       style={{
         position:  'fixed',
         top:       coords.top,
@@ -144,7 +148,7 @@ function ModalSelect({ value, onChange, options }) {
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 
   return (
@@ -218,9 +222,22 @@ export default function InterviewModal({ mode, initial, onClose, onSave }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-backdrop" onClick={onClose} aria-hidden="true" />
-
-      <div className="modal-panel max-w-md">
+      <motion.div
+        className="modal-backdrop"
+        onClick={onClose}
+        aria-hidden="true"
+        variants={backdropTransition}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      />
+      <motion.div
+        className="modal-panel max-w-md"
+        variants={springModal}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      >
         <div className="modal-header">
           <h2 className="text-base font-semibold" style={{ color: '#e4e4e7' }}>
             {isEdit ? 'Edit Interview' : 'Create Interview'}
@@ -292,7 +309,7 @@ export default function InterviewModal({ mode, initial, onClose, onSave }) {
             </Button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const icons = {
   code: (
@@ -25,7 +26,11 @@ const icons = {
 
 export default function StatCard({ label, value, delta, positive = true, icon = 'code', to }) {
   const inner = (
-    <div className="card-interactive p-6 group">
+    <motion.div
+      className="card-interactive p-6 group"
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+    >
       <div className="flex items-start justify-between">
         {/* Icon */}
         <div className="w-10 h-10 rounded-xl gradient-brand-subtle flex items-center justify-center flex-shrink-0 border border-brand-200/30">
@@ -51,7 +56,7 @@ export default function StatCard({ label, value, delta, positive = true, icon = 
           {label}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 
   if (to) return <Link to={to} className="block">{inner}</Link>;

@@ -115,3 +115,31 @@ export const tabAnimation = {
   hidden: { opacity: 0, x: 8 },
   show:   { opacity: 1, x: 0, transition: { duration: T_FAST, ease } },
 };
+
+// ─── Spring modal — physical, natural feel ────────────────────────────────────
+export const springModal = {
+  hidden: { opacity: 0, scale: 0.95, y: 14 },
+  show: {
+    opacity: 1, scale: 1, y: 0,
+    transition: { type: 'spring', stiffness: 380, damping: 28, mass: 0.8 },
+  },
+  exit: { opacity: 0, scale: 0.96, y: 8, transition: { duration: 0.15, ease: easeIn } },
+};
+
+// ─── Table row ────────────────────────────────────────────────────────────────
+export const tableRow = {
+  hidden: { opacity: 0, x: -8 },
+  show:   { opacity: 1, x: 0, transition: { duration: 0.22, ease } },
+};
+
+// ─── Section reveal — for landing content blocks ──────────────────────────────
+export const sectionReveal = {
+  hidden: { opacity: 0, y: 28 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.5, ease } },
+};
+
+// ─── Tight stagger — smaller groups, faster cadence ──────────────────────────
+export const staggerFast = {
+  hidden: {},
+  show:   { transition: { staggerChildren: 0.04, delayChildren: 0.02 } },
+};

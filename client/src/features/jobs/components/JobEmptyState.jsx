@@ -1,9 +1,14 @@
+import { motion } from 'framer-motion';
+import { fadeUp } from '../../../motion/variants';
 import Button from '../../../components/ui/Button';
 
 export default function JobEmptyState({ hasFilters, onClear, onAdd }) {
   return (
-    <div
+    <motion.div
       className="card py-20 relative overflow-hidden"
+      variants={fadeUp}
+      initial="hidden"
+      animate="show"
       style={{ minHeight: 280 }}
     >
       {/* Ambient glow */}
@@ -53,6 +58,6 @@ export default function JobEmptyState({ hasFilters, onClear, onAdd }) {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

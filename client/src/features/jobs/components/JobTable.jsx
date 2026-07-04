@@ -1,3 +1,6 @@
+import { motion } from 'framer-motion';
+import { tableRow, staggerFast } from '../../../motion/variants';
+
 const STATUS_CONFIG = {
   Applied:   { dot: '#6366f1', bg: 'rgba(99,102,241,0.08)',  border: 'rgba(99,102,241,0.25)',  text: '#818cf8' },
   OA:        { dot: '#818cf8', bg: 'rgba(99,102,241,0.06)',  border: 'rgba(99,102,241,0.2)',   text: '#818cf8' },
@@ -63,10 +66,11 @@ export default function JobTable({ jobs, onEdit, onDelete }) {
               ))}
             </tr>
           </thead>
-          <tbody>
+          <motion.tbody variants={staggerFast} initial="hidden" animate="show">
             {jobs.map((job) => (
-              <tr
+              <motion.tr
                 key={job._id}
+                variants={tableRow}
                 className="group transition-colors duration-150 hover:bg-white/[0.04]"
                 style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
               >
@@ -191,9 +195,9 @@ export default function JobTable({ jobs, onEdit, onDelete }) {
                     </button>
                   </div>
                 </td>
-              </tr>
+              </motion.tr>
             ))}
-          </tbody>
+          </motion.tbody>
         </table>
       </div>
     </div>

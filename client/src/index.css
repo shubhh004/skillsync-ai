@@ -202,11 +202,6 @@
     border-radius: var(--ds-radius-md);
   }
 
-  /* Smooth scroll */
-  html {
-    scroll-behavior: smooth;
-  }
-
   /* Image defaults */
   img, video {
     max-width: 100%;

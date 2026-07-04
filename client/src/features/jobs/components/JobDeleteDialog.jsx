@@ -1,11 +1,26 @@
+import { motion } from 'framer-motion';
 import Button from '../../../components/ui/Button';
+import { backdropTransition, springModal } from '../../../motion/variants';
 
 export default function JobDeleteDialog({ job, onConfirm, onCancel }) {
   return (
     <div className="modal-overlay">
-      <div className="modal-backdrop" onClick={onCancel} aria-hidden="true" />
-
-      <div className="modal-panel max-w-sm p-6">
+      <motion.div
+        className="modal-backdrop"
+        onClick={onCancel}
+        aria-hidden="true"
+        variants={backdropTransition}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      />
+      <motion.div
+        className="modal-panel max-w-sm p-6"
+        variants={springModal}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      >
         {/* Danger icon */}
         <div
           className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
@@ -35,7 +50,7 @@ export default function JobDeleteDialog({ job, onConfirm, onCancel }) {
           <Button variant="outline" onClick={onCancel}>Cancel</Button>
           <Button variant="danger" onClick={onConfirm}>Delete</Button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

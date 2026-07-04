@@ -1,8 +1,16 @@
+import { motion } from 'framer-motion';
+import { fadeUp } from '../../../motion/variants';
 import Button from '../../../components/ui/Button';
 
 export default function InterviewEmptyState({ onAdd }) {
   return (
-    <div className="card py-20 relative overflow-hidden" style={{ minHeight: 300 }}>
+    <motion.div
+      className="card py-20 relative overflow-hidden"
+      variants={fadeUp}
+      initial="hidden"
+      animate="show"
+      style={{ minHeight: 300 }}
+    >
       {/* Ambient glow */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -44,6 +52,6 @@ export default function InterviewEmptyState({ onAdd }) {
           <Button onClick={onAdd}>Create First Interview</Button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

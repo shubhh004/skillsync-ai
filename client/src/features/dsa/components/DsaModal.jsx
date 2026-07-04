@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Label from '../../../components/ui/Label';
+import { backdropTransition, springModal, dropdownTransition } from '../../../motion/variants';
 
 const TOPICS = [
   'Array', 'String', 'Linked List', 'Stack', 'Queue',
@@ -97,10 +99,12 @@ function ModalSelect({ value, onChange, options, searchable = false }) {
   const active = options.find((o) => o.value === value);
 
   const panel = coords && (
-    <div
+    <motion.div
       ref={panelRef}
       role="listbox"
-      className="animate-fade-in"
+      variants={dropdownTransition}
+      initial="hidden"
+      animate="show"
       style={{
         position:  'fixed',
         top:       coords.top,
@@ -163,7 +167,7 @@ function ModalSelect({ value, onChange, options, searchable = false }) {
           <p className="px-4 py-3 text-[11px]" style={{ color: '#52525b' }}>No results</p>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 
   return (
@@ -250,9 +254,22 @@ export default function DsaModal({ mode, initial, onClose, onSave }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-backdrop" onClick={onClose} aria-hidden="true" />
-
-      <div className="modal-panel max-w-lg">
+      <motion.div
+        className="modal-backdrop"
+        onClick={onClose}
+        aria-hidden="true"
+        variants={backdropTransition}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      />
+      <motion.div
+        className="modal-panel max-w-lg"
+        variants={springModal}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      >
         <div className="modal-header">
           <h2 className="text-base font-semibold" style={{ color: '#e4e4e7' }}>
             {mode === 'add' ? 'Add Problem' : 'Edit Problem'}
@@ -332,7 +349,7 @@ export default function DsaModal({ mode, initial, onClose, onSave }) {
             </Button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }

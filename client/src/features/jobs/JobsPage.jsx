@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import Button from '../../components/ui/Button';
 import JobSummaryCards from './components/JobSummaryCards';
@@ -12,31 +13,39 @@ import { getJobs, createJob, updateJob, deleteJob } from '../../services/jobServ
 const EMPTY_FILTERS = { search: '', status: '', company: '' };
 
 // ─── Glass toast ──────────────────────────────────────────────────────────────
-function Toast({ message, type }) {
-  const isSuccess = type !== 'error';
+function Toast({ toast }) {
+  const isSuccess = toast?.type !== 'error';
   return (
-    <div
-      className="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium animate-fade-slide-up"
-      style={{
-        background: isSuccess ? 'rgba(20,30,22,0.88)' : 'rgba(30,18,18,0.88)',
-        backdropFilter: 'blur(20px)',
-        border: isSuccess ? '1px solid rgba(34,197,94,0.28)' : '1px solid rgba(239,68,68,0.28)',
-        boxShadow: isSuccess
-          ? '0 0 0 1px rgba(34,197,94,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(34,197,94,0.12)'
-          : '0 0 0 1px rgba(239,68,68,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(239,68,68,0.12)',
-      }}
-    >
-      <span
-        className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold"
-        style={{
-          background: isSuccess ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
-          color: isSuccess ? '#22c55e' : '#ef4444',
-        }}
-      >
-        {isSuccess ? '✓' : '✕'}
-      </span>
-      <span style={{ color: isSuccess ? '#86efac' : '#fca5a5' }}>{message}</span>
-    </div>
+    <AnimatePresence>
+      {toast && (
+        <motion.div
+          key={toast.message + toast.type}
+          initial={{ opacity: 0, y: 16, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] } }}
+          exit={{ opacity: 0, y: 8, scale: 0.97, transition: { duration: 0.15 } }}
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium"
+          style={{
+            background: isSuccess ? 'rgba(20,30,22,0.88)' : 'rgba(30,18,18,0.88)',
+            backdropFilter: 'blur(20px)',
+            border: isSuccess ? '1px solid rgba(34,197,94,0.28)' : '1px solid rgba(239,68,68,0.28)',
+            boxShadow: isSuccess
+              ? '0 0 0 1px rgba(34,197,94,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(34,197,94,0.12)'
+              : '0 0 0 1px rgba(239,68,68,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(239,68,68,0.12)',
+          }}
+        >
+          <span
+            className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold"
+            style={{
+              background: isSuccess ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
+              color: isSuccess ? '#22c55e' : '#ef4444',
+            }}
+          >
+            {isSuccess ? '✓' : '✕'}
+          </span>
+          <span style={{ color: isSuccess ? '#86efac' : '#fca5a5' }}>{toast.message}</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -198,15 +207,19 @@ export default function JobsPage() {
         )}
       </div>
 
-      {modal && (
-        <JobModal mode={modal} initial={editTarget} onClose={closeModal} onSave={handleSave} />
-      )}
+      <AnimatePresence>
+        {modal && (
+          <JobModal key="job-modal" mode={modal} initial={editTarget} onClose={closeModal} onSave={handleSave} />
+        )}
+      </AnimatePresence>
 
-      {deleteTarget && (
-        <JobDeleteDialog job={deleteTarget} onConfirm={handleDeleteConfirm} onCancel={() => setDeleteTarget(null)} />
-      )}
+      <AnimatePresence>
+        {deleteTarget && (
+          <JobDeleteDialog key="job-delete" job={deleteTarget} onConfirm={handleDeleteConfirm} onCancel={() => setDeleteTarget(null)} />
+        )}
+      </AnimatePresence>
 
-      {toast && <Toast message={toast.message} type={toast.type} />}
+      <Toast toast={toast} />
     </DashboardLayout>
   );
 }

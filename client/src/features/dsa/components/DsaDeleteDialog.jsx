@@ -1,11 +1,26 @@
+import { motion } from 'framer-motion';
 import Button from '../../../components/ui/Button';
+import { backdropTransition, springModal } from '../../../motion/variants';
 
 export default function DsaDeleteDialog({ problem, onConfirm, onCancel }) {
   return (
     <div className="modal-overlay">
-      <div className="modal-backdrop" onClick={onCancel} aria-hidden="true" />
-
-      <div className="modal-panel max-w-sm p-6">
+      <motion.div
+        className="modal-backdrop"
+        onClick={onCancel}
+        aria-hidden="true"
+        variants={backdropTransition}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      />
+      <motion.div
+        className="modal-panel max-w-sm p-6"
+        variants={springModal}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      >
         {/* Danger icon */}
         <div className="w-10 h-10 rounded-xl bg-danger-100/60 border border-danger-500/20 flex items-center justify-center mb-4">
           <svg className="w-5 h-5 text-danger-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -24,7 +39,7 @@ export default function DsaDeleteDialog({ problem, onConfirm, onCancel }) {
           <Button variant="outline" onClick={onCancel}>Cancel</Button>
           <Button variant="danger" onClick={onConfirm}>Delete</Button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -33,10 +33,16 @@ function Ring({ solved, total, stroke, size = 88 }) {
   );
 }
 
+import { motion } from 'framer-motion';
+
 // ─── Quick stat card ──────────────────────────────────────────────────────────
 function StatCard({ label, value, sub, iconBg, iconStroke, icon }) {
   return (
-    <div className="card p-4 flex flex-col justify-between gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
+    <motion.div
+      className="card p-4 flex flex-col justify-between gap-3 transition-all duration-200 hover:shadow-card-hover"
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+    >
       <div className="flex items-start justify-between">
         <p className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider leading-none">{label}</p>
         <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>
@@ -49,7 +55,7 @@ function StatCard({ label, value, sub, iconBg, iconStroke, icon }) {
         <p className="text-3xl font-bold text-neutral-900 leading-none tracking-tight">{value}</p>
         <p className="text-xs text-neutral-500 mt-1.5">{sub}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

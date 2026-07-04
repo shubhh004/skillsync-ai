@@ -1,8 +1,10 @@
+import { motion } from 'framer-motion';
+import { fadeUp } from '../../../motion/variants';
 import Button from '../../../components/ui/Button';
 
 export default function DsaEmptyState({ hasFilters, onClear, onAdd }) {
   return (
-    <div className="card py-20">
+    <motion.div className="card py-20" variants={fadeUp} initial="hidden" animate="show">
       <div className="text-center max-w-sm mx-auto">
         {/* Icon */}
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-brand-subtle border border-brand-200/20 mb-5">
@@ -28,6 +30,6 @@ export default function DsaEmptyState({ hasFilters, onClear, onAdd }) {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

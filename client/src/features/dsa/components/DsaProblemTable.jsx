@@ -1,3 +1,6 @@
+import { motion } from 'framer-motion';
+import { tableRow, staggerFast } from '../../../motion/variants';
+
 const DIFF_CONFIG = {
   Easy:   { dot: '#22c55e', bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.25)',  text: '#22c55e' },
   Medium: { dot: '#f59e0b', bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.25)', text: '#f59e0b' },
@@ -64,10 +67,11 @@ export default function DsaProblemTable({ problems, onEdit, onDelete }) {
               ))}
             </tr>
           </thead>
-          <tbody>
+          <motion.tbody variants={staggerFast} initial="hidden" animate="show">
             {problems.map((problem, index) => (
-              <tr
+              <motion.tr
                 key={problem._id}
+                variants={tableRow}
                 className="group transition-colors duration-150 hover:bg-white/[0.04]"
                 style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
               >
@@ -177,9 +181,9 @@ export default function DsaProblemTable({ problems, onEdit, onDelete }) {
                     </button>
                   </div>
                 </td>
-              </tr>
+              </motion.tr>
             ))}
-          </tbody>
+          </motion.tbody>
         </table>
       </div>
     </div>

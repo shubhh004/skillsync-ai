@@ -4,7 +4,6 @@ import { motion, animate, useInView } from 'framer-motion';
 import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
 import MainLayout from '../layouts/MainLayout';
-import { useLenis } from '../hooks/useLenis';
 
 const ease = [0.25, 1, 0.5, 1];
 
@@ -196,7 +195,6 @@ function CheckIcon() {
 
 // ─── Main page ─────────────────────────────────────────────────────────────────
 export default function Home() {
-  useLenis();
   return (
     <MainLayout>
 

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import Button from '../../../components/ui/Button';
 
 const DIFF_CONFIG = {
@@ -107,18 +108,20 @@ export default function InterviewCard({ interview, onEdit, onDelete, onView }) {
   };
 
   return (
-    <div
-      className="group relative flex flex-col gap-4 p-5 rounded-2xl cursor-pointer transition-all duration-200 hover:-translate-y-1 focus-ring"
+    <motion.div
+      className="group relative flex flex-col gap-4 p-5 rounded-2xl cursor-pointer focus-ring"
       role="button"
       tabIndex={0}
       onClick={() => onView(interview)}
       onKeyDown={(e) => e.key === 'Enter' && onView(interview)}
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
       style={{
         background: 'rgba(24,24,27,0.65)',
         border: '1px solid rgba(255,255,255,0.08)',
         backdropFilter: 'blur(20px)',
         boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
-        transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+        transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = '0 0 0 1px rgba(99,102,241,0.15), 0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(99,102,241,0.08)';
@@ -218,6 +221,6 @@ export default function InterviewCard({ interview, onEdit, onDelete, onView }) {
           Start Interview
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 }

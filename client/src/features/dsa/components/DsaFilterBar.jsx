@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Input from '../../../components/ui/Input';
 import Button from '../../../components/ui/Button';
+import { dropdownTransition } from '../../../motion/variants';
 
 const TOPICS = [
   'Array', 'String', 'Linked List', 'Stack', 'Queue',
@@ -140,9 +142,14 @@ function FilterSelect({ value, onChange, options, placeholder, searchable = fals
       </button>
 
       {/* Dropdown panel */}
+      <AnimatePresence>
       {open && (
-        <div
-          className="absolute top-full left-0 mt-1.5 z-50 rounded-xl overflow-hidden animate-fade-in"
+        <motion.div
+          className="absolute top-full left-0 mt-1.5 z-50 rounded-xl overflow-hidden"
+          variants={dropdownTransition}
+          initial="hidden"
+          animate="show"
+          exit="exit"
           style={{
             minWidth: Math.max(minWidth, 172),
             background: 'rgba(15,15,17,0.96)',
@@ -245,8 +252,9 @@ function FilterSelect({ value, onChange, options, placeholder, searchable = fals
               )}
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }

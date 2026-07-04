@@ -1,4 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { backdropTransition, springModal, dropdownTransition } from '../../motion/variants';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer,
@@ -276,9 +278,14 @@ function FilterSelect({ value, onChange, options, placeholder, minWidth = 148 })
         </svg>
       </button>
 
+      <AnimatePresence>
       {open && (
-        <div
-          className="absolute top-full left-0 mt-1.5 z-50 rounded-xl overflow-hidden animate-fade-in"
+        <motion.div
+          className="absolute top-full left-0 mt-1.5 z-50 rounded-xl overflow-hidden"
+          variants={dropdownTransition}
+          initial="hidden"
+          animate="show"
+          exit="exit"
           style={{
             minWidth: Math.max(minWidth, 160),
             background: 'rgba(15,15,17,0.96)',
@@ -315,8 +322,9 @@ function FilterSelect({ value, onChange, options, placeholder, minWidth = 148 })
               );
             })}
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -415,9 +423,22 @@ function DetailScoreRing({ score }) {
 function InterviewDetailModal({ interview, onClose }) {
   return (
     <div className="modal-overlay">
-      <div className="modal-backdrop" onClick={onClose} aria-hidden="true" />
-
-      <div className="modal-panel max-w-2xl">
+      <motion.div
+        className="modal-backdrop"
+        onClick={onClose}
+        aria-hidden="true"
+        variants={backdropTransition}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      />
+      <motion.div
+        className="modal-panel max-w-2xl"
+        variants={springModal}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+      >
         {/* Header */}
         <div className="modal-header">
           <div className="min-w-0 flex-1">
@@ -529,32 +550,40 @@ function InterviewDetailModal({ interview, onClose }) {
         <div className="px-6 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <Button variant="outline" fullWidth onClick={onClose}>Close</Button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
 
 // ─── Glass toast ──────────────────────────────────────────────────────────────
-function Toast({ message, type }) {
-  const isSuccess = type !== 'error';
+function Toast({ toast }) {
+  const isSuccess = toast?.type !== 'error';
   return (
-    <div
-      className="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium animate-fade-slide-up"
-      style={{
-        background: isSuccess ? 'rgba(20,30,22,0.88)' : 'rgba(30,18,18,0.88)',
-        backdropFilter: 'blur(20px)',
-        border: isSuccess ? '1px solid rgba(34,197,94,0.28)' : '1px solid rgba(239,68,68,0.28)',
-        boxShadow: isSuccess
-          ? '0 0 0 1px rgba(34,197,94,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(34,197,94,0.12)'
-          : '0 0 0 1px rgba(239,68,68,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(239,68,68,0.12)',
-      }}
-    >
-      <span className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold"
-        style={{ background: isSuccess ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)', color: isSuccess ? '#22c55e' : '#ef4444' }}>
-        {isSuccess ? '✓' : '✕'}
-      </span>
-      <span style={{ color: isSuccess ? '#86efac' : '#fca5a5' }}>{message}</span>
-    </div>
+    <AnimatePresence>
+      {toast && (
+        <motion.div
+          key={toast.message + toast.type}
+          initial={{ opacity: 0, y: 16, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] } }}
+          exit={{ opacity: 0, y: 8, scale: 0.97, transition: { duration: 0.15 } }}
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium"
+          style={{
+            background: isSuccess ? 'rgba(20,30,22,0.88)' : 'rgba(30,18,18,0.88)',
+            backdropFilter: 'blur(20px)',
+            border: isSuccess ? '1px solid rgba(34,197,94,0.28)' : '1px solid rgba(239,68,68,0.28)',
+            boxShadow: isSuccess
+              ? '0 0 0 1px rgba(34,197,94,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(34,197,94,0.12)'
+              : '0 0 0 1px rgba(239,68,68,0.1), 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(239,68,68,0.12)',
+          }}
+        >
+          <span className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold"
+            style={{ background: isSuccess ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)', color: isSuccess ? '#22c55e' : '#ef4444' }}>
+            {isSuccess ? '✓' : '✕'}
+          </span>
+          <span style={{ color: isSuccess ? '#86efac' : '#fca5a5' }}>{toast.message}</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -760,16 +789,22 @@ export default function InterviewPage() {
         )}
       </div>
 
-      {modal && (
-        <InterviewModal mode={modal} initial={editTarget} onClose={closeModal} onSave={handleSave} />
-      )}
-      {deleteTarget && (
-        <InterviewDeleteDialog interview={deleteTarget} onConfirm={handleDeleteConfirm} onCancel={() => setDeleteTarget(null)} />
-      )}
-      {detailTarget && (
-        <InterviewDetailModal interview={detailTarget} onClose={closeView} />
-      )}
-      {toast && <Toast message={toast.message} type={toast.type} />}
+      <AnimatePresence>
+        {modal && (
+          <InterviewModal key="interview-modal" mode={modal} initial={editTarget} onClose={closeModal} onSave={handleSave} />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {deleteTarget && (
+          <InterviewDeleteDialog key="interview-delete" interview={deleteTarget} onConfirm={handleDeleteConfirm} onCancel={() => setDeleteTarget(null)} />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {detailTarget && (
+          <InterviewDetailModal key="interview-detail" interview={detailTarget} onClose={closeView} />
+        )}
+      </AnimatePresence>
+      <Toast toast={toast} />
     </DashboardLayout>
   );
 }
