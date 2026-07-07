@@ -52,17 +52,67 @@ SkillSync AI is a full-stack, AI-driven platform that helps students go from pre
 
 ## 📸 Screenshots
 
-| Landing Page | Dashboard |
-| :---: | :---: |
-| ![Landing Page](assets/screenshots/landing.png) | ![Dashboard](assets/screenshots/dashboard.png) |
+### Landing Page
 
-| DSA Tracker | Resume Builder |
-| :---: | :---: |
-| ![DSA Tracker](assets/screenshots/dsa-tracker.png) | ![Resume Builder](assets/screenshots/resume-builder.png) |
+Modern glassmorphism-inspired landing page showcasing the complete placement preparation ecosystem.
 
-| AI Interview | Career Coach |
-| :---: | :---: |
-| ![AI Interview](assets/screenshots/ai-interview.png) | ![Career Coach](assets/screenshots/career-coach.png) |
+![Landing Page](assets/screenshots/landing-page.png)
+
+---
+
+### Dashboard
+
+Unified command center displaying DSA progress, active job applications, and upcoming interview sessions at a glance.
+
+![Dashboard](assets/screenshots/dashboard.png)
+
+---
+
+### DSA Tracker
+
+Topic-wise DSA problem tracker with difficulty filters, completion status, and streak tracking across all major categories.
+
+![DSA Tracker](assets/screenshots/dsa-tracker.png)
+
+---
+
+### Resume Builder
+
+ATS-optimised resume builder with live preview, customisable sections, and one-click PDF export.
+
+![Resume Builder](assets/screenshots/resume-builder.png)
+
+---
+
+### AI Interview
+
+AI-powered mock interview simulator with real-time question generation for both technical and HR rounds.
+
+![AI Interview](assets/screenshots/ai-interview.png)
+
+---
+
+### Career Coach
+
+Personalised AI career coach delivering skill gap analysis, curated learning roadmaps, and actionable guidance.
+
+![Career Coach](assets/screenshots/career-coach.png)
+
+---
+
+### Job Tracker
+
+Full job application pipeline with status labels, company notes, deadlines, and progress tracking in one view.
+
+![Job Tracker](assets/screenshots/jobs.png)
+
+---
+
+### Profile
+
+User profile with account settings, placement goal configuration, and a personal progress summary.
+
+![Profile](assets/screenshots/profile.png)
 
 ---
 
