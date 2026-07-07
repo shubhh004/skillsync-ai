@@ -1,12 +1,14 @@
+<div align="center">
+
 ![SkillSync AI Banner](assets/banner.png)
 
 # ⚡ SkillSync AI
 
-**AI Powered Placement Preparation Platform**
+### AI Powered Placement Preparation Platform
 
-SkillSync AI is a full-stack, AI-powered platform built to help students prepare for campus and off-campus placements. It brings together DSA progress tracking, ATS-optimised resume building, AI-driven mock interviews, job application management, and a personalised AI career coach — all inside a single, premium workspace.
+SkillSync AI is a full-stack, AI-driven platform that helps students go from preparation to placement. It combines DSA progress tracking, ATS resume building, AI mock interviews, job application management, and a personalised AI career coach — all in one premium, responsive workspace.
 
----
+<br />
 
 [![MIT License](https://img.shields.io/badge/License-MIT-7C3AED?style=flat-square)](LICENSE)
 [![React](https://img.shields.io/badge/React-18-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev)
@@ -17,51 +19,50 @@ SkillSync AI is a full-stack, AI-powered platform built to help students prepare
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
 
+</div>
+
 ---
 
 ## ✨ Features
 
-- ✔ **Dashboard** — Unified overview of progress, streaks, and upcoming tasks
-- ✔ **DSA Tracker** — Topic-wise problem tracking with difficulty filters and completion stats
-- ✔ **ATS Resume Builder** — Build and export ATS-friendly resumes with a live preview editor
-- ✔ **Job Tracker** — Manage job applications with status labels, deadlines, and notes
-- ✔ **AI Mock Interview** — Simulated technical and HR interviews powered by AI
-- ✔ **AI Career Coach** — Personalised career guidance, skill roadmaps, and actionable feedback
-- ✔ **Analytics** — Visual progress charts and performance insights across all modules
-- ✔ **Authentication** — Secure JWT-based sign up, login, and session management
-- ✔ **Responsive Design** — Fully optimised for desktop, tablet, and mobile
-
----
-
-## 📸 Screenshots
-
-| Landing Page | Dashboard | DSA Tracker |
-| :---: | :---: | :---: |
-| ![Landing Page](assets/screenshots/landing.png) | ![Dashboard](assets/screenshots/dashboard.png) | ![DSA Tracker](assets/screenshots/dsa-tracker.png) |
-
-| Resume Builder | Job Tracker | AI Interview |
-| :---: | :---: | :---: |
-| ![Resume Builder](assets/screenshots/resume-builder.png) | ![Job Tracker](assets/screenshots/job-tracker.png) | ![AI Interview](assets/screenshots/ai-interview.png) |
-
-| Career Coach |
-| :---: |
-| ![Career Coach](assets/screenshots/career-coach.png) |
+| Feature | Description |
+| --- | --- |
+| 🤖 **AI Career Coach** | Personalised career guidance, skill gap analysis, and AI-curated advice |
+| 📊 **DSA Progress Tracker** | Topic-wise problem tracking with difficulty filters, tags, and streaks |
+| 📄 **ATS Resume Builder** | Build, customise, and export ATS-optimised resumes with live preview |
+| 🎤 **AI Mock Interviews** | Simulated technical and HR interviews with AI-generated questions |
+| 💼 **Job Tracker** | Manage applications with status labels, deadlines, and company notes |
+| 📈 **Analytics Dashboard** | Visual progress charts and performance insights across all modules |
+| 🗺️ **Personalized Roadmap** | AI-curated learning paths tailored to your skills and target role |
+| 🔐 **Authentication** | Secure sign up, login, and JWT-based session management |
+| 📱 **Responsive UI** | Fully optimised interface for desktop, tablet, and mobile |
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer | Technology |
+| Layer | Technologies |
 | --- | --- |
-| **Frontend** | React 18, Vite 5, Tailwind CSS 3 |
-| **Backend** | Node.js 20, Express 4 |
-| **Database** | MongoDB, Mongoose ODM |
-| **Authentication** | JSON Web Tokens (JWT), bcryptjs |
-| **AI Integration** | Grok API |
-| **State Management** | React Context API |
-| **Charts** | Recharts |
-| **Icons** | Lucide React |
-| **Deployment** | Vercel (client), Render (server) |
+| **Frontend** | React 18 · Tailwind CSS 3 · Vite 5 · Framer Motion |
+| **Backend** | Node.js 20 · Express 4 |
+| **Database** | MongoDB · Mongoose |
+| **Authentication** | JSON Web Tokens (JWT) · bcryptjs |
+
+---
+
+## 📸 Screenshots
+
+| Landing Page | Dashboard |
+| :---: | :---: |
+| ![Landing Page](assets/screenshots/landing.png) | ![Dashboard](assets/screenshots/dashboard.png) |
+
+| DSA Tracker | Resume Builder |
+| :---: | :---: |
+| ![DSA Tracker](assets/screenshots/dsa-tracker.png) | ![Resume Builder](assets/screenshots/resume-builder.png) |
+
+| AI Interview | Career Coach |
+| :---: | :---: |
+| ![AI Interview](assets/screenshots/ai-interview.png) | ![Career Coach](assets/screenshots/career-coach.png) |
 
 ---
 
@@ -85,7 +86,7 @@ skillsync-ai/
 │   ├── routes/                # API route definitions
 │   └── utils/                 # Server-side utilities
 ├── assets/                    # Logo, banner, and screenshots
-├── docs/                      # Additional documentation
+├── docs/                      # Documentation
 └── README.md
 ```
 
@@ -102,64 +103,50 @@ git clone https://github.com/shubhh004/skillsync-ai.git
 cd skillsync-ai
 ```
 
-**2. Install client dependencies**
+**2. Install dependencies**
 
 ```bash
-cd client
-npm install
+# Client
+cd client && npm install
+
+# Server
+cd ../server && npm install
 ```
 
-**3. Install server dependencies**
-
-```bash
-cd ../server
-npm install
-```
-
-**4. Configure environment variables**
+**3. Configure environment variables**
 
 Create `.env` files as described in the [Environment Variables](#-environment-variables) section below.
 
-**5. Start the development servers**
-
-Open two terminals and run each separately:
+**4. Start the development servers**
 
 ```bash
-# Terminal 1 — client
-cd client
-npm run dev
+# Terminal 1 — Client (localhost:5173)
+cd client && npm run dev
 
-# Terminal 2 — server
-cd server
-npm run dev
+# Terminal 2 — Server (localhost:5000)
+cd server && npm run dev
 ```
-
-The client runs on `http://localhost:5173` and the server on `http://localhost:5000`.
 
 ---
 
 ## 🔑 Environment Variables
 
-**Client — `client/.env`**
+**`server/.env`**
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+CLIENT_URL=http://localhost:5173
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+**`client/.env`**
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000/api
-VITE_APP_NAME=SkillSync AI
 ```
 
-**Server — `server/.env`**
-
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-JWT_EXPIRES_IN=7d
-GEMINI_API_KEY=your_google_gemini_api_key
-CLIENT_URL=http://localhost:5173
-NODE_ENV=development
-```
-
-> Never commit `.env` files. Ensure both are listed in `.gitignore` before pushing.
+> Never commit `.env` files. Add both to `.gitignore` before pushing.
 
 ---
 
@@ -168,13 +155,15 @@ NODE_ENV=development
 **Completed**
 
 - [x] User Authentication (JWT)
-- [x] Dashboard
 - [x] Landing Page
-- [x] DSA Tracker
+- [x] Dashboard
+- [x] DSA Progress Tracker
 - [x] ATS Resume Builder
 - [x] Job Tracker
-- [x] AI Mock Interview
+- [x] AI Mock Interviews
 - [x] AI Career Coach
+- [x] Personalized Roadmap
+- [x] Analytics Dashboard
 - [x] Responsive UI — mobile and tablet
 - [x] Production polish and design system
 
@@ -182,7 +171,7 @@ NODE_ENV=development
 
 - [ ] In-app notification system
 - [ ] Real-time AI interview evaluation and scoring
-- [ ] Email automation — welcome emails, reminders
+- [ ] Email automation — welcome emails and reminders
 - [ ] Admin panel
 - [ ] Calendar integration for interview scheduling
 - [ ] Resume version history
@@ -194,32 +183,40 @@ NODE_ENV=development
 Contributions are welcome. To get started:
 
 1. Fork this repository
-2. Create a new branch for your feature
+2. Create a feature branch
 
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
-3. Commit your changes with a clear message
+3. Commit your changes
 
 ```bash
 git commit -m "feat: describe your change"
 ```
 
-4. Push the branch and open a Pull Request
+4. Push and open a Pull Request
 
 ```bash
 git push origin feature/your-feature-name
 ```
 
-Please follow the existing code style and test your changes before submitting. For larger changes, open an issue first to discuss the proposed approach.
+For major changes, open an issue first to discuss your proposal before submitting a PR.
 
 ---
 
 ## 📜 License
 
-This project is licensed under the [MIT License](LICENSE).
+Distributed under the [MIT License](LICENSE).
 
 ---
 
-Made with love by [Shubh Chaurasia](https://github.com/shubhh004)
+## 👤 Author
+
+**Shubh Chaurasia**
+
+- GitHub — [@shubhh004](https://github.com/shubhh004)
+
+---
+
+Made with ❤️ by [Shubh Chaurasia](https://github.com/shubhh004)
